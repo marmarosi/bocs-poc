@@ -5,7 +5,6 @@ const serveStatic = require( 'serve-static') ;
 const bo = require( 'business-objects' );
 const te = require( './template-engine.js' );
 const BoProxy = require( './bo-proxy.js' );
-// const BookList = require( './models/book-list.js' );
 
 const app = express();
 
@@ -19,8 +18,8 @@ app.set( 'view engine', 'html' );
 // Serve static files.
 app.use( serveStatic( 'public', { index: false } ) );
 
-bo.system.ConfigurationReader.initialize( '/config/business-objects.js' );
-const boProxy = new BoProxy( '/api/' );
+bo.configuration.initialize( '/config/business-objects.js' );
+const boProxy = new BoProxy( '/api/', '/data/models' );
 
 app.get( '/', function ( req, res ) {
   res.render( 'home', { title: 'Home', message: 'Hello world!' } );
@@ -28,6 +27,10 @@ app.get( '/', function ( req, res ) {
 
 app.get( '/book-list', function ( req, res ) {
   res.render( 'book-list', {} );
+} );
+
+app.get( '/admin-book-list', function ( req, res ) {
+  res.render( 'admin-book-list', {} );
 } );
 
 app.post( '/api/*', function ( req, res ) {

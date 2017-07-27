@@ -5,7 +5,7 @@ const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
 
 const BookListItem = new Model( 'BookListItem' )
-  .readOnlyChildObject( 'dao', __filename )
+  .readOnlyChildObject( 'memdb', __filename )
   // --- Properties
   .integer( 'bookKey', F.key )
   .text( 'author' )

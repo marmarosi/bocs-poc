@@ -2,7 +2,7 @@
 
 module.exports = {
   connectionManager: '/data/connection-manager.js',
-  daoBuilder: '',
+  daoBuilder: '/data/dao-builder.js',
   userReader: '/data/get-user.js',
   localeReader: '/data/get-locale.js',
   pathOfLocales: '/locales',
