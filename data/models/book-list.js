@@ -2,6 +2,7 @@
 
 const bo = require( 'business-objects' );
 const Model = bo.ModelComposer;
+const FactoryBase = require( '../factory-base.js' );
 
 const BookListItem = require( './book-list-item.js' );
 
@@ -12,10 +13,13 @@ const BookList = new Model( 'BookList' )
   // --- Build model class
   .compose();
 
-const BookListFactory = {
-  getAll: function ( eventHandlers ) {
+class BookListFactory extends FactoryBase {
+  constructor() {
+    super( 'book-list' );
+  }
+  getAll( eventHandlers ) {
     return BookList.fetch( null, null, eventHandlers );
   }
-};
+}
 
-module.exports = BookListFactory;
+module.exports = new BookListFactory();

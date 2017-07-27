@@ -7,7 +7,7 @@ xhr.onreadystatechange = function() {
   }
 };
 
-xhr.open('POST', '/api/admin/book-list/getAll', true);
+xhr.open('POST', '/api/admin/book-list/get-all', true);
 xhr.send();
 
 function list( books ) {

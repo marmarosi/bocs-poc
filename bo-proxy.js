@@ -2,8 +2,7 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
-const BookList = require( './data/models/book-list.js' );
-const AdminBookList = require( './data/models/admin/book-list.js' );
+const FactoryBase = require( './data/factory-base.js' );
 
 class BoProxy {
   constructor( apiUrl, modelsPath ) {
@@ -29,8 +28,15 @@ class BoProxy {
 
       else if (stat.isFile() && path.extname( item ) === '.js' ) {
         const model = require( itemPath );
-        if (model.modelType)
-          this.models[ relPath + path.basename( item, '.js' ) ] = require( itemPath );
+        if (model instanceof FactoryBase) {
+
+          if (!model.modelUri)
+            throw new Error( 'Missing model URI: ' + itemPath );
+          if (this.models[ model.modelUri ])
+            throw new Error( 'Duplicate model URI: ' + model.modelUri );
+
+          this.models[ model.modelUri ] = model;
+        }
       }
     });
   }
@@ -38,17 +44,13 @@ class BoProxy {
   process( req, res ) {
     return new Promise( ( resolve, reject ) => {
 
-      if (!req.url.startsWith( this.apiUrl )) {
-        reject( 'Invalid API URL.' );
-        return;
-      }
+      if (!req.url.startsWith( this.apiUrl ))
+        return reject( 'Invalid API URL.' );
 
       const url = req.url.substr( this.apiUrl.length );
       const pos = url.lastIndexOf( '/' );
-      if (pos < 1) {
-        reject( 'Invalid API URL.' );
-        return;
-      }
+      if (pos < 1)
+        return reject( 'Invalid API URL.' );
 
       let type = url.substr( 0, pos );
       let method = url.substr( pos + 1 );
@@ -56,10 +58,9 @@ class BoProxy {
 
       if (this.models[ type ])
         model = this.models[ type ];
-      else {
-        reject( 'Invalid type: ' + type );
-        return;
-      }
+      else
+        return reject( 'Invalid type: ' + type );
+
       if (model[ method ])
         model[ method ]()
           .then( result => {
