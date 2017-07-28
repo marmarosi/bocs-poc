@@ -4,6 +4,7 @@
   "description": "Proof of conception for client-server solution of business objects.",
   "main": "server.js",
   "scripts": {
+    "build": "./node_modules/.bin/webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -16,5 +17,8 @@
     "business-objects": "^2.0.1",
     "express": "^4.15.3",
     "serve-static": "^1.12.3"
+  },
+  "devDependencies": {
+    "webpack": "^3.4.1"
   }
 }

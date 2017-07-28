@@ -1,6 +1,9 @@
 # WebStorm
 .idea
 
+# webpack outputs
+public/scripts/bundle.js
+
 # Logs
 logs
 *.log
