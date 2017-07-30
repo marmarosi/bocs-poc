@@ -3,19 +3,19 @@
 //region Imports
 
 import Argument from './argument-check.js';
-import Enumeration from  './enumeration.js';
-import UserInfo from  './user-info.js';
+import Enumeration from './enumeration.js';
+import UserInfo from './user-info.js';
 //import Utility from  './utility.js';
 
-import ArgumentError from  './argument-error.js';
-import ComposerError from  './composer-error.js';
+import ArgumentError from './argument-error.js';
+import ComposerError from './composer-error.js';
 // import ConfigurationError from  './configuration-error.js';
 // import ConfigurationReader from  './configuration-reader.js';
-import ConstructorError from  './constructor-error.js';
-import EnumerationError from  './enumeration-error.js';
-import MethodError from  './method-error.js';
-import NotImplementedError from  './not-implemented-error.js';
-import PropertyError from  './property-error.js';
+import ConstructorError from './constructor-error.js';
+import EnumerationError from './enumeration-error.js';
+import MethodError from './method-error.js';
+import NotImplementedError from './not-implemented-error.js';
+import PropertyError from './property-error.js';
 
 //endregion
 
