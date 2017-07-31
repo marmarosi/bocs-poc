@@ -1,7 +1,7 @@
 'use strict';
 
-const fs = require( 'fs' );
-const path = require( 'path' );
+// const fs = require( 'fs' );
+// const path = require( 'path' );
 import DaoBase from './dao-base.js';
 import DaoError from './dao-error.js';
 
@@ -38,28 +38,30 @@ const daoBuilder = function ( dataSource, modelPath, modelName ) {
   if (typeof modelName !== 'string' || modelName.trim().length === 0)
     throw new DaoError( 'f_manString', 'modelName' );
 
-  const modelStats = fs.statSync( modelPath );
-  if (!modelStats.isFile())
-    throw new DaoError( 'filePath', 'modelPath', modelPath );
+  // const modelStats = fs.statSync( modelPath );
+  // if (!modelStats.isFile())
+  //   throw new DaoError( 'filePath', 'modelPath', modelPath );
+  //
+  // const daoPath = path.join(
+  //   path.dirname( modelPath ),
+  //   path.basename( modelPath, path.extname( modelPath ) ) + '.' + dataSource + path.extname( modelPath )
+  // );
+  //
+  // const daoStats = fs.statSync( daoPath );
+  // if (!daoStats.isFile())
+  //   throw new DaoError( 'noDaoFile', daoPath );
+  //
+  // const daoConstructor = require( daoPath );
+  //
+  // if (typeof daoConstructor !== 'function')
+  //   throw new DaoError( 'daoCtor', daoPath );
+  //
+  // const daoInstance = new daoConstructor();
+  // if (!(daoInstance instanceof DaoBase) && daoInstance.super_ !== DaoBase)
+  //   throw new DaoError( 'daoType', daoPath );
+  // return daoInstance;
 
-  const daoPath = path.join(
-    path.dirname( modelPath ),
-    path.basename( modelPath, path.extname( modelPath ) ) + '.' + dataSource + path.extname( modelPath )
-  );
-
-  const daoStats = fs.statSync( daoPath );
-  if (!daoStats.isFile())
-    throw new DaoError( 'noDaoFile', daoPath );
-
-  const daoConstructor = require( daoPath );
-
-  if (typeof daoConstructor !== 'function')
-    throw new DaoError( 'daoCtor', daoPath );
-
-  const daoInstance = new daoConstructor();
-  if (!(daoInstance instanceof DaoBase) && daoInstance.super_ !== DaoBase)
-    throw new DaoError( 'daoType', daoPath );
-  return daoInstance;
+  return {};
 };
 
 export default daoBuilder;

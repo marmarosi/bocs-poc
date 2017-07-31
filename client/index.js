@@ -21,7 +21,7 @@ import rules from './rules/index.js';
 import common from './common/index.js';
 import system from './system/index.js';
 
-import configuration from './system/configuration-reader.js';
+import configuration from './system/configuration.js';
 import i18n from './locales/i18n.js';
 
 //endregion
@@ -79,12 +79,10 @@ const index = {
    * Initializes the business objects.
    *
    * @function bo.initialize
-   * @param {string} cfgPath -
-   *    The relative path of the {@link external.configurationFile configuration file} (.js or .json).
-   *    E.g. /config/business-objects.json
+   * @param {object} config - The initializer object of the configuration.
    */
-  initialize: function ( cfgPath ) {
-    this.configuration.initialize( cfgPath );
+  initialize: function ( config ) {
+    this.configuration.initialize( config );
     this.i18n.initialize( this.configuration.pathOfLocales, this.configuration.getLocale );
   }
 };

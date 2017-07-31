@@ -2,7 +2,7 @@
 
 //region Imports
 
-import configuration from './../system/configuration-reader.js';
+import configuration from '../system/configuration.js';
 import Argument from '../system/argument-check.js';
 import ModelError from './model-error.js';
 import PropertyInfo from './property-info.js';

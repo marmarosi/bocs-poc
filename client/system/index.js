@@ -5,12 +5,11 @@
 import Argument from './argument-check.js';
 import Enumeration from './enumeration.js';
 import UserInfo from './user-info.js';
-//import Utility from  './utility.js';
 
 import ArgumentError from './argument-error.js';
 import ComposerError from './composer-error.js';
-// import ConfigurationError from  './configuration-error.js';
-// import ConfigurationReader from  './configuration-reader.js';
+import ConfigurationError from  './configuration-error.js';
+import ConfigurationReader from './configuration.js';
 import ConstructorError from './constructor-error.js';
 import EnumerationError from './enumeration-error.js';
 import MethodError from './method-error.js';
@@ -30,8 +29,6 @@ import PropertyError from './property-error.js';
  *      constructor to create new enumeration.
  * @property {function} UserInfo - {@link bo.system.UserInfo User data}
  *      constructor to create new base object for user information.
- * @property {function} Utility - {@link bo.system.Utility Utility}
- *      function provides static methods for configuration and internationalization.
  *
  * @property {function} ArgumentError - {@link bo.system.ArgumentError Argument error}
  *      constructor to create a new error related to an argument.
@@ -56,12 +53,11 @@ const index = {
   Argument: Argument,
   Enumeration: Enumeration,
   UserInfo: UserInfo,
-  // Utility: Utility,
 
   ArgumentError: ArgumentError,
   ComposerError: ComposerError,
-  // ConfigurationError: ConfigurationError,
-  // ConfigurationReader: ConfigurationReader,
+  ConfigurationError: ConfigurationError,
+  ConfigurationReader: ConfigurationReader,
   ConstructorError: ConstructorError,
   EnumerationError: EnumerationError,
   MethodError: MethodError,
