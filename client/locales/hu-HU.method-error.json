@@ -1,0 +1,32 @@
+{
+  "MethodError": {
+    "default": "Az eljárásnak átadott paraméter érvénytelen.",
+    "defined": "A {0}.{1} eljárás {2} paraméterét meg kell adnia.",
+    "required": "A {0}.{1} eljárás {2} paramétere kötelező.",
+    "string": "A {0}.{1} eljárás {2} paraméterének szövegnek kell lennie.",
+    "optString": "A {0}.{1} eljárás {2} paraméterének szövegnek vagy nullnak kell lennie.",
+    "manString": "A {0}.{1} eljárás {2} paraméterének nem-üres szövegnek kell lennie.",
+    "optNumber": "A {0}.{1} eljárás {2} paraméterének számnak vagy nullnak kell lennie.",
+    "manNumber": "A {0}.{1} eljárás {2} paraméterének számnak kell lennie.",
+    "optInteger": "A {0}.{1} eljárás {2} paraméterének egész számnak vagy nullnak kell lennie.",
+    "manInteger": "A {0}.{1} eljárás {2} paraméterének egész számnak kell lennie.",
+    "optBoolean": "A {0}.{1} eljárás {2} paraméterének logikai értéknek vagy nullnak kell lennie.",
+    "manBoolean": "A {0}.{1} eljárás {2} paraméterének logikai értéknek kell lennie.",
+    "optObject": "A {0}.{1} eljárás {2} paraméterének objektumnak vagy nullnak kell lennie.",
+    "manObject": "A {0}.{1} eljárás {2} paraméterének objektumnak kell lennie.",
+    "optFunction": "A {0}.{1} eljárás {2} paraméterének függvények vagy nullnak kell lennie.",
+    "manFunction": "A {0}.{1} eljárás {2} paraméterének függvénynek kell lennie.",
+    "optType": "A {0}.{1} eljárás {2} paraméterének {3} objektumnak vagy nullnak kell lennie.",
+    "manType": "A {0}.{1} eljárás {2} paraméterének {3} objektumnak kell lennie.",
+    "modelType": "A {0}.{1} eljárás {2} paraméterének {3} típusnak kell lennie.",
+    "enumType": "A {0}.{1} eljárás {2} paraméterének felsorolás típusnak kell lennie.",
+    "enumMember": "A {0}.{1} eljárás {2} paraméterének egy {3} elemnek kell lennie.",
+    "optArray": "A {0}.{1} eljárás {2} paraméterének {3} objektumtömbnek, egy {3} objektumnak vagy nullnak kell lennie.",
+    "manArray": "A {0}.{1} eljárás {2} paraméterének {3} objektumtömbnek vagy egy {3} objektumnak kell lennie.",
+    "optArrayPrim": "A {0}.{1} eljárás {2} paraméterének {3} értékek tömbjének, egy {3} értéknek vagy nullnak kell lennie.",
+    "manArrayPrim": "A {0}.{1} eljárás {2} paraméterének {3} értékek tömbjének vagy egy {3} értéknek kell lennie.",
+
+    "noProperty": "A {0}.{1} eljárás {2} paramétere rossz: A {0} objektumnak nincs {1} nevű tulajdonsága.",
+    "m_notInit": "A {0}.{1} eljárás {2} paramétere rossz: A szabály nincs inicializálva."
+  }
+}

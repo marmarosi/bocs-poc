@@ -1,0 +1,21 @@
+{
+  "ModelError": {
+    "default": "An error occurred in the model.",
+    "readCollection": "Cannot read properties of {0}.{1} collection.",
+    "writeCollection": "Cannot write properties of {0}.{1} collection.",
+    "readProperty": "{0}.{1} property cannot be read.",
+    "writeProperty": "{0}.{1} property cannot be written.",
+    "noProperty": "{0} model has no property named {1}.",
+    "getValue": "Read-only model's properties cannot be copied to data transfer object.",
+    "writeValue": "Read-only model's properties cannot be copied from client transfer object.",
+    "readOnly": "{0}.{1} property is read-only.",
+    "transition": "Illegal state transition: {0} => {1}",
+    "propertyArg0": "The {1} property of {0} expects a function without arguments.",
+    "propertyArg1": "The {1} property of {0} expects a function with 1 argument.",
+    "propertyArgN": "The {1} property of {0} expects a function with {2} arguments.",
+    "invalidItem": "The model type of {0} is {1}, but the item type of {2} must be {3}.",
+    "invalidChild": "The model type of {1} property of {0} is {2}, but it should be {3}.",
+    "frozen": "Cannot change the definition of {0} after creation.",
+    "invalidTree": "Argument itemType is {0}, but the type of the parent is {1}."
+  }
+}

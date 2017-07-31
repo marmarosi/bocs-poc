@@ -1,0 +1,63 @@
+{
+  "default": "This is a test message.",
+  "ConfigurationError": {
+    "default": "An error occurred in the business objects' configuration.",
+    "string": "The value of {0} property of business objects' configuration must be a non-empty string.",
+    "file": "The value of {0} property of business objects' configuration is not a valid file path: {1}",
+    "directory": "The value of {0} property of business objects' configuration is not a valid directory path: {1}",
+    "function": "The file defined by the {0} property of business objects' configuration must return a function: {1}",
+    "enumType": "{0} is not an enumeration type.",
+    "enumMember": "The value of {0} property of business objects' configuration must be a {1} item.",
+    "userReader": "The function defined by the userReader property of business objects' configuration must return a UserInfo object.",
+    "localeReader": "The function defined by the localeReader property of business objects' configuration must return a string value.",
+    "noConMan": "The connection manager is required.",
+    "wrongConMan": "The connection manager must inherit ConnectionManagerBase type.",
+    "ready": "Configuration is already initialized."
+  },
+  "I18nError": {
+    "default": "An error occurred in the business objects' localization.",
+    "string": "The value of {0} property of i18n.initialize method must be a non-empty string.",
+    "directory": "The value of {0} property of i18n.initialize method is not a valid directory path: {1}",
+    "function": "The value of {0} property of i18n.initialize method must return a function.",
+    "c_optString": "The {0} argument of i18n constructor must be a string or null.",
+    "m_manString": "The {0} argument of i18n.get method must be a non-empty string.",
+    "messageId": "The identifier of the message is invalid. Use the [locale*][namespace:]key1[[.key2]...] format.",
+    "ready": "i18n is already initialized."
+  },
+  "EnumerationError": {
+    "default": "An enumeration error occurred.",
+    "enumValue": "The passed value ({1}) is not a {0} item.",
+    "enumName": "The passed name ({1}) is not a {0} item."
+  },
+  "NotImplementedError": {
+    "default": "The method is not implemented.",
+    "method": "The {0}.{1} method is not implemented."
+  },
+  "DaoError": {
+    "default": "A data access object error occurred.",
+    "c_manString": "The {1} argument of {0} constructor must be a non-empty string.",
+    "m_manString": "The {2} argument of {0}.{1} method must be a non-empty string.",
+    "f_manString": "The {0} argument of daoBuilder function must be a non-empty string.",
+    "filePath": "The {0} argument of daoBuilder function is not a valid file path: {1}",
+    "noDaoFile": "The required data access file does not exist: {0}",
+    "daoCtor": "The data access file must return a constructor: {0}",
+    "daoType": "The data access object must inherit DaoBase type: {0}",
+    "noMethod": "{0} object has no method named {1}."
+  },
+  "DataPortalError": {
+    "create": "Creating {0} has failed.",
+    "fetch": "Fetching {0} has failed.",
+    "insert": "Inserting {0} has failed.",
+    "update": "Updating {0} has failed.",
+    "remove": "Removing {0} has failed.",
+    "execute": "Executing {0} has failed."
+  },
+  "AuthorizationError": {
+    "default": "The user has no permission to execute the action."
+  },
+  "ComposerError": {
+    "default": "The model composer found an error in the class definition.",
+    "invalid": "Definition of {0} class: ModelComposer.{1}() is not applicable to {2} models.",
+    "property": "Definition of {0} class: The current property is undefinable in ModelComposer.{1}()."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "ArgumentError": {
+    "default": "The passed value is invalid.",
+    "defined": "The {0} argument must be supplied.",
+    "required": "The {0} argument is required.",
+    "string": "The {0} argument must be a string value.",
+    "optString": "The {0} argument must be a string value or null.",
+    "manString": "The {0} argument must be a non-empty string.",
+    "optNumber": "The {0} argument must be a number value or null.",
+    "manNumber": "The {0} argument must be a number value.",
+    "optInteger": "The {0} argument must be an integer value or null.",
+    "manInteger": "The {0} argument must be an integer value.",
+    "optBoolean": "The {0} argument must be a Boolean value or null.",
+    "manBoolean": "The {0} argument must be a Boolean value.",
+    "optObject": "The {0} argument must be an object or null.",
+    "manObject": "The {0} argument must be an object.",
+    "optFunction": "The {0} argument must be a function or null.",
+    "manFunction": "The {0} argument must be a function.",
+    "optType": "The {0} argument must be a {1} object or null.",
+    "manType": "The {0} argument must be a {1} object.",
+    "modelType": "The {0} argument must be {1} type.",
+    "enumType": "The {0} argument must be an enumeration type.",
+    "enumMember": "The {0} argument must be a {1} item.",
+    "optArray": "The {0} argument must be an array of {1} objects, or a single {1} object or null.",
+    "manArray": "The {0} argument must be an array of {1} objects or a single {1} object.",
+    "optArrayPrim": "The {0} argument must be an array of {1} values, or a single {1} value or null.",
+    "manArrayPrim": "The {0} argument must be an array of {1} values or a single {1} value.",
+
+    "m_null": "The {2} argument of {0}.{1} method must be null."
+  }
+}

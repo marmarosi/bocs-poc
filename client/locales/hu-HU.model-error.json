@@ -1,0 +1,21 @@
+{
+  "ModelError": {
+    "default": "Hiba van a modellben.",
+    "readCollection": "{0}.{1} gyűjtemény tulajdonságait nem lehet olvasni.",
+    "writeCollection": "{0}.{1} gyűjtemény tulajdonságait nem lehet írni.",
+    "readProperty": "{0}.{1} tulajdonságot nem lehet olvasni.",
+    "writeProperty": "{0}.{1} tulajdonságot nem lehet írni.",
+    "noProperty": "{0} modellnek nincs {1} nevű tulajdonsága.",
+    "getValue": "Csak-olvasható modell tulajdonságait nem lehet átmásolni az adatátviteli objektumra.",
+    "writeValue": "Csak-olvasható modell tulajdonságait nem lehet átmásolni az ügyféloldali objektumról.",
+    "readOnly": "{0}.{1} tulajdonság csak olvasható.",
+    "transition": "Érvénytelen állapot-változás: {0} => {1}",
+    "propertyArg0": "{0} {1} tulajdonsága csak egy függvény lehet paraméterek nélkül.",
+    "propertyArg1": "{0} {1} tulajdonsága csak egy függvény lehet 1 paraméterrel.",
+    "propertyArgN": "{0} {1} tulajdonsága csak egy függvény lehet {2} paraméterrel.",
+    "invalidItem": "{0} modelltípusa {1}, de {2} elemeinek típusa csak {3} lehet.",
+    "invalidChild": "{0} {1} tulajdonságának modelltípusa {2}, de csak {3} lehet.",
+    "frozen": "{0} definícióját nem lehet megváltoztatni a létrehozás után.",
+    "invalidTree": "Az itemType paraméter {0}, de a felettes típusa {1}."
+  }
+}

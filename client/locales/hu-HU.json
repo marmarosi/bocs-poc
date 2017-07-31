@@ -1,0 +1,63 @@
+{
+  "default": "Ez egy tesztüzenet.",
+  "ConfigurationError": {
+    "default": "Hiba van az üzleti objektumok konfigurációjában.",
+    "string": "Az üzleti objektumok konfigurációjában {0} tulajdonság értékének nem-üres szövegnek kell lennie.",
+    "file": "Az üzleti objektumok konfigurációjában {0} tulajdonság értéke érvénytelen fájl elérési út: {1}",
+    "directory": "Az üzleti objektumok konfigurációjában {0} tulajdonság értéke érvénytelen mappa elérési út: {1}",
+    "function": "Az üzleti objektumok konfigurációjában {0} tulajdonság által megadott fájlnak egy függvényt kell visszaadnia: {1}",
+    "enumType": "{0} nem felsorolástípus.",
+    "enumMember": "Az üzleti objektumok konfigurációjában {0} tulajdonság értékének {1} elemének kell lennie.",
+    "userReader": "Az üzleti objektumok konfigurációjában a userReader tulajdonság által megadott függvénynek egy UserInfo objektumot kell visszaadnia.",
+    "localeReader": "Az üzleti objektumok konfigurációjában a localeReader tulajdonság által megadott függvénynek szöveget kell visszaadnia.",
+    "noConMan": "A kapcsolatkezelő kötelező.",
+    "wrongConMan": "A kapcsolatkezelőnek a ConnectionManagerBase típusból kell származnia.",
+    "ready": "A konfiguráció már inicializálva van."
+  },
+  "I18nError": {
+    "default": "Hiba van az üzleti objektum honosításában.",
+    "string": "Az i18n.initialize eljárás {0} paraméter értékének nem-üres szövegnek kell lennie.",
+    "directory": "Az i18n.initialize eljárás {0} paraméterének értéke érvénytelen mappa elérési út: {1}",
+    "function": "Az i18n.initialize eljárás {0} paraméter értékének egy függvényt kell visszaadnia.",
+    "c_optString": "Az i18n konstruktor {0} paraméterének értéke csak szöveg vagy null lehet.",
+    "m_manString": "Az i18n.get eljárás {0} paraméter értékének nem-üres szövegnek kell lennie.",
+    "messageId": "Az üzenet-azonosító érvénytelen. Használja a [locale*][namespace:]key1[[.key2]...] formát.",
+    "ready": "i18n már inicializálva van."
+  },
+  "EnumerationError": {
+    "default": "Hiba van a felsorolásban.",
+    "enumValue": "Az átadott érték ({1}) nem {0} elem.",
+    "enumName": "Az átadott megnevezés ({1}) nem {0} elem."
+  },
+  "NotImplementedError": {
+    "default": "Az eljárás nincs megvalósítva.",
+    "method": "{0}.{1} eljárás nincs megvalósítva."
+  },
+  "DaoError": {
+    "default": "Hiba van az adatelérési objektumban.",
+    "c_manString": "A {0} konstruktor {0} paramétere nem lehet üres szöveg.",
+    "m_manString": "A {0}.{1} eljárás {2} paramétere nem lehet üres szöveg.",
+    "f_manString": "A daoBuilder függvény {0} paramétere nem lehet üres szöveg.",
+    "filePath": "A daoBuilder függvény {0} paramétere érvénytelen elérési út: {1}",
+    "noDaoFile": "A szükséges adatelérési fájl nem létezik: {0}",
+    "daoCtor": "Az adatelérési fájl nem konstruktort ad vissza: {0}",
+    "daoType": "Az adatelérési objektum nem a DaoBase típusból származik: {0}",
+    "noMethod": "{0} objektumnak nincs {1} nevű eljárása."
+  },
+  "DataPortalError": {
+    "create": "{0} létrehozása nem sikerült.",
+    "fetch": "{0} lehívása nem sikerült.",
+    "insert": "{0} felvitele nem sikerült.",
+    "update": "{0} módosítása nem sikerült.",
+    "remove": "{0} törlése nem sikerült.",
+    "execute": "{0} végrehajtása nem sikerült."
+  },
+  "AuthorizationError": {
+    "default": "A felhasználó nem jogosult a művelet végrehajtására."
+  },
+  "ComposerError": {
+    "default": "A modellépítő hibát talált az osztály definíciójában.",
+    "invalid": "{0} osztály definíciója: ModelComposer.{1}() nem használható {2} modelleknél.",
+    "property": "{0} osztály definíciója: Az aktuális tulajdonság megállapíthatatlan a ModelComposer.{1}() metódusnál."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "ConstructorError": {
+    "default": "The value passed to the constructor is invalid.",
+    "defined": "The {1} argument of {0} constructor must be supplied.",
+    "required": "The {1} argument of {0} constructor is required.",
+    "string": "The {1} argument of {0} constructor must be a string.",
+    "optString": "The {1} argument of {0} constructor must be a string or null.",
+    "manString": "The {1} argument of {0} constructor must be a non-empty string.",
+    "optNumber": "The {1} argument of {0} constructor must be a number value or null.",
+    "manNumber": "The {1} argument of {0} constructor must be a number value.",
+    "optInteger": "The {1} argument of {0} constructor must be an integer value or null.",
+    "manInteger": "The {1} argument of {0} constructor must be an integer value.",
+    "optBoolean": "The {1} argument of {0} constructor must be a Boolean value or null.",
+    "manBoolean": "The {1} argument of {0} constructor must be a Boolean value.",
+    "optObject": "The {1} argument of {0} constructor must be an object or null.",
+    "manObject": "The {1} argument of {0} constructor must be an object.",
+    "optFunction": "The {1} argument of {0} constructor must be a function or null.",
+    "manFunction": "The {1} argument of {0} constructor must be a function.",
+    "optType": "The {1} argument of {0} constructor must be a {2} object or null.",
+    "manType": "The {1} argument of {0} constructor must be a {2} object.",
+    "modelType": "The {1} argument of {0} constructor must be {2} type.",
+    "enumType": "The {1} argument of {0} constructor must be an enumeration type.",
+    "enumMember": "The {1} argument of {0} constructor must be a {2} item.",
+    "optArray": "The {1} argument of {0} constructor must be an array of {2} objects, or a single {2} object or null.",
+    "manArray": "The {1} argument of {0} constructor must be an array of {2} objects or a single {2} object.",
+    "optArrayPrim": "The {1} argument of {0} constructor must be an array of {2} values, or a single {2} values or null.",
+    "manArrayPrim": "The {1} argument of {0} constructor must be an array of {2} values or a single {2} values.",
+
+    "properties": "All arguments of {0} constructor must be a PropertyInfo object.",
+    "rule": "The last 3 arguments of {0} constructor can be: a string as the message, an integer as the priority and a Boolean as the stopsProcessing argument."
+  }
+}

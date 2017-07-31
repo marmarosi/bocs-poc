@@ -1,0 +1,29 @@
+{
+  "PropertyError": {
+    "default": "The value passed to the property is invalid.",
+    "defined": "The value of {0}.{1} property must be supplied.",
+    "required": "The value of {0}.{1} property is required.",
+    "string": "The value of {0}.{1} property must be a string.",
+    "optString": "The value of {0}.{1} property must be a string or null.",
+    "manString": "The value of {0}.{1} property must be a non-empty string.",
+    "optNumber": "The value of {0}.{1} property must be a number value or null.",
+    "manNumber": "The value of {0}.{1} property must be a number value.",
+    "optInteger": "The value of {0}.{1} property must be an integer value or null.",
+    "manInteger": "The value of {0}.{1} property must be an integer value.",
+    "optBoolean": "The value of {0}.{1} property must be a Boolean value or null.",
+    "manBoolean": "The value of {0}.{1} property must be a Boolean value.",
+    "optObject": "The value of {0}.{1} property must be an object or null.",
+    "manObject": "The value of {0}.{1} property must be an object.",
+    "optFunction": "The value of {0}.{1} property must be a function or null.",
+    "manFunction": "The value of {0}.{1} property must be a function.",
+    "optType": "The value of {0}.{1} property must be a {2} object or null.",
+    "manType": "The value of {0}.{1} property must be a {2} object.",
+    "modelType": "The value of {0}.{1} property must be {2} type.",
+    "enumType": "The value of {0}.{1} property must be an enumeration type.",
+    "enumMember": "The value of {0}.{1} property must be a {2} item.",
+    "optArray": "The value of {0}.{1} property must be an array of {2} objects, or a single {2} object or null.",
+    "manArray": "The value of {0}.{1} property must be an array of {2} objects or a single {2} object.",
+    "optArrayPrim": "The value of {0}.{1} property must be an array of {2} values, or a single {2} value or null.",
+    "manArrayPrim": "The value of {0}.{1} property must be an array of {2} values or a single {2} value."
+  }
+}

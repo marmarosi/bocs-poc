@@ -1,0 +1,31 @@
+{
+  "ArgumentError": {
+    "default": "A megadott érték érvénytelen.",
+    "defined": "A {0} paramétert meg kell adnia.",
+    "required": "A {0} paraméter kötelező.",
+    "string": "A {0} paraméternek szövegnek kell lennie.",
+    "optString": "A {0} paraméternek szövegnek vagy nullnak kell lennie.",
+    "manString": "A {0} paraméternek nem-üres szövegnek kell lennie.",
+    "optNumber": "A {0} paraméternek számnak vagy nullnak kell lennie.",
+    "manNumber": "A {0} paraméternek számnak kell lennie.",
+    "optInteger": "A {0} paraméternek egész számnak vagy nullnak kell lennie.",
+    "manInteger": "A {0} paraméternek egész számnak kell lennie.",
+    "optBoolean": "A {0} paraméternek logikai értéknek vagy nullnak kell lennie.",
+    "manBoolean": "A {0} paraméternek logikai értéknek kell lennie.",
+    "optObject": "A {0} paraméternek objektumnak vagy nullnak kell lennie.",
+    "manObject": "A {0} paraméternek objektumnak kell lennie.",
+    "optFunction": "A {0} paraméternek függvénynek vagy nullnak kell lennie.",
+    "manFunction": "A {0} paraméternek függvénynek kell lennie.",
+    "optType": "A {0} paraméternek {1} objektumnak vagy nullnak kell lennie.",
+    "manType": "A {0} paraméternek {1} objektumnak kell lennie.",
+    "modelType": "A {0} paraméternek {1} típusnak kell lennie.",
+    "enumType": "A {0} paraméternek felsorolás típusnak kell lennie.",
+    "enumMember": "A {0} paraméternek egy {1} elemnek kell lennie.",
+    "optArray": "A {0} paraméternek {1} objektumtömbnek, egy {1} objektumnak vagy nullnak kell lennie.",
+    "manArray": "A {0} paraméternek {1} objektumtömbnek vagy egy {1} objektumnak kell lennie.",
+    "optArrayPrim": "A {0} paraméternek {1} értékek tömbjének, egy {1} értéknek vagy nullnak kell lennie.",
+    "manArrayPrim": "A {0} paraméternek {1} értékek tömbjének vagy egy {1} értéknek kell lennie.",
+
+    "m_null": "A {0}.{1} eljárás {2} paraméterének nullnak kell lennie."
+  }
+}

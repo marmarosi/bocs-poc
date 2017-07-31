@@ -1,0 +1,22 @@
+{
+  "Rules": {
+    "required": "Property {0} is required.",
+    "dependency": "--- dependency rule ---",
+    "expression": "Property {0} is invalid.",
+    "lengthIs": "The length of property {0} has to be {1} characters.",
+    "lengthIs1": "The length of property {0} has to be 1 character.",
+    "maxLength": "The length of property {0} cannot exceed {1} characters.",
+    "maxLength1": "The length of property {0} cannot exceed 1 character.",
+    "maxValue": "The value of property {0} cannot exceed {1}.",
+    "minLength": "The length of property {0} has to be {1} characters at least.",
+    "minLength1": "The length of property {0} has to be 1 character at least.",
+    "minValue": "The value of property {0} has to be {1} at least.",
+    "isInRole": "The user is not member of {0} role.",
+    "isInAllRoles": "The user is not member of all roles of the following: {0}",
+    "isInAnyRole": "The user is not member of any role of the following: {0}",
+    "isNotInRole": "The user is member of {0} role.",
+    "isNotInAnyRole": "The user is member of some roles of the following: {0}",
+    "invalid": "The model is invalid.",
+    "dataType": "The data type of the value of property {0} must be {1}."
+  }
+}

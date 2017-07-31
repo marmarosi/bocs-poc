@@ -1,0 +1,32 @@
+{
+  "MethodError": {
+    "default": "The value passed to the method is invalid.",
+    "defined": "The {2} argument of {0}.{1} method must be supplied.",
+    "required": "The {2} argument of {0}.{1} method is required.",
+    "string": "The {2} argument of {0}.{1} method must be a string.",
+    "optString": "The {2} argument of {0}.{1} method must be a string or null.",
+    "manString": "The {2} argument of {0}.{1} method must be a non-empty string.",
+    "optNumber": "The {2} argument of {0}.{1} method must be a number value or null.",
+    "manNumber": "The {2} argument of {0}.{1} method must be a number value.",
+    "optInteger": "The {2} argument of {0}.{1} method must be an integer value or null.",
+    "manInteger": "The {2} argument of {0}.{1} method must be an integer value.",
+    "optBoolean": "The {2} argument of {0}.{1} method must be a Boolean value or null.",
+    "manBoolean": "The {2} argument of {0}.{1} method must be a Boolean value.",
+    "optObject": "The {2} argument of {0}.{1} method must be an object or null.",
+    "manObject": "The {2} argument of {0}.{1} method must be an object.",
+    "optFunction": "The {2} argument of {0}.{1} method must be a function or null.",
+    "manFunction": "The {2} argument of {0}.{1} method must be a function.",
+    "optType": "The {2} argument of {0}.{1} method must be a {3} object or null.",
+    "manType": "The {2} argument of {0}.{1} method must be a {3} object.",
+    "modelType": "The {2} argument of {0}.{1} method must be {3} type.",
+    "enumType": "The {2} argument of {0}.{1} method must be an enumeration type.",
+    "enumMember": "The {2} argument of {0}.{1} method must be a {3} item.",
+    "optArray": "The {2} argument of {0}.{1} method must be an array of {3} objects, or a single {3} object or null.",
+    "manArray": "The {2} argument of {0}.{1} method must be an array of {3} objects or a single {3} object.",
+    "optArrayPrim": "The {2} argument of {0}.{1} method must be an array of {3} values, or a single {3} value or null.",
+    "manArrayPrim": "The {2} argument of {0}.{1} method must be an array of {3} values or a single {3} value.",
+
+    "noProperty": "The {2} argument of {0}.{1} method is wrong: The {3} object has no property named {4}.",
+    "notInitRule": "The {2} argument of {0}.{1} method is wrong: The rule is not initialized."
+  }
+}

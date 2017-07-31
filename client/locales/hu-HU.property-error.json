@@ -1,0 +1,29 @@
+{
+  "PropertyError": {
+    "default": "A tulajdonságnak átadott érték érvénytelen.",
+    "defined": "A {0}.{1} tulajdonság értékét meg kell adnia.",
+    "required": "A {0}.{1} tulajdonság értéke kötelező.",
+    "string": "A {0}.{1} tulajdonság értékének szövegnek kell lennie.",
+    "optString": "A {0}.{1} tulajdonság értékének szövegnek vagy nullnak kell lennie.",
+    "manString": "A {0}.{1} tulajdonság értékének nem-üres szövegnek kell lennie.",
+    "optNumber": "A {0}.{1} tulajdonság értékének számnak vagy nullnak kell lennie.",
+    "manNumber": "A {0}.{1} tulajdonság értékének számnak kell lennie.",
+    "optInteger": "A {0}.{1} tulajdonság értékének egész számnak vagy nullnak kell lennie.",
+    "manInteger": "A {0}.{1} tulajdonság értékének egész számnak kell lennie.",
+    "optBoolean": "A {0}.{1} tulajdonság értékének logikai értéknek vagy nullnak kell lennie.",
+    "manBoolean": "A {0}.{1} tulajdonság értékének logikai értéknek kell lennie.",
+    "optObject": "A {0}.{1} tulajdonság értékének objektumnak vagy nullnak kell lennie.",
+    "manObject": "A {0}.{1} tulajdonság értékének objektumnak kell lennie.",
+    "optFunction": "A {0}.{1} tulajdonság értékének függvények vagy nullnak kell lennie.",
+    "manFunction": "A {0}.{1} tulajdonság értékének függvénynek kell lennie.",
+    "optType": "A {0}.{1} tulajdonság értékének {2} objektumnak vagy nullnak kell lennie.",
+    "manType": "A {0}.{1} tulajdonság értékének {2} objektumnak kell lennie.",
+    "modelType": "A {0}.{1} tulajdonság értékének {2} típusnak kell lennie.",
+    "enumType": "A {0}.{1} tulajdonság értékének felsorolás típusnak kell lennie.",
+    "enumMember": "A {0}.{1} tulajdonság értékének egy {2} elemnek kell lennie.",
+    "optArray": "A {0}.{1} tulajdonság értékének {2} objektumtömbnek, egy {2} objektumnak vagy nullnak kell lennie.",
+    "manArray": "A {0}.{1} tulajdonság értékének {2} objektumtömbnek vagy egy {2} objektumnak kell lennie.",
+    "optArrayPrim": "A {0}.{1} tulajdonság értékének {2} értékek tömbjének, egy {2} értéknek vagy nullnak kell lennie.",
+    "manArrayPrim": "A {0}.{1} tulajdonság értékének {2} értékek tömbjének vagy egy {2} értéknek kell lennie."
+  }
+}

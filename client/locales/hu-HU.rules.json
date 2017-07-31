@@ -1,0 +1,22 @@
+{
+  "Rules": {
+    "required": "{0} tulajdonság megadása kötelező.",
+    "dependency": "--- függőségi szabály ---",
+    "expression": "{0} tulajdonság érvénytelen.",
+    "lengthIs": "{0} tulajdonság hosszának {1} karakernek kell lennie.",
+    "lengthIs1": "{0} tulajdonság hosszának 1 karakternek kell lennie.",
+    "maxLength": "{0} tulajdonság hossza nem lehet nagyobb {1} karakternél.",
+    "maxLength1": "{0} tulajdonság hossza nem lehet nagyobb 1 karakternél.",
+    "maxValue": "{0} tulajdonság értéke nem lehet nagyobb mint {1}.",
+    "minLength": "{0} tulajdonság hosszának legalább {1} karakternek kell lennie.",
+    "minLength1": "{0} tulajdonság hosszának legalább 1 karakternek kell lennie.",
+    "minValue": "{0} tulajdonság legkisebb értéke {1} lehet.",
+    "isInRole": "A felhasználó nem tagja {0} feladatkörnek.",
+    "isInAllRoles": "A felhasználó nem tagja az összes következő feladatkörnek: {0}",
+    "isInAnyRole": "A felhasználó nem tagja legalább egy feladatkörnek a következőkből: {0}",
+    "isNotInRole": "A felhasználó tagja {0} feladatkörnek.",
+    "isNotInAnyRole": "A felhasználó tagja legalább egy feladatkörnek a következőkből: {0}",
+    "invalid": "A modell érvénytelen.",
+    "dataType": "{0} tulajdonság értékenek adattípusa nem {1}."
+  }
+}
