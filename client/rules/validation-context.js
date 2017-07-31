@@ -1,8 +1,12 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import DataStore from '../common/data-store.js';
 import BrokenRuleList from './broken-rule-list.js';
+
+//endregion
 
 /**
  * Provides the context for custom validation rules.

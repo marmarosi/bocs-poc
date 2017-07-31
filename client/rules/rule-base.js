@@ -1,9 +1,12 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
-import ArgumentError from '../system/argument-error.js';
 import ConstructorError from '../system/constructor-error.js';
 import NotImplementedError from '../system/not-implemented-error.js';
+
+//endregion
 
 /**
  * Serves as the base class for rules.

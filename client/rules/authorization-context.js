@@ -1,9 +1,13 @@
 'use strict';
 
+//region Imports
+
 import config from '../system/configuration-reader.js';
 import Argument from '../system/argument-check.js';
 import BrokenRuleList from './broken-rule-list.js';
 import AuthorizationAction from './authorization-action.js';
+
+//endregion
 
 /**
  * Provides the context for custom authorization rules.

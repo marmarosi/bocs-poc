@@ -1,8 +1,12 @@
 'use strict';
 
+//region Imports
+
 import DataType from './data-type.js';
 import Enumeration from '../system/enumeration.js';
 import Argument from '../system/argument-check.js';
+
+//endregion
 
 /**
  * Provide methods to work with enumeration data.

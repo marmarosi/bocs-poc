@@ -1,5 +1,7 @@
 'use strict';
 
+//region Imports
+
 import DataType from './data-type.js';
 import Boolean from './boolean.js';
 import Text from './text.js';
@@ -8,6 +10,8 @@ import Integer from './integer.js';
 import Decimal from './decimal.js';
 import Enum from './enum.js';
 import DateTime from './date-time.js';
+
+//endregion
 
 /**
  * Contains data type components and definitions.

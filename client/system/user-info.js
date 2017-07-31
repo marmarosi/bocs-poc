@@ -1,7 +1,11 @@
 'use strict';
 
+//region Imports
+
 import Argument from './argument-check.js';
 import NotImplementedError from './not-implemented-error.js';
+
+//endregion
 
 const _userCode = new WeakMap();
 

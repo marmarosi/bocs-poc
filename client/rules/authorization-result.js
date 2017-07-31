@@ -1,7 +1,11 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import ResultBase from './result-base.js';
+
+//endregion
 
 /**
  * Represents the failed result of executing an authorization rule.

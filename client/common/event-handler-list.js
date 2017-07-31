@@ -1,9 +1,13 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import DataPortalEvent from './data-portal-event.js';
 import ModelBase from './model-base.js';
 import CollectionBase from './collection-base.js';
+
+//endregion
 
 /**
  * Provides methods to manage the event handlers of a business object instance.

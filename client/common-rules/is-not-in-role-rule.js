@@ -1,9 +1,13 @@
 'use strict';
 
+//region Imports
+
 const t = require( '../locales/i18n-bo.js' )( 'Rules' );
 import Argument from '../system/argument-check.js';
 import AuthorizationRule from '../rules/authorization-rule.js';
 import UserInfo from '../system/user-info.js';
+
+//endregion
 
 /**
  * The rule ensures that the user is not member of a role.

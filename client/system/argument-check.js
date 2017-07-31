@@ -28,11 +28,16 @@
  *
  * value = check( value ).for( VALUE_NAME ).asEnumMember( Action, Action.Save, msg ); // two additional attributes
  */
+"use strict";
+
+//region Imports
 
 import ArgumentError from './argument-error.js';
 import ConstructorError from './constructor-error.js';
 import MethodError from './method-error.js';
 import PropertyError from './property-error.js';
+
+//endregion
 
 //region Argument group
 

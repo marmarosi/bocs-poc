@@ -1,9 +1,13 @@
 'use strict';
 
+//region Imports
+
 const t = require( '../locales/i18n-bo.js' )( 'Rules' );
 import Argument from '../system/argument-check.js';
 import ValidationRule from '../rules/validation-rule.js';
 import NullResultOption from './null-result-option.js';
+
+//endregion
 
 /**
  * The rule ensures that the property value matches a regular expression.

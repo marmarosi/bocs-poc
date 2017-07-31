@@ -1,8 +1,12 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import BrokenRule from './broken-rule.js';
 import RuleSeverity from './rule-severity.js';
+
+//endregion
 
 /**
  * Serves as the base class for the failed result of executing a rule.

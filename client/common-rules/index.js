@@ -18,7 +18,7 @@ import ExpressionRule from './expression-rule.js';
 import DependencyRule from './dependency-rule.js';
 import InformationRule from './information-rule.js';
 
-const NullResultOption = require( './null-result-option.js' );
+import NullResultOption from './null-result-option.js';
 
 //endregion
 

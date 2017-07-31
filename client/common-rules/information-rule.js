@@ -1,8 +1,12 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import ValidationRule from '../rules/validation-rule.js';
 import RuleSeverity from '../rules/rule-severity.js';
+
+//endregion
 
 /**
  * The rule ensures that an information is given for the property.

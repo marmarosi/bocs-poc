@@ -1,8 +1,12 @@
 'use strict';
 
+//region Imports
+
 const t = require( '../locales/i18n-bo.js' )( 'Rules' );
 import Argument from '../system/argument-check.js';
 import BrokenRulesOutput from './broken-rules-output.js';
+
+//endregion
 
 /**
  * Represents the HTTP Response format of broken rules. The data property

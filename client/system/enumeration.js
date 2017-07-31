@@ -1,7 +1,11 @@
 'use strict';
 
+//region Imports
+
 import Argument from './argument-check.js';
 import EnumerationError from './enumeration-error.js';
+
+//endregion
 
 /**
  * Serves as the base class for enumerations.

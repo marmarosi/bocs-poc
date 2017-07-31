@@ -1,10 +1,14 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import DataType from '../data-types/data-type.js';
 import PropertyFlag from './property-flag.js';
 import ModelBase from './model-base.js';
 import CollectionBase from './collection-base.js';
+
+//endregion
 
 /**
  * Defines a property of a business object model.

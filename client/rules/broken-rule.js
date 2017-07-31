@@ -1,7 +1,11 @@
 'use strict';
 
+//region Imports
+
 import Argument from '../system/argument-check.js';
 import RuleSeverity from './rule-severity.js';
+
+//endregion
 
 /**
  * Represents the public turnout of a failed rule.
