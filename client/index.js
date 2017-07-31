@@ -4,18 +4,18 @@
 
 import ModelComposer from './model-composer.js';
 
-// import EditableRootObject from './editable-root-object.js';
-// import EditableChildObject from './editable-child-object.js';
-// import EditableRootCollection from './editable-root-collection.js';
-// import EditableChildCollection from './editable-child-collection.js';
-// import ReadOnlyRootObject from './read-only-root-object.js';
+import EditableRootObject from './editable-root-object.js';
+import EditableChildObject from './editable-child-object.js';
+import EditableRootCollection from './editable-root-collection.js';
+import EditableChildCollection from './editable-child-collection.js';
+import ReadOnlyRootObject from './read-only-root-object.js';
 import ReadOnlyChildObject from './read-only-child-object.js';
 import ReadOnlyRootCollection from './read-only-root-collection.js';
 import ReadOnlyChildCollection from './read-only-child-collection.js';
-// const CommandObject from './command-object.js';
+import CommandObject from './command-object.js';
 
 import commonRules from './common-rules/index.js';
-// import dataAccess from './data-access/index.js';
+import dataAccess from './data-access/index.js';
 import dataTypes from './data-types/index.js';
 import rules from './rules/index.js';
 import common from './common/index.js';
@@ -52,21 +52,21 @@ import i18n from './locales/i18n.js';
 const index = {
   ModelComposer: ModelComposer,
 
-  //ModelBase: ModelBase,
-  //CollectionBase: CollectionBase,
+  ModelBase: ModelBase,
+  CollectionBase: CollectionBase,
 
-  // EditableRootObject: EditableRootObject,
-  // EditableChildObject: EditableChildObject,
-  // EditableRootCollection: EditableRootCollection,
-  // EditableChildCollection: EditableChildCollection,
-  // ReadOnlyRootObject: ReadOnlyRootObject,
+  EditableRootObject: EditableRootObject,
+  EditableChildObject: EditableChildObject,
+  EditableRootCollection: EditableRootCollection,
+  EditableChildCollection: EditableChildCollection,
+  ReadOnlyRootObject: ReadOnlyRootObject,
   ReadOnlyChildObject: ReadOnlyChildObject,
   ReadOnlyRootCollection: ReadOnlyRootCollection,
   ReadOnlyChildCollection: ReadOnlyChildCollection,
-  // CommandObject: CommandObject,
+  CommandObject: CommandObject,
 
   commonRules: commonRules,
-  // dataAccess: dataAccess,
+  dataAccess: dataAccess,
   dataTypes: dataTypes,
   rules: rules,
   common: common,
