@@ -1,6 +1,7 @@
 'use strict';
 
-const t = require( '../locales/i18n-bo.js' )( 'PropertyError' );
+import i18n from '../locales/i18n-bo.js';
+const t = i18n( 'PropertyError' );
 
 /**
  * Represents a property argument error.

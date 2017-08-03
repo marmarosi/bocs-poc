@@ -1,6 +1,7 @@
 'use strict';
 
-const t = require( '../locales/i18n-bo.js' )( 'MethodError' );
+import i18n from '../locales/i18n-bo.js';
+const t = i18n( 'MethodError' );
 
 /**
  * Represents a method argument error.

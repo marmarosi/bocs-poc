@@ -1,7 +1,7 @@
 /*
  * USAGE
  *
- * const Argument = require( './argument-check.js' );
+ * import Argument from 'bo.system';
  *
  * const check;
  * let value = ...;

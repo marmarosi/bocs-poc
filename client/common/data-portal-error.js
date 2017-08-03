@@ -4,7 +4,9 @@
 
 import Argument from '../system/argument-check.js';
 import DataPortalAction from './data-portal-action.js';
-const t = require( '../locales/i18n-bo.js' )( 'DataPortalError' );
+import i18n from '../locales/i18n-bo.js';
+
+const t = i18n( 'DataPortalError' );
 
 //endregion
 

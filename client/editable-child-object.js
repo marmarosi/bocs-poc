@@ -31,11 +31,12 @@ import DataPortalEvent from './common/data-portal-event.js';
 import DataPortalEventArgs from './common/data-portal-event-args.js';
 import DataPortalError from './common/data-portal-error.js';
 
+import MODEL_STATE from './common/model-state.js';
+
 //endregion
 
 //region Private variables
 
-const MODEL_STATE = require( './common/model-state.js' );
 const MODEL_DESC = 'Editable child object';
 const M_FETCH = DataPortalAction.getName( DataPortalAction.fetch );
 

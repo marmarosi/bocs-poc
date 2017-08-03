@@ -2,11 +2,13 @@
 
 //region Imports
 
-const t = require( '../locales/i18n-bo.js' )( 'Rules' );
+import i18n from '../locales/i18n-bo.js';
 import Argument from '../system/argument-check.js';
 import ValidationRule from '../rules/validation-rule.js';
 import RuleSeverity from '../rules/rule-severity.js';
 import PropertyInfo from '../common/property-info.js';
+
+const t = i18n( 'Rules' );
 
 //endregion
 

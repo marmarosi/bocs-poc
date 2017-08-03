@@ -4,6 +4,7 @@
 // const path = require( 'path' );
 // const util = require( 'util' );
 // const Utility = require( '../system/utility.js' );
+import boLocales from '../resources/bo.locales.json';
 
 const NEUTRAL = 'default';
 const NS_ROOT = '$default';
@@ -177,7 +178,6 @@ class i18n {
     catch( err ) {
       locales = { };
     }
-    import boLocales from '../resources/bo.locales.json';
     locales[ NS_BO ] = boLocales;
     delete boLocales;
 

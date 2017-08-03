@@ -8,11 +8,11 @@ import CollectionBase from './common/collection-base.js';
 import ModelType from './common/model-type.js';
 import ModelError from './common/model-error.js';
 
+import MODEL_STATE from './common/model-state.js';
+
 //endregion
 
 //region Private variables
-
-const MODEL_STATE = require('./common/model-state.js');
 
 const _itemType = new WeakMap();
 const _parent = new WeakMap();

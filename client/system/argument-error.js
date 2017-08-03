@@ -1,6 +1,7 @@
 'use strict';
 
-const t = require( '../locales/i18n-bo.js' )( 'ArgumentError' );
+import i18n from '../locales/i18n-bo.js';
+const t = i18n( 'ArgumentError' );
 
 /**
  * Represents an argument error.

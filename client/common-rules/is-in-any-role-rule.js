@@ -2,10 +2,12 @@
 
 //region Imports
 
-const t = require( '../locales/i18n-bo.js' )( 'Rules' );
+import i18n from '../locales/i18n-bo.js';
 import Argument from '../system/argument-check.js';
 import AuthorizationRule from '../rules/authorization-rule.js';
 import UserInfo from '../system/user-info.js';
+
+const t = i18n( 'Rules' );
 
 //endregion
 
