@@ -1,13 +1,13 @@
 'use strict';
 
-const events = require('events');
+import EventEmitter from '../system/event-emitter.js';
 
 /**
  * Serves as the base class for models.
  *
  * @extends EventEmitter
  */
-class ModelBase extends events.EventEmitter {
+class ModelBase extends EventEmitter {
 
   /**
    * Creates a base model instance.
