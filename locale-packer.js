@@ -67,8 +67,8 @@ function writeLocales( pathOfLocales ) {
 
 // Pack business-objects locales.
 const bolDirectories = {
-  'client/locales': 'client/resources/bo.locales.json',
-  'locales': 'public/resources/app.locales.json'
+  'client/locales': 'client/bo.locales.json',
+  'locales': 'config/app.locales.json'
 };
 for (const bolDirectory in bolDirectories) {
   if (fs.existsSync( path.join( process.cwd(), bolDirectory ) )) {

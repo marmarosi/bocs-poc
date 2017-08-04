@@ -2,7 +2,7 @@
 
 //region Imports
 
-import i18n from '../locales/i18n-bo.js';
+import i18n from '../system/i18n-bo.js';
 import Argument from '../system/argument-check.js';
 import ValidationRule from '../rules/validation-rule.js';
 import NullResultOption from './null-result-option.js';

@@ -1,11 +1,9 @@
 # WebStorm
-.idea
+/.idea
 
 # webpack outputs
-client/resources
-public/resources
-public/scripts/bundle.js
-public/scripts/bo-client.js
+/public/scripts/bundle.js
+/public/scripts/bo-client.js
 
 # Logs
 logs
@@ -65,4 +63,3 @@ typings/
 
 # dotenv environment variables file
 .env
-

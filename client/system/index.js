@@ -9,7 +9,7 @@ import UserInfo from './user-info.js';
 import ArgumentError from './argument-error.js';
 import ComposerError from './composer-error.js';
 import ConfigurationError from  './configuration-error.js';
-import ConfigurationReader from './configuration.js';
+import Configuration from './configuration.js';
 import ConstructorError from './constructor-error.js';
 import EnumerationError from './enumeration-error.js';
 import MethodError from './method-error.js';
@@ -36,7 +36,7 @@ import PropertyError from './property-error.js';
  *      constructor to create a new error related to model composer.
  * @property {function} ConfigurationError - {@link bo.system.ConfigurationError Configuration error}
  *      constructor to create a new error related to configuration.
- * @property {function} ConfigurationReader - {@link bo.system.ConfigurationReader Configuration reader}
+ * @property {function} Configuration - {@link bo.system.Configuration Configuration}
  *      object provides methods and properties to access the business objects' configuration.
  * @property {function} ConstructorError - {@link bo.system.ConstructorError Constructor error}
  *      constructor to create a new error related to a constructor argument.
@@ -57,7 +57,7 @@ const index = {
   ArgumentError: ArgumentError,
   ComposerError: ComposerError,
   ConfigurationError: ConfigurationError,
-  ConfigurationReader: ConfigurationReader,
+  Configuration: Configuration,
   ConstructorError: ConstructorError,
   EnumerationError: EnumerationError,
   MethodError: MethodError,

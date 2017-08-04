@@ -1,6 +1,6 @@
 'use strict';
 
-import i18n from '../locales/i18n-bo.js';
+import i18n from './i18n-bo.js';
 const t = i18n( 'ConstructorError' );
 
 /**

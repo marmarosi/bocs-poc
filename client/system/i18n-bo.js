@@ -1,6 +1,6 @@
 'use strict';
 
-import i18n from './i18n.js';
+import i18n from '../i18n.js';
 
 /**
  * Get a message localizer function initialized for the messages of

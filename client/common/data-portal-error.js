@@ -4,7 +4,7 @@
 
 import Argument from '../system/argument-check.js';
 import DataPortalAction from './data-portal-action.js';
-import i18n from '../locales/i18n-bo.js';
+import i18n from '../system/i18n-bo.js';
 
 const t = i18n( 'DataPortalError' );
 

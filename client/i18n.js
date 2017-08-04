@@ -1,16 +1,11 @@
 'use strict';
 
-// const fs = require( 'fs' );
-// const path = require( 'path' );
-// const util = require( 'util' );
-// const Utility = require( '../system/utility.js' );
-import boLocales from '../resources/bo.locales.json';
+import boLocales from './bo.locales.json';
 
 const NEUTRAL = 'default';
 const NS_ROOT = '$default';
 const NS_BO = '$bo';
 
-//const locales = {};
 let locales = {};
 let getCurrentLocale = function () { return NEUTRAL; };
 let isInitialized = false;
@@ -155,14 +150,14 @@ class i18n {
    * Reads the localized messages of the project.
    *
    * @function bo.i18n.initialize
-   * @param {string} pathOfLocales - The relative path of the directory that contains the project messages.
+   * @param {object} appLocales - The combined object of the application locales.
    * @param {external.getLocale} [getLocale] - A function that returns the current locale.
    *
    * @throws {@link bo.I18nError i18n error}: The path of locales must be a non-empty string.
    * @throws {@link bo.I18nError i18n error}: The path of locales is not a valid directory path.
    * @throws {@link bo.I18nError i18n error}: The locale getter must be a function.
    */
-  static initialize( pathOfLocales, getLocale ) {
+  static initialize( appLocales, getLocale ) {
 
     if (isInitialized)
       throw new I18nError( 'ready' );
@@ -170,16 +165,9 @@ class i18n {
     // readProjectLocales(
     //   Utility.getDirectory( pathOfLocales, 'pathOfLocales', I18nError )
     // );
-    try {
-      import appLocales from '/scripts/app.locales.json';
-      locales = appLocales;
-      delete appLocales;
-    }
-    catch( err ) {
-      locales = { };
-    }
+    locales = appLocales || { };
     locales[ NS_BO ] = boLocales;
-    delete boLocales;
+    //delete boLocales;
 
     if (getLocale) {
       if (typeof getLocale === 'function')

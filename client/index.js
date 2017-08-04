@@ -21,8 +21,8 @@ import rules from './rules/index.js';
 import common from './common/index.js';
 import system from './system/index.js';
 
-import configuration from './system/configuration.js';
-import i18n from './locales/i18n.js';
+//import configuration from './system/configuration.js';
+import i18n from './i18n.js';
 
 //endregion
 
@@ -52,8 +52,8 @@ import i18n from './locales/i18n.js';
 const index = {
   ModelComposer: ModelComposer,
 
-  ModelBase: ModelBase,
-  CollectionBase: CollectionBase,
+  // ModelBase: ModelBase,
+  // CollectionBase: CollectionBase,
 
   EditableRootObject: EditableRootObject,
   EditableChildObject: EditableChildObject,
@@ -72,7 +72,7 @@ const index = {
   common: common,
   system: system,
 
-  configuration: configuration,
+  // configuration: configuration,
   i18n: i18n,
 
   /**
@@ -80,10 +80,11 @@ const index = {
    *
    * @function bo.initialize
    * @param {object} config - The initializer object of the configuration.
+   * @param {object} appLocales - The combined object of the application locales.
    */
-  initialize: function ( config ) {
-    this.configuration.initialize( config );
-    this.i18n.initialize( this.configuration.pathOfLocales, this.configuration.getLocale );
+  initialize: function ( config, appLocales ) {
+    this.system.Configuration.initialize( config );
+    this.i18n.initialize( appLocales, this.system.Configuration.getLocale );
   }
 };
 
