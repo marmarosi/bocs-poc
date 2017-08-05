@@ -1,6 +1,6 @@
 {
   "name": "bocs-poc",
-  "version": "1.0.0",
+  "version": "1.0.0-dev",
   "description": "Proof of conception for client-server solution of business objects.",
   "main": "server.js",
   "scripts": {
@@ -14,6 +14,7 @@
   "author": "Marmarosi Jozsef",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "business-objects": "^2.0.1",
     "express": "^4.15.3",
     "serve-static": "^1.12.3"

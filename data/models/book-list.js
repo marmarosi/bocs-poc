@@ -1,10 +1,10 @@
 'use strict';
 
 const bo = require( 'business-objects' );
+const BookListItem = require( './book-list-item.js' );
+
 const Model = bo.ModelComposer;
 const FactoryBase = require( '../factory-base.js' );
-
-const BookListItem = require( './book-list-item.js' );
 
 const BookList = new Model( 'BookList' )
   .readOnlyRootCollection( 'memdb', __filename )

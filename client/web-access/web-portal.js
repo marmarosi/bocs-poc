@@ -6,16 +6,25 @@ class WebPortal {
 
     const url = '/api/' + modelUri + '/' + (altName || dpMethod);
 
+    let body = { $isEmpty: true };
+    if (data !== undefined && data !== null) {
+      if (typeof data === 'object')
+        body = data;
+      else
+        body = { $filter: data };
+    }
+    body = JSON.stringify( body );
+
     const headers = new Headers({
       "Content-Type": "application/json",
-      "Content-Length": JSON.stringify( data ).length.toString()
+      "Content-Length": body.length
     });
 
     const init = {
       method: 'POST',
       headers: headers,
       credentials: 'include',
-      body: data
+      body: body
     };
 
     return fetch( url, init )

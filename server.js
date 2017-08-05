@@ -2,6 +2,7 @@
 
 const express = require( 'express' );
 const serveStatic = require( 'serve-static') ;
+const bodyParser = require('body-parser');
 const bo = require( 'business-objects' );
 const te = require( './template-engine.js' );
 const BoProxy = require( './bo-proxy.js' );
@@ -25,16 +26,20 @@ const boProxy = new BoProxy( '/api/', '/data/models' );
 app.get( '/', function ( req, res ) {
   res.render( 'home', { title: 'Home', message: 'Hello world!' } );
 } );
-
 app.get( '/book-list', function ( req, res ) {
   res.render( 'book-list', {} );
 } );
-
 app.get( '/admin-book-list', function ( req, res ) {
   res.render( 'admin-book-list', {} );
 } );
+app.get( '/book-view/:id', function ( req, res ) {
+  res.render( 'book-view', {} );
+} );
 
-app.post( '/api/*', function ( req, res ) {
+// create application/json parser
+const jsonParser = bodyParser.json();
+
+app.post( '/api/*', jsonParser, function ( req, res ) {
   boProxy.process( req, res )
     .then( result => {
       res.send( result );

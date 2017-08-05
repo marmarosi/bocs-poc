@@ -61,27 +61,39 @@ class BoProxy {
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
+      let methodName;
       if (model[ method ])
-        model[ method ]()
+        methodName = method;
+      else {
+        const mapped = model.$methodMap[ method ];
+        if (mapped)
+          methodName = mapped;
+      }
+      if (!methodName)
+        reject( new Error( 'Invalid method: ' + method ) );
+
+      const body = req.body;
+      const filter = req.body.$isEmpty ? null : (
+        req.body.hasOwnProperty( '$filter' ) ? req.body.$filter :
+        req.body
+      );
+
+      if (filter)
+        model[ methodName ]( filter )
           .then( result => {
             resolve( result.toCto() );
           } )
           .catch( reason => {
             reject( reason );
           } );
-      else {
-        const mapped = model.$methodMap[ method ];
-        if (mapped)
-          model[ mapped ]()
-            .then( result => {
-              resolve( result.toCto() );
-            } )
-            .catch( reason => {
-              reject( reason );
-            } );
-        else
-          reject( new Error( 'Invalid method: ' + method ) );
-      }
+      else
+        model[ methodName ]()
+          .then( result => {
+            resolve( result.toCto() );
+          } )
+          .catch( reason => {
+            reject( reason );
+          } );
     } );
   }
 }

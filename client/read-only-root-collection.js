@@ -192,7 +192,7 @@ function data_fetch( filter, method ) {
       /**
        * The event arises before the collection instance will be retrieved from the repository.
        * @event ReadOnlyRootCollection#preFetch
-       * @param {bo.common.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
        * @param {ReadOnlyRootCollection} oldObject - The collection instance before the data portal action.
        */
       raiseEvent.call( self, WebPortalEvent.preFetch, method );
@@ -224,7 +224,7 @@ function data_fetch( filter, method ) {
           /**
            * The event arises after the collection instance has been retrieved from the repository.
            * @event ReadOnlyRootCollection#postFetch
-           * @param {bo.common.WebPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {ReadOnlyRootCollection} newObject - The collection instance after the data portal action.
            */
           raiseEvent.call( self, WebPortalEvent.postFetch, method );
@@ -239,79 +239,6 @@ function data_fetch( filter, method ) {
           // Pass the error.
           reject( dpe );
         } );
-
-      // let connection = null;
-      // const extensions = _extensions.get( self );
-      // // Open connection.
-      // config.connectionManager.openConnection( extensions.dataSource )
-      //   .then( dsc => {
-      //     connection = dsc;
-      //     // Launch start event.
-      //     /**
-      //      * The event arises before the collection instance will be retrieved from the repository.
-      //      * @event ReadOnlyRootCollection#preFetch
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {ReadOnlyRootCollection} oldObject - The collection instance before the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.preFetch, method );
-      //     // Execute fetch.
-      //     const dao = _dao.get( self );
-      //     // Root element fetches all data from repository.
-      //     return extensions.dataFetch ?
-      //       // *** Custom fetch.
-      //       extensions.$runMethod( 'fetch', self, getDataContext.call( self, connection ), filter, method ) :
-      //       // *** Standard fetch.
-      //       dao.$runMethod( method, connection, filter );
-      //   } )
-      //   .then( data => {
-      //     // Get the count of all available items.
-      //     let totalItems = _totalItems.get( self );
-      //     if (data.totalItems &&
-      //       (typeof data.totalItems === 'number' || data.totalItems instanceof Number) &&
-      //       data.totalItems % 1 === 0)
-      //       totalItems = data.totalItems;
-      //     else
-      //       totalItems = null;
-      //     _totalItems.set( self, totalItems );
-      //     // Load children.
-      //     return fetchChildren.call( self, data )
-      //       .then( children => {
-      //         let items = _items.get( self );
-      //         children.forEach( child => {
-      //           items.push( child );
-      //         } );
-      //         _items.set( self, items );
-      //         return null;
-      //       } );
-      //   } )
-      //   .then( none => {
-      //     // Launch finish event.
-      //     /**
-      //      * The event arises after the collection instance has been retrieved from the repository.
-      //      * @event ReadOnlyRootCollection#postFetch
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {ReadOnlyRootCollection} newObject - The collection instance after the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.postFetch, method );
-      //     // Close connection.
-      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
-      //       .then( none => {
-      //         // Return the fetched read-only root collection.
-      //         fulfill( self );
-      //       } );
-      //   } )
-      //   .catch( reason => {
-      //     // Wrap the intercepted error.
-      //     const dpe = wrapError.call( self, reason );
-      //     // Launch finish event.
-      //     raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
-      //     // Close connection.
-      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
-      //       .then( none => {
-      //         // Pass the error.
-      //         reject( dpe );
-      //       } );
-      //   } );
     }
   } );
 }
@@ -339,21 +266,14 @@ class ReadOnlyRootCollection extends CollectionBase {
    *    _The name of the model type available as:
    *    __&lt;instance&gt;.constructor.modelType__, returns 'ReadOnlyRootCollection'._
    *
+   * @param {string} uri - The URI of the model.
    * @param {bo.common.EventHandlerList} [eventHandlers] - The event handlers of the instance.
    *
    * @throws {@link bo.system.ArgumentError Argument error}:
    *    The event handlers must be an EventHandlerList object or null.
    */
-  constructor( name, itemType, rules, extensions, eventHandlers ) {
+  constructor( name, uri, itemType, rules, extensions, eventHandlers ) {
     super();
-
-    let modelName = name;
-    let modelUri = name;
-    const colon = name.indexOf( ':' );
-    if (colon > 0) {
-      modelName = name.substr( 0, colon );
-      modelUri = name.substr( colon + 1 );
-    }
 
     /**
      * The name of the model.
@@ -361,8 +281,14 @@ class ReadOnlyRootCollection extends CollectionBase {
      * @member {string} ReadOnlyRootCollection#$modelName
      * @readonly
      */
-    this.$modelName = modelName;
-    this.$modelUri = modelUri;
+    this.$modelName = name;
+    /**
+     * The URI of the model.
+     *
+     * @member {string} ReadOnlyRootCollection#$modelUri
+     * @readonly
+     */
+    this.$modelUri = uri;
 
     // Initialize the instance.
     initialize.call( this, name, itemType, rules, extensions, eventHandlers );
@@ -442,7 +368,7 @@ class ReadOnlyRootCollection extends CollectionBase {
    *      The callback must be a function.
    * @throws {@link bo.rules.AuthorizationError Authorization error}:
    *      The user has no permission to execute the action.
-   * @throws {@link bo.common.WebPortalError Data portal error}:
+   * @throws {@link bo.webAccess.WebPortalError Data portal error}:
    *      Fetching the business object has failed.
    */
   fetch( filter, method ) {
@@ -668,7 +594,11 @@ class ReadOnlyRootCollectionFactory {
         ModelType.ReadOnlyRootCollection, ModelType.ReadOnlyChildObject );
 
     // Create model definition.
-    const Model = ReadOnlyRootCollection.bind( undefined, name, itemType, rules, extensions );
+    const colon = name.indexOf( ':' );
+    const Model = ReadOnlyRootCollection.bind( undefined,
+      colon > 0 ? name.substr( 0, colon ) : name,
+      colon > 0 ? name.substr( colon + 1 ) : name,
+      itemType, rules, extensions );
 
     //region Factory methods
 
@@ -698,7 +628,7 @@ class ReadOnlyRootCollectionFactory {
      *      The callback must be a function.
      * @throws {@link bo.rules.AuthorizationError Authorization error}:
      *      The user has no permission to execute the action.
-     * @throws {@link bo.common.WebPortalError Data portal error}:
+     * @throws {@link bo.webAccess.WebPortalError Data portal error}:
      *      Fetching the business object collection has failed.
      */
     Model.fetch = function ( filter, method, eventHandlers ) {

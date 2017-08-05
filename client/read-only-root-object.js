@@ -25,18 +25,18 @@ import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 
-import DataPortalAction from './common/data-portal-action.js';
-import DataPortalContext from './common/data-portal-context.js';
-import DataPortalEvent from './common/data-portal-event.js';
-import DataPortalEventArgs from './common/data-portal-event-args.js';
-import DataPortalError from './common/data-portal-error.js';
+import WebPortal from './web-access/web-portal.js';
+import WebPortalAction from './web-access/web-portal-action.js';
+import WebPortalEvent from './web-access/web-portal-event.js';
+import WebPortalEventArgs from './web-access/web-portal-event-args.js';
+import WebPortalError from './web-access/web-portal-error.js';
 
 //endregion
 
 //region Private variables
 
 const MODEL_DESC = 'Read-only root object';
-const M_FETCH = DataPortalAction.getName( DataPortalAction.fetch );
+const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
 
 const _properties = new WeakMap();
 const _rules = new WeakMap();
@@ -278,29 +278,29 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
 
 //region Helper
 
-function getDataContext( connection ) {
-  let dataContext = _dataContext.get( this );
-  if (!dataContext) {
-    const dao = _dao.get( this );
-    const properties = _properties.get( this );
-    dataContext = new DataPortalContext(
-      dao, properties.toArray(), getPropertyValue.bind( this ), setPropertyValue.bind( this )
-    );
-  }
-  dataContext = dataContext.setState( connection, false );
-  _dataContext.set( this, dataContext );
-  return dataContext;
-}
+// function getDataContext( connection ) {
+//   let dataContext = _dataContext.get( this );
+//   if (!dataContext) {
+//     const dao = _dao.get( this );
+//     const properties = _properties.get( this );
+//     dataContext = new DataPortalContext(
+//       dao, properties.toArray(), getPropertyValue.bind( this ), setPropertyValue.bind( this )
+//     );
+//   }
+//   dataContext = dataContext.setState( connection, false );
+//   _dataContext.set( this, dataContext );
+//   return dataContext;
+// }
 
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    DataPortalEvent.getName( event ),
-    new DataPortalEventArgs( event, this.$modelName, null, methodName, error )
+    WebPortalEvent.getName( event ),
+    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( error ) {
-  return new DataPortalError( MODEL_DESC, this.$modelName, DataPortalAction.fetch, error );
+  return new WebPortalError( MODEL_DESC, this.$modelName, WebPortalAction.fetch, error );
 }
 
 //endregion
@@ -315,32 +315,19 @@ function data_fetch( filter, method ) {
         canDo.call( self, AuthorizationAction.fetchObject ) :
         canExecute.call( self, method )) {
 
-      let connection = null;
-      // Open connection.
-      const extensions = _extensions.get( self );
-      config.connectionManager.openConnection( extensions.dataSource )
-        .then( dsc => {
-          connection = dsc;
-          // Launch start event.
-          /**
-           * The event arises before the business object instance will be retrieved from the repository.
-           * @event ReadOnlyRootObject#preFetch
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-           * @param {ReadOnlyRootObject} oldObject - The instance of the model before the data portal action.
-           */
-          raiseEvent.call( self, DataPortalEvent.preFetch, method );
-          // Execute fetch.
-          const dao = _dao.get( self );
-          // Root element fetches all data from repository.
-          return extensions.dataFetch ?
-            // *** Custom fetch.
-            extensions.$runMethod( 'fetch', self, getDataContext.call( this, connection ), filter, method ) :
-            // *** Standard fetch.
-            dao.$runMethod( method, connection, filter )
-              .then( dto => {
-                fromDto.call( self, dto );
-                return dto;
-              } );
+      // Launch start event.
+      /**
+       * The event arises before the business object instance will be retrieved from the repository.
+       * @event ReadOnlyRootObject#preFetch
+       * @param {bo.common.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {ReadOnlyRootObject} oldObject - The instance of the model before the data portal action.
+       */
+      raiseEvent.call( self, WebPortalEvent.preFetch, method );
+      // Execute fetch.
+      WebPortal.call( self.$modelUri, 'fetch', method, filter )
+        .then( dto => {
+          fromDto.call( self, dto );
+          return dto;
         } )
         .then( dto => {
           // Fetch children as well.
@@ -351,29 +338,81 @@ function data_fetch( filter, method ) {
           /**
            * The event arises after the business object instance has been retrieved from the repository.
            * @event ReadOnlyRootObject#postFetch
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.common.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {ReadOnlyRootObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postFetch, method );
-          // Close connection.
-          config.connectionManager.closeConnection( extensions.dataSource, connection )
-            .then( none => {
-              // Return the fetched read-only root object.
-              fulfill( self );
-            } );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method );
+          // Return the fetched read-only root object.
+          fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
-          // Close connection.
-          config.connectionManager.closeConnection( extensions.dataSource, connection )
-            .then( none => {
-              // Pass the error.
-              reject( dpe );
-            } );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
+          // Pass the error.
+          reject( dpe );
         } );
+
+      // let connection = null;
+      // // Open connection.
+      // const extensions = _extensions.get( self );
+      // config.connectionManager.openConnection( extensions.dataSource )
+      //   .then( dsc => {
+      //     connection = dsc;
+      //     // Launch start event.
+      //     /**
+      //      * The event arises before the business object instance will be retrieved from the repository.
+      //      * @event ReadOnlyRootObject#preFetch
+      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+      //      * @param {ReadOnlyRootObject} oldObject - The instance of the model before the data portal action.
+      //      */
+      //     raiseEvent.call( self, DataPortalEvent.preFetch, method );
+      //     // Execute fetch.
+      //     const dao = _dao.get( self );
+      //     // Root element fetches all data from repository.
+      //     return extensions.dataFetch ?
+      //       // *** Custom fetch.
+      //       extensions.$runMethod( 'fetch', self, getDataContext.call( this, connection ), filter, method ) :
+      //       // *** Standard fetch.
+      //       dao.$runMethod( method, connection, filter )
+      //         .then( dto => {
+      //           fromDto.call( self, dto );
+      //           return dto;
+      //         } );
+      //   } )
+      //   .then( dto => {
+      //     // Fetch children as well.
+      //     return fetchChildren.call( self, dto );
+      //   } )
+      //   .then( none => {
+      //     // Launch finish event.
+      //     /**
+      //      * The event arises after the business object instance has been retrieved from the repository.
+      //      * @event ReadOnlyRootObject#postFetch
+      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+      //      * @param {ReadOnlyRootObject} newObject - The instance of the model after the data portal action.
+      //      */
+      //     raiseEvent.call( self, DataPortalEvent.postFetch, method );
+      //     // Close connection.
+      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
+      //       .then( none => {
+      //         // Return the fetched read-only root object.
+      //         fulfill( self );
+      //       } );
+      //   } )
+      //   .catch( reason => {
+      //     // Wrap the intercepted error.
+      //     const dpe = wrapError.call( self, reason );
+      //     // Launch finish event.
+      //     raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
+      //     // Close connection.
+      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
+      //       .then( none => {
+      //         // Pass the error.
+      //         reject( dpe );
+      //       } );
+      //   } );
     }
   } );
 }
@@ -401,12 +440,13 @@ class ReadOnlyRootObject extends ModelBase {
    * _The name of the model type available as:
    * __&lt;instance&gt;.constructor.modelType__, returns 'ReadOnlyRootObject'._
    *
+   * @param {string} uri - The URI of the model.
    * @param {bo.common.EventHandlerList} [eventHandlers] - The event handlers of the instance.
    *
    * @throws {@link bo.system.ArgumentError Argument error}:
    *    The event handlers must be an EventHandlerList object or null.
    */
-  constructor( name, properties, rules, extensions, eventHandlers ) {
+  constructor( name, uri, properties, rules, extensions, eventHandlers ) {
     super();
 
     /**
@@ -416,6 +456,13 @@ class ReadOnlyRootObject extends ModelBase {
      * @readonly
      */
     this.$modelName = name;
+    /**
+     * The URI of the model.
+     *
+     * @member {string} ReadOnlyRootObject#$modelUri
+     * @readonly
+     */
+    this.$modelUri = uri;
 
     // Initialize the instance.
     initialize.call( this, name, properties, rules, extensions, eventHandlers );
@@ -483,7 +530,7 @@ class ReadOnlyRootObject extends ModelBase {
    *      The callback must be a function.
    * @throws {@link bo.rules.AuthorizationError Authorization error}:
    *      The user has no permission to execute the action.
-   * @throws {@link bo.common.DataPortalError Data portal error}:
+   * @throws {@link bo.webAccess.WebPortalError Data portal error}:
    *      Fetching the business object has failed.
    */
   fetch( filter, method ) {
@@ -621,7 +668,11 @@ class ReadOnlyRootObjectFactory {
     ] );
 
     // Create model definition.
-    const Model = ReadOnlyRootObject.bind( undefined, name, properties, rules, extensions );
+    const colon = name.indexOf( ':' );
+    const Model = ReadOnlyRootObject.bind( undefined,
+      colon > 0 ? name.substr( 0, colon ) : name,
+      colon > 0 ? name.substr( colon + 1 ) : name,
+      properties, rules, extensions );
 
     //region Factory methods
 
@@ -651,7 +702,7 @@ class ReadOnlyRootObjectFactory {
      *      The callback must be a function.
      * @throws {@link bo.rules.AuthorizationError Authorization error}:
      *      The user has no permission to execute the action.
-     * @throws {@link bo.common.DataPortalError Data portal error}:
+     * @throws {@link bo.webAccess.WebPortalError Data portal error}:
      *      Fetching the business object has failed.
      */
     Model.fetch = function ( filter, method, eventHandlers ) {
