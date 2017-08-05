@@ -7,17 +7,20 @@
  */
 'use strict';
 
+const _events = new WeakMap();
+
 /**
  * Class for managing events.
  * Can be extended to provide event functionality in other classes.
  *
  * @class EventEmitter Manages event registering and emitting.
  */
-function EventEmitter() {}
+function EventEmitter() {
+  _events.set( this, { } );
+}
 
 // Shortcuts to improve speed and size
 const proto = EventEmitter.prototype;
-// const originalGlobalValue = exports.EventEmitter;
 
 /**
  * Finds the index of the listener for the event in its storage array.
@@ -34,7 +37,6 @@ function indexOfListener(listeners, listener) {
       return i;
     }
   }
-
   return -1;
 }
 
@@ -61,7 +63,7 @@ function alias(name) {
  * @return {Function[]|Object} All listener functions for the event.
  */
 proto.getListeners = function getListeners(evt) {
-  const events = this._getEvents();
+  const events = _events.get( this );
   let response;
   let key;
 
@@ -326,7 +328,7 @@ proto.manipulateListeners = function manipulateListeners(remove, evt, listeners)
  */
 proto.removeEvent = function removeEvent(evt) {
   const type = typeof evt;
-  const events = this._getEvents();
+  const events = _events.get( this );
   let key;
 
   // Remove different things depending on the state of evt
@@ -449,38 +451,5 @@ proto._getOnceReturnValue = function _getOnceReturnValue() {
     return true;
   }
 };
-
-/**
- * Fetches the events object and creates one if required.
- *
- * @return {Object} The events storage object.
- * @api private
- */
-proto._getEvents = function _getEvents() {
-  return this._events || (this._events = {});
-};
-
-// /**
-//  * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-//  *
-//  * @return {Function} Non conflicting EventEmitter class.
-//  */
-// EventEmitter.noConflict = function noConflict() {
-//   exports.EventEmitter = originalGlobalValue;
-//   return EventEmitter;
-// };
-//
-// // Expose the class either via AMD, CommonJS or the global object
-// if (typeof define === 'function' && define.amd) {
-//   define(function () {
-//     return EventEmitter;
-//   });
-// }
-// else if (typeof module === 'object' && module.exports){
-//   module.exports = EventEmitter;
-// }
-// else {
-//   exports.EventEmitter = EventEmitter;
-// }
 
 export default EventEmitter;

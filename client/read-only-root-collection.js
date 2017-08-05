@@ -197,7 +197,7 @@ function data_fetch( filter, method ) {
        */
       raiseEvent.call( self, WebPortalEvent.preFetch, method );
       // Execute fetch.
-      WebPortal.call( self.$modelName, 'fetch', method, filter )
+      WebPortal.call( self.$modelUri, 'fetch', method, filter )
         .then( data => {
           // Get the count of all available items.
           let totalItems = _totalItems.get( self );
@@ -347,13 +347,22 @@ class ReadOnlyRootCollection extends CollectionBase {
   constructor( name, itemType, rules, extensions, eventHandlers ) {
     super();
 
+    let modelName = name;
+    let modelUri = name;
+    const colon = name.indexOf( ':' );
+    if (colon > 0) {
+      modelName = name.substr( 0, colon );
+      modelUri = name.substr( colon + 1 );
+    }
+
     /**
      * The name of the model.
      *
      * @member {string} ReadOnlyRootCollection#$modelName
      * @readonly
      */
-    this.$modelName = name;
+    this.$modelName = modelName;
+    this.$modelUri = modelUri;
 
     // Initialize the instance.
     initialize.call( this, name, itemType, rules, extensions, eventHandlers );

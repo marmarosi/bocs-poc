@@ -5,7 +5,7 @@ import BookListItem from './book-list-item.js';
 
 const Model = bo.ModelComposer;
 
-const BookList = new Model( 'admin/BookList' )
+const BookList = new Model( 'admin/BookList:admin/book-list' )
   .readOnlyRootCollection( 'memdb', __filename )
   // --- Collection elements
   .itemType( BookListItem )
@@ -13,8 +13,8 @@ const BookList = new Model( 'admin/BookList' )
   .compose();
 
 class BookListFactory {
-  ['get-all']( eventHandlers ) {
-    return BookList.fetch( null, null, eventHandlers );
+  getAll( eventHandlers ) {
+    return BookList.fetch( null, 'get-all', eventHandlers );
   }
 }
 

@@ -15,9 +15,11 @@ const BookList = new Model( 'BookList' )
 
 class BookListFactory extends FactoryBase {
   constructor() {
-    super( 'admin/book-list' );
+    super( 'admin/book-list', {
+      'get-all': 'getAll'
+    } );
   }
-  ['get-all']( eventHandlers ) {
+  getAll( eventHandlers ) {
     return BookList.fetch( null, null, eventHandlers );
   }
 }

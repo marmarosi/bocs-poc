@@ -1,4 +1,3 @@
 function showDoll() {
-  const doll = bo.getDoll();
-  document.getElementById("bundle").innerHTML = doll.name + ': ' + doll.category;
+  document.getElementById("bundle").innerHTML = 'Shanghai: doll';
 }

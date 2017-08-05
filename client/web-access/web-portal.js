@@ -2,9 +2,9 @@
 
 class WebPortal {
 
-  static call( modelName, dpMethod, altName, data ) {
+  static call( modelUri, dpMethod, altName, data ) {
 
-    const url = '/api/' + modelName + '/' + (altName || dpMethod);
+    const url = '/api/' + modelUri + '/' + (altName || dpMethod);
 
     const headers = new Headers({
       "Content-Type": "application/json",

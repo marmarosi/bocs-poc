@@ -2,7 +2,6 @@
 /.idea
 
 # webpack outputs
-/public/scripts/bundle.js
 /public/scripts/bo-client.js
 /public/scripts/bo-data.js
 

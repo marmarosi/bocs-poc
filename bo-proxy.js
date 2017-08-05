@@ -30,12 +30,12 @@ class BoProxy {
         const model = require( itemPath );
         if (model instanceof FactoryBase) {
 
-          if (!model.modelUri)
+          if (!model.$modelUri)
             throw new Error( 'Missing model URI: ' + itemPath );
-          if (this.models[ model.modelUri ])
+          if (this.models[ model.$modelUri ])
             throw new Error( 'Duplicate model URI: ' + model.modelUri );
 
-          this.models[ model.modelUri ] = model;
+          this.models[ model.$modelUri ] = model;
         }
       }
     });
@@ -50,7 +50,7 @@ class BoProxy {
       const url = req.url.substr( this.apiUrl.length );
       const pos = url.lastIndexOf( '/' );
       if (pos < 1)
-        return reject( 'Invalid API URL.' );
+        return reject( new Error( 'Invalid API URL.' ) );
 
       let type = url.substr( 0, pos );
       let method = url.substr( pos + 1 );
@@ -59,7 +59,7 @@ class BoProxy {
       if (this.models[ type ])
         model = this.models[ type ];
       else
-        return reject( 'Invalid type: ' + type );
+        return reject( new Error( 'Invalid type: ' + type ) );
 
       if (model[ method ])
         model[ method ]()
@@ -69,8 +69,19 @@ class BoProxy {
           .catch( reason => {
             reject( reason );
           } );
-      else
-        reject( 'Invalid method: ' + method );
+      else {
+        const mapped = model.$methodMap[ method ];
+        if (mapped)
+          model[ mapped ]()
+            .then( result => {
+              resolve( result.toCto() );
+            } )
+            .catch( reason => {
+              reject( reason );
+            } );
+        else
+          reject( new Error( 'Invalid method: ' + method ) );
+      }
     } );
   }
 }
