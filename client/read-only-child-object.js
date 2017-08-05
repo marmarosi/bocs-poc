@@ -25,18 +25,17 @@ import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 
-import DataPortalAction from './common/data-portal-action.js';
-import DataPortalContext from './common/data-portal-context.js';
-import DataPortalEvent from './common/data-portal-event.js';
-import DataPortalEventArgs from './common/data-portal-event-args.js';
-import DataPortalError from './common/data-portal-error.js';
+import WebPortalAction from './web-access/web-portal-action.js';
+import WebPortalEvent from './web-access/web-portal-event.js';
+import WebPortalEventArgs from './web-access/web-portal-event-args.js';
+import WebPortalError from './web-access/web-portal-error.js';
 
 //endregion
 
 //region Private variables
 
 const MODEL_DESC = 'Read-only child object';
-const M_FETCH = DataPortalAction.getName( DataPortalAction.fetch );
+const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
 
 const _properties = new WeakMap();
 const _rules = new WeakMap();
@@ -278,28 +277,15 @@ function initialize( name, properties, rules, extensions, parent, eventHandlers 
 
 //region Helper
 
-function getDataContext() {
-  let dataContext = _dataContext.get( this );
-  if (!dataContext) {
-    const properties = _properties.get( this );
-    dataContext = new DataPortalContext(
-      null, properties.toArray(), getPropertyValue.bind( this ), setPropertyValue.bind( this )
-    );
-  }
-  dataContext = dataContext.setState( null, false );
-  _dataContext.set( this, dataContext );
-  return dataContext;
-}
-
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    DataPortalEvent.getName( event ),
-    new DataPortalEventArgs( event, this.$modelName, null, methodName, error )
+    WebPortalEvent.getName( event ),
+    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( error ) {
-  return new DataPortalError( MODEL_DESC, this.$modelName, DataPortalAction.fetch, error );
+  return new WebPortalError( MODEL_DESC, this.$modelName, WebPortalAction.fetch, error );
 }
 
 //endregion
@@ -317,33 +303,28 @@ function data_fetch( dto, method ) {
       /**
        * The event arises before the business object instance will be retrieved from the repository.
        * @event ReadOnlyChildObject#preFetch
-       * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEvent} eventArgs - Data portal event arguments.
        * @param {ReadOnlyChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, DataPortalEvent.preFetch, method );
+      raiseEvent.call( self, WebPortalEvent.preFetch, method );
       // Execute fetch.
-      const extensions = _extensions.get( self );
-      (extensions.dataFetch ?
-        // *** Custom fetch.
-        extensions.$runMethod( 'fetch', self, getDataContext.call( self ), dto, method ) :
-        // *** Standard fetch.
-        new Promise( ( f, r ) => {
-          fromDto.call( self, dto );
-          f( dto );
-        } ))
-        .then( none => {
-          // Fetch children as well.
-          return fetchChildren.call( self, dto );
+      new Promise( ( f, r ) => {
+        fromDto.call( self, dto );
+        f( dto );
         } )
+        .then( none => {
+            // Fetch children as well.
+            return fetchChildren.call( self, dto );
+          } )
         .then( none => {
           // Launch finish event.
           /**
            * The event arises after the business object instance has been retrieved from the repository.
            * @event ReadOnlyChildObject#postFetch
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEvent} eventArgs - Data portal event arguments.
            * @param {ReadOnlyChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postFetch, method );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method );
           // Return the fetched read-only child object.
           fulfill( self );
         } )
@@ -351,7 +332,7 @@ function data_fetch( dto, method ) {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
           // Pass the error.
           reject( dpe );
         } );

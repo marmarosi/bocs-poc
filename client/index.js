@@ -91,4 +91,5 @@ const index = {
 // Immutable object.
 Object.freeze( index );
 
+//module.exports = index;
 global.bo = index;

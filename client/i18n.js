@@ -69,8 +69,11 @@ class i18n {
    */
   constructor( namespace, keyRoot ) {
 
-    this.namespace = Utility.isOptionalString( namespace, 'namespace', I18nError ) || NS_ROOT;
-    this.keyRoot = Utility.isOptionalString( keyRoot, 'keyRoot', I18nError ) || '';
+    // this.namespace = Utility.isOptionalString( namespace, 'namespace', I18nError ) || NS_ROOT;
+    // this.keyRoot = Utility.isOptionalString( keyRoot, 'keyRoot', I18nError ) || '';
+
+    this.namespace = namespace || NS_ROOT;
+    this.keyRoot = keyRoot || '';
 
     if (this.keyRoot && this.keyRoot.substr( -1 ) !== '.')
       this.keyRoot += '.';

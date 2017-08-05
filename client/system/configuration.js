@@ -160,22 +160,22 @@ class Configuration {
     // Test if configuration file was found.
     if (config) {
 
-      // Evaluate the connection manager.
-      if (config.connectionManager) {
-        if (typeof config.connectionManager !== 'function')
-          throw new ConfigurationError( 'function_2', 'connectionManager' );
-        _connectionManager = new config.connectionManager();
-        if (!(_connectionManager instanceof ConnectionManagerBase))
-          throw new ConfigurationError( 'wrongConMan' );
-      } else
-        throw new ConfigurationError( 'noConMan' );
+      // // Evaluate the connection manager.
+      // if (config.connectionManager) {
+      //   if (typeof config.connectionManager !== 'function')
+      //     throw new ConfigurationError( 'function_2', 'connectionManager' );
+      //   _connectionManager = new config.connectionManager();
+      //   if (!(_connectionManager instanceof ConnectionManagerBase))
+      //     throw new ConfigurationError( 'wrongConMan' );
+      // } else
+      //   throw new ConfigurationError( 'noConMan' );
 
-      // Evaluate the data access object builder.
-      if (config.daoBuilder) {
-        if (typeof config.daoBuilder !== 'function')
-          throw new ConfigurationError( 'function_2', 'daoBuilder' );
-        _daoBuilder = config.daoBuilder;
-      }
+      // // Evaluate the data access object builder.
+      // if (config.daoBuilder) {
+      //   if (typeof config.daoBuilder !== 'function')
+      //     throw new ConfigurationError( 'function_2', 'daoBuilder' );
+      //   _daoBuilder = config.daoBuilder;
+      // }
 
       // Evaluate the user information reader.
       if (config.userReader) {
@@ -191,15 +191,15 @@ class Configuration {
         _getLocale = config.localeReader;
       }
 
-      // Evaluate the path of locale.
-      if (config.pathOfLocales) {
-        if ((typeof pathOfLocales !== 'string' && !(pathOfLocales instanceof String)) ||
-          pathOfLocales.trim().length === 0)
-          throw new ConfigurationError( 'string', 'pathOfLocales' );
-        // TODO
-        //if (cfg.pathOfLocales not exists...)
-        _pathOfLocales = config.pathOfLocales;
-      }
+      // // Evaluate the path of locale.
+      // if (config.pathOfLocales) {
+      //   if ((typeof pathOfLocales !== 'string' && !(pathOfLocales instanceof String)) ||
+      //     pathOfLocales.trim().length === 0)
+      //     throw new ConfigurationError( 'string', 'pathOfLocales' );
+      //   // TODO
+      //   //if (cfg.pathOfLocales not exists...)
+      //   _pathOfLocales = config.pathOfLocales;
+      // }
 
       // Evaluate the unauthorized behavior.
       if (config.noAccessBehavior !== undefined && config.noAccessBehavior !== null) {

@@ -5,7 +5,7 @@ const serveStatic = require( 'serve-static') ;
 const bo = require( 'business-objects' );
 const te = require( './template-engine.js' );
 const BoProxy = require( './bo-proxy.js' );
-const appLocales = require( './config/app.locales.json' );
+//const appLocales = require( './config/app.locales.json' );
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.set( 'view engine', 'html' );
 // Serve static files.
 app.use( serveStatic( 'public', { index: false } ) );
 
-bo.initialize( '/config/business-objects.js', appLocales );
+bo.initialize( '/config/business-objects.js' /*, appLocales*/ );
 const boProxy = new BoProxy( '/api/', '/data/models' );
 
 app.get( '/', function ( req, res ) {
