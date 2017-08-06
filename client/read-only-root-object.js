@@ -278,20 +278,6 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
 
 //region Helper
 
-// function getDataContext( connection ) {
-//   let dataContext = _dataContext.get( this );
-//   if (!dataContext) {
-//     const dao = _dao.get( this );
-//     const properties = _properties.get( this );
-//     dataContext = new DataPortalContext(
-//       dao, properties.toArray(), getPropertyValue.bind( this ), setPropertyValue.bind( this )
-//     );
-//   }
-//   dataContext = dataContext.setState( connection, false );
-//   _dataContext.set( this, dataContext );
-//   return dataContext;
-// }
-
 function raiseEvent( event, methodName, error ) {
   this.emit(
     WebPortalEvent.getName( event ),
@@ -353,66 +339,6 @@ function data_fetch( filter, method ) {
           // Pass the error.
           reject( dpe );
         } );
-
-      // let connection = null;
-      // // Open connection.
-      // const extensions = _extensions.get( self );
-      // config.connectionManager.openConnection( extensions.dataSource )
-      //   .then( dsc => {
-      //     connection = dsc;
-      //     // Launch start event.
-      //     /**
-      //      * The event arises before the business object instance will be retrieved from the repository.
-      //      * @event ReadOnlyRootObject#preFetch
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {ReadOnlyRootObject} oldObject - The instance of the model before the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.preFetch, method );
-      //     // Execute fetch.
-      //     const dao = _dao.get( self );
-      //     // Root element fetches all data from repository.
-      //     return extensions.dataFetch ?
-      //       // *** Custom fetch.
-      //       extensions.$runMethod( 'fetch', self, getDataContext.call( this, connection ), filter, method ) :
-      //       // *** Standard fetch.
-      //       dao.$runMethod( method, connection, filter )
-      //         .then( dto => {
-      //           fromDto.call( self, dto );
-      //           return dto;
-      //         } );
-      //   } )
-      //   .then( dto => {
-      //     // Fetch children as well.
-      //     return fetchChildren.call( self, dto );
-      //   } )
-      //   .then( none => {
-      //     // Launch finish event.
-      //     /**
-      //      * The event arises after the business object instance has been retrieved from the repository.
-      //      * @event ReadOnlyRootObject#postFetch
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {ReadOnlyRootObject} newObject - The instance of the model after the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.postFetch, method );
-      //     // Close connection.
-      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
-      //       .then( none => {
-      //         // Return the fetched read-only root object.
-      //         fulfill( self );
-      //       } );
-      //   } )
-      //   .catch( reason => {
-      //     // Wrap the intercepted error.
-      //     const dpe = wrapError.call( self, reason );
-      //     // Launch finish event.
-      //     raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
-      //     // Close connection.
-      //     config.connectionManager.closeConnection( extensions.dataSource, connection )
-      //       .then( none => {
-      //         // Pass the error.
-      //         reject( dpe );
-      //       } );
-      //   } );
     }
   } );
 }
