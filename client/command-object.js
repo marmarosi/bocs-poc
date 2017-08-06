@@ -413,12 +413,13 @@ class CommandObject extends ModelBase {
    * _The name of the model type available as:
    * __&lt;instance&gt;.constructor.modelType__, returns 'CommandObject'._
    *
+   * @param {string} uri - The URI of the model.
    * @param {bo.common.EventHandlerList} [eventHandlers] - The event handlers of the instance.
    *
    * @throws {@link bo.system.ArgumentError Argument error}:
    *    The event handlers must be an EventHandlerList object or null.
    */
-  constructor(name, properties, rules, extensions, eventHandlers) {
+  constructor(name, uri, properties, rules, extensions, eventHandlers) {
     super();
 
     eventHandlers = Argument.inConstructor(name)
@@ -452,6 +453,13 @@ class CommandObject extends ModelBase {
      * @readonly
      */
     this.$modelName = name;
+    /**
+     * The URI of the model.
+     *
+     * @member {string} ReadOnlyRootObject#$modelUri
+     * @readonly
+     */
+    this.$modelUri = uri;
 
     const store = new DataStore();
 
@@ -667,7 +675,10 @@ class CommandObjectFactory {
     ]);
 
     // Create model definition.
-    const Model = CommandObject.bind( undefined, name, properties, rules, extensions );
+    const Model = CommandObject.bind( undefined,
+      colon > 0 ? name.substr( 0, colon ) : name,
+      colon > 0 ? name.substr( colon + 1 ) : name,
+      properties, rules, extensions );
 
     //region Factory methods
 
