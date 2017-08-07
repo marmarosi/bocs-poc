@@ -272,6 +272,20 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
 
 //endregion
 
+//region Factory
+
+function nameFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( 0, colon ) : name).trim();
+}
+
+function uriFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( colon + 1 ) : name).trim();
+}
+
+//endregion
+
 //endregion
 
 //region Data portal methods
@@ -594,10 +608,9 @@ class ReadOnlyRootObjectFactory {
     ] );
 
     // Create model definition.
-    const colon = name.indexOf( ':' );
     const Model = ReadOnlyRootObject.bind( undefined,
-      colon > 0 ? name.substr( 0, colon ) : name,
-      colon > 0 ? name.substr( colon + 1 ) : name,
+      nameFromPhrase( name ),
+      uriFromPhrase( name ),
       properties, rules, extensions );
 
     //region Factory methods

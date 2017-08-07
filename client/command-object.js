@@ -237,6 +237,20 @@ function getPropertyContext(primaryProperty) {
 
 //endregion
 
+//region Factory
+
+function nameFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( 0, colon ) : name).trim();
+}
+
+function uriFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( colon + 1 ) : name).trim();
+}
+
+//endregion
+
 //endregion
 
 //region Data portal methods
@@ -456,7 +470,7 @@ class CommandObject extends ModelBase {
     /**
      * The URI of the model.
      *
-     * @member {string} ReadOnlyRootObject#$modelUri
+     * @member {string} CommandObject#$modelUri
      * @readonly
      */
     this.$modelUri = uri;
@@ -676,8 +690,8 @@ class CommandObjectFactory {
 
     // Create model definition.
     const Model = CommandObject.bind( undefined,
-      colon > 0 ? name.substr( 0, colon ) : name,
-      colon > 0 ? name.substr( colon + 1 ) : name,
+      nameFromPhrase( name ),
+      uriFromPhrase( name ),
       properties, rules, extensions );
 
     //region Factory methods

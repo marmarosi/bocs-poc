@@ -279,13 +279,13 @@ function canExecute( methodName ) {
 
 //region Child methods
 
-function createChildren( connection ) {
+function createChildren() {
   const self = this;
   const properties = _properties.get( this );
   return Promise.all( properties.children().map( property => {
     const child = getPropertyValue.call( self, property );
     return child instanceof ModelBase ?
-      child.create( connection ) :
+      child.create() :
       Promise.resolve( null );
   } ) );
 }
@@ -299,12 +299,12 @@ function fetchChildren( dto ) {
   } ) );
 }
 
-function saveChildren( connection ) {
+function saveChildren() {
   const self = this;
   const properties = _properties.get( this );
   return Promise.all( properties.children().map( property => {
     const child = getPropertyValue.call( self, property );
-    return child.save( connection );
+    return child.save();
   } ) );
 }
 
@@ -460,6 +460,20 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
 
 //endregion
 
+//region Factory
+
+function nameFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( 0, colon ) : name).trim();
+}
+
+function uriFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( colon + 1 ) : name).trim();
+}
+
+//endregion
+
 //endregion
 
 //region Data portal methods
@@ -507,7 +521,7 @@ function data_create() {
         } )
         .then( none => {
           // Create children as well.
-          return createChildren.call( self, connection );
+          return createChildren.call( self );
         } )
         .then( none => {
           markAsCreated.call( self );
@@ -617,7 +631,7 @@ function data_insert() {
         } )
         .then( none => {
           // Insert children as well.
-          return saveChildren.call( self, connection );
+          return saveChildren.call( self );
         } )
         .then( none => {
           markAsPristine.call( self );
@@ -673,7 +687,7 @@ function data_update() {
         } )
         .then( none => {
           // Update children as well.
-          return saveChildren.call( self, connection );
+          return saveChildren.call( self );
         } )
         .then( none => {
           markAsPristine.call( self );
@@ -723,10 +737,11 @@ function data_remove() {
        */
       raiseEvent.call( self, WebPortalEvent.preRemove );
       // Remove children first.
-      saveChildren.call( self, connection )
+      saveChildren.call( self )
         .then( none => {
           // Execute removal.
-          return WebPortal.call( self.$modelUri, 'remove', null, /* filter = */ properties.getKey( getPropertyValue.bind( self ) ) );
+          const properties = _properties.get( self );
+          return WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) );
         })
         .then( none => {
           markAsRemoved.call( self );
@@ -809,7 +824,7 @@ class EditableRootObject extends ModelBase {
     /**
      * The URI of the model.
      *
-     * @member {string} ReadOnlyRootObject#$modelUri
+     * @member {string} EditableRootObject#$modelUri
      * @readonly
      */
     this.$modelUri = uri;
@@ -1227,8 +1242,8 @@ class EditableRootObjectFactory {
 
     // Create model definition.
     const Model = EditableRootObject.bind( undefined,
-      colon > 0 ? name.substr( 0, colon ) : name,
-      colon > 0 ? name.substr( colon + 1 ) : name,
+      nameFromPhrase( name ),
+      uriFromPhrase( name ),
       properties, rules, extensions );
 
     //region Factory methods

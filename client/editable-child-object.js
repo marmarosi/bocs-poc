@@ -25,11 +25,11 @@ import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 
-import DataPortalAction from './common/data-portal-action.js';
-import DataPortalContext from './common/data-portal-context.js';
-import DataPortalEvent from './common/data-portal-event.js';
-import DataPortalEventArgs from './common/data-portal-event-args.js';
-import DataPortalError from './common/data-portal-error.js';
+import WebPortal from './web-access/web-portal.js';
+import WebPortalAction from './web-access/web-portal-action.js';
+import WebPortalEvent from './web-access/web-portal-event.js';
+import WebPortalEventArgs from './web-access/web-portal-event-args.js';
+import WebPortalError from './web-access/web-portal-error.js';
 
 import MODEL_STATE from './common/model-state.js';
 
@@ -38,7 +38,7 @@ import MODEL_STATE from './common/model-state.js';
 //region Private variables
 
 const MODEL_DESC = 'Editable child object';
-const M_FETCH = DataPortalAction.getName( DataPortalAction.fetch );
+const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
 
 const _properties = new WeakMap();
 const _rules = new WeakMap();
@@ -289,13 +289,13 @@ function canExecute( methodName ) {
 
 //region Child methods
 
-function createChildren( connection ) {
+function createChildren() {
   const self = this;
   const properties = _properties.get( this );
   return Promise.all( properties.children().map( property => {
     const child = getPropertyValue.call( self, property );
     return child instanceof ModelBase ?
-      child.create( connection ) :
+      child.create() :
       Promise.resolve( null );
   } ) );
 }
@@ -309,12 +309,12 @@ function fetchChildren( dto ) {
   } ) );
 }
 
-function saveChildren( connection ) {
+function saveChildren() {
   const self = this;
   const properties = _properties.get( this );
   return Promise.all( properties.children().map( property => {
     const child = getPropertyValue.call( self, property );
-    return child.save( connection );
+    return child.save();
   } ) );
 }
 
@@ -479,78 +479,61 @@ function initialize( name, properties, rules, extensions, parent, eventHandlers 
 
 //endregion
 
+//region Factory
+
+function nameFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( 0, colon ) : name).trim();
+}
+
+function uriFromPhrase( name ) {
+  const colon = name.indexOf( ':' );
+  return (colon > 0 ? name.substr( colon + 1 ) : name).trim();
+}
+
+//endregion
+
 //endregion
 
 //region Data portal methods
 
 //region Helper
 
-function getDataContext( connection ) {
-  let dataContext = _dataContext.get( this );
-  if (!dataContext) {
-    const properties = _properties.get( this );
-    dataContext = new DataPortalContext(
-      _dao.get( this ),
-      properties.toArray(),
-      getPropertyValue.bind( this ),
-      setPropertyValue.bind( this )
-    );
-    _dataContext.set( this, dataContext );
-  }
-  return dataContext.setState( connection, _isDirty.get( this ) );
-}
-
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    DataPortalEvent.getName( event ),
-    new DataPortalEventArgs( event, this.$modelName, null, methodName, error )
+    WebPortalEvent.getName( event ),
+    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( action, error ) {
-  return new DataPortalError( MODEL_DESC, this.$modelName, action, error );
+  return new WebPortalError( MODEL_DESC, this.$modelName, action, error );
 }
 
 //endregion
 
 //region Create
 
-function data_create( connection ) {
+function data_create() {
   const self = this;
   return new Promise( ( fulfill, reject ) => {
-    const dao = _dao.get( self );
-    const extensions = _extensions.get( self );
-    // Does it have initializing method?
-    if (extensions.dataCreate || dao.$hasCreate()) {
-      (connection ?
-        Promise.resolve( connection ) :
-        // Open connection.
-        config.connectionManager.openConnection( extensions.dataSource )
-          .then( dsc => {
-            connection = dsc;
-          } ))
-        .then( none => {
-          // Launch start event.
-          /**
-           * The event arises before the business object instance will be initialized in the repository.
-           * @event EditableChildObject#preCreate
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-           * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
-           */
-          raiseEvent.call( self, DataPortalEvent.preCreate );
-          // Execute creation.
-          return extensions.dataCreate ?
-            // *** Custom creation.
-            extensions.$runMethod( 'create', self, getDataContext.call( self, connection ) ) :
-            // *** Standard creation.
-            dao.$runMethod( 'create', connection )
-              .then( dto => {
-                fromDto.call( self, dto );
-              } )
+    if (false /* this.$hasCreate() */) {
+      // Launch start event.
+      /**
+       * The event arises before the business object instance will be initialized in the repository.
+       * @event EditableChildObject#preCreate
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
+       */
+      raiseEvent.call( self, WebPortalEvent.preCreate );
+      // Execute creation.
+      WebPortal.call( self.$modelUri, 'create', null, null )
+        .then( dto => {
+          fromDto.call( self, dto );
         } )
         .then( none => {
           // Create children as well.
-          return createChildren.call( self, connection );
+          return createChildren.call( self );
         } )
         .then( none => {
           markAsCreated.call( self );
@@ -558,28 +541,21 @@ function data_create( connection ) {
           /**
            * The event arises after the business object instance has been initialized in the repository.
            * @event EditableChildObject#postCreate
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postCreate );
-          // Close connection.
-          config.connectionManager.closeConnection( extensions.dataSource, connection )
-            .then( none => {
-              fulfill( self );
-            } )
+          raiseEvent.call( self, WebPortalEvent.postCreate );
+          // Return the new editable child object.
+          fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, DataPortalAction.create, reason );
+          const dpe = wrapError.call( self, WebPortalAction.create, reason );
           // Launch finish event.
-          if (connection)
-            raiseEvent.call( self, DataPortalEvent.postCreate, null, dpe );
-          // Close connection.
-          return config.connectionManager.closeConnection( extensions.dataSource, connection )
-            .then( none => {
-              reject( dpe );
-            } )
-        } )
+          raiseEvent.call( self, WebPortalEvent.postCreate, null, dpe );
+          // Pass the error.
+          reject( dpe );
+        } );
     } else
     // Nothing to do.
       fulfill( self );
@@ -602,20 +578,15 @@ function data_fetch( data, method ) {
       /**
        * The event arises before the business object instance will be retrieved from the repository.
        * @event EditableChildObject#preFetch
-       * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, DataPortalEvent.preFetch, method );
+      raiseEvent.call( self, WebPortalEvent.preFetch, method );
       // Execute fetch.
-      const extensions = _extensions.get( self );
-      (extensions.dataFetch ?
-        // *** Custom fetch.
-        extensions.$runMethod( 'fetch', self, getDataContext.call( self, null ), data, method ) :
-        // *** Standard fetch.
-        new Promise( ( f, r ) => {
+      new Promise( ( f, r ) => {
           fromDto.call( self, data );
           f( data );
-        } ))
+        } )
         .then( none => {
           // Fetch children as well.
           return fetchChildren.call( self, data );
@@ -626,18 +597,18 @@ function data_fetch( data, method ) {
           /**
            * The event arises after the business object instance has been retrieved from the repository.
            * @event EditableChildObject#postFetch
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postFetch, method );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method );
           // Return the fetched editable child object.
           fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, DataPortalAction.fetch, reason );
+          const dpe = wrapError.call( self, WebPortalAction.fetch, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postFetch, method, dpe );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -649,7 +620,7 @@ function data_fetch( data, method ) {
 
 //region Insert
 
-function data_insert( connection ) {
+function data_insert() {
   const self = this;
   return new Promise( ( fulfill, reject ) => {
     // Check permissions.
@@ -658,10 +629,10 @@ function data_insert( connection ) {
       /**
        * The event arises before the business object instance will be created in the repository.
        * @event EditableChildObject#preInsert
-       * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, DataPortalEvent.preInsert );
+      raiseEvent.call( self, WebPortalEvent.preInsert );
       // Copy the values of parent keys.
       const properties = _properties.get( self );
       const references = properties.filter( property => {
@@ -675,19 +646,13 @@ function data_insert( connection ) {
           setPropertyValue.call( self, referenceProperty, parentValue );
       }
       // Execute insert.
-      const dao = _dao.get( self );
-      const extensions = _extensions.get( self );
-      (extensions.dataInsert ?
-        // *** Custom insert.
-        extensions.$runMethod( 'Insert', self, getDataContext.call( self, connection ) ) :
-        // *** Standard insert.
-        dao.$runMethod( 'insert', connection, toDto.call( self ) )
-          .then( dto => {
-            fromDto.call( self, dto );
-          } ))
+      WebPortal.call( self.$modelUri, 'insert', null, toDto.call( self ) )
+        .then( dto => {
+          fromDto.call( self, dto );
+        } )
         .then( none => {
           // Insert children as well.
-          return saveChildren.call( self, connection );
+          return saveChildren.call( self );
         } )
         .then( none => {
           markAsPristine.call( self );
@@ -695,21 +660,21 @@ function data_insert( connection ) {
           /**
            * The event arises after the business object instance has been created in the repository.
            * @event EditableChildObject#postInsert
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postInsert );
+          raiseEvent.call( self, WebPortalEvent.postInsert );
           // Return the created editable child object.
           fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, DataPortalAction.insert, reason );
+          const dpe = wrapError.call( self, WebPortalAction.insert, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postInsert, null, dpe );
+          raiseEvent.call( self, WebPortalEvent.postInsert, null, dpe );
           // Pass the error.
           reject( dpe );
-        } )
+        } );
     }
   } );
 }
@@ -718,7 +683,7 @@ function data_insert( connection ) {
 
 //region Update
 
-function data_update( connection ) {
+function data_update() {
   const self = this;
   return new Promise( ( fulfill, reject ) => {
     // Check permissions.
@@ -727,28 +692,21 @@ function data_update( connection ) {
       /**
        * The event arises before the business object instance will be updated in the repository.
        * @event EditableChildObject#preUpdate
-       * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, DataPortalEvent.preUpdate );
+      raiseEvent.call( self, WebPortalEvent.preUpdate );
       // Execute update.
       const isDirty = _isDirty.get( self );
-      const dao = _dao.get( self );
-      const extensions = _extensions.get( self );
-
-      (extensions.dataUpdate ?
-        // *** Custom update.
-        extensions.$runMethod( 'update', self, getDataContext.call( self, connection ) ) :
-        // *** Standard update.
-        (isDirty ?
-          dao.$runMethod( 'update', connection, /* dto = */ toDto.call( self ) )
-            .then( dto => {
-              fromDto.call( self, dto );
-            } ) :
-          Promise.resolve( null )))
+      (isDirty ?
+        WebPortal.call( self.$modelUri, 'update', null, toDto.call( self ) )
+          .then( dto => {
+            fromDto.call( self, dto );
+          } ) :
+        Promise.resolve( null ))
         .then( none => {
           // Update children as well.
-          return saveChildren.call( self, connection );
+          return saveChildren.call( self );
         } )
         .then( none => {
           markAsPristine.call( self );
@@ -756,18 +714,18 @@ function data_update( connection ) {
           /**
            * The event arises after the business object instance has been updated in the repository.
            * @event EditableChildObject#postUpdate
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postUpdate );
+          raiseEvent.call( self, WebPortalEvent.postUpdate );
           // Return the updated editable child object.
           fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, DataPortalAction.update, reason );
+          const dpe = wrapError.call( self, WebPortalAction.update, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postUpdate, null, dpe );
+          raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -779,7 +737,7 @@ function data_update( connection ) {
 
 //region Remove
 
-function data_remove( connection ) {
+function data_remove() {
   const self = this;
   return new Promise( ( fulfill, reject ) => {
     // Check permissions.
@@ -788,41 +746,35 @@ function data_remove( connection ) {
       /**
        * The event arises before the business object instance will be removed from the repository.
        * @event EditableChildObject#preRemove
-       * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, DataPortalEvent.preRemove );
+      raiseEvent.call( self, WebPortalEvent.preRemove );
       // Remove children first.
-      saveChildren.call( self, connection )
+      saveChildren.call( self )
         .then( none => {
-          // Execute delete.
-          const dao = _dao.get( self );
+          // Execute removal.
           const properties = _properties.get( self );
-          const extensions = _extensions.get( self );
-          return extensions.dataRemove ?
-            // *** Custom removal.
-            extensions.$runMethod( 'remove', self, getDataContext.call( self, connection ) ) :
-            // *** Standard removal.
-            dao.$runMethod( 'remove', connection, /* filter = */ properties.getKey( getPropertyValue.bind( self ) ) );
-        } )
+          return WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) );
+        })
         .then( none => {
           markAsRemoved.call( self );
           // Launch finish event.
           /**
            * The event arises after the business object instance has been removed from the repository.
            * @event EditableChildObject#postRemove
-           * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, DataPortalEvent.postRemove );
+          raiseEvent.call( self, WebPortalEvent.postRemove );
           // Nothing to return.
           fulfill( null );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, DataPortalAction.remove, reason );
+          const dpe = wrapError.call( self, WebPortalAction.remove, reason );
           // Launch finish event.
-          raiseEvent.call( self, DataPortalEvent.postRemove, null, dpe );
+          raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -868,6 +820,7 @@ class EditableChildObject extends ModelBase {
    *   * EditableRootObject
    *   * EditableChildObject
    *
+   * @param {string} uri - The URI of the model.
    * @param {object} parent - The parent business object.
    * @param {bo.common.EventHandlerList} [eventHandlers] - The event handlers of the instance.
    *
@@ -877,7 +830,7 @@ class EditableChildObject extends ModelBase {
    * @throws {@link bo.system.ArgumentError Argument error}:
    *    The event handlers must be an EventHandlerList object or null.
    */
-  constructor( name, properties, rules, extensions, parent, eventHandlers ) {
+  constructor( name, uri, properties, rules, extensions, parent, eventHandlers ) {
     super();
 
     /**
@@ -887,6 +840,13 @@ class EditableChildObject extends ModelBase {
      * @readonly
      */
     this.$modelName = name;
+    /**
+     * The URI of the model.
+     *
+     * @member {string} EditableChildObject#$modelUri
+     * @readonly
+     */
+    this.$modelUri = uri;
 
     // Initialize the instance.
     initialize.call( this, name, properties, rules, extensions, parent, eventHandlers );
@@ -1069,11 +1029,10 @@ class EditableChildObject extends ModelBase {
    *
    * @function EditableChildObject#create
    * @protected
-   * @param {object} connection - The connection data.
    * @returns {Promise.<EditableChildObject>} Returns a promise to the new editable child object.
    */
-  create( connection ) {
-    return data_create.call( this, connection );
+  create() {
+    return data_create.call( this );
   }
 
   /**
@@ -1096,10 +1055,9 @@ class EditableChildObject extends ModelBase {
    *
    * @function EditableChildObject#save
    * @protected
-   * @param {object} connection - The connection data.
    * @returns {Promise.<EditableChildObject>} Returns a promise to the saved editable child object.
    */
-  save( connection ) {
+  save() {
     const self = this;
     return new Promise( ( fulfill, reject ) => {
       if (self.isValid()) {
@@ -1254,7 +1212,10 @@ class EditableChildObjectFactory {
     ] );
 
     // Create model definition.
-    const Model = EditableChildObject.bind( undefined, name, properties, rules, extensions );
+    const Model = EditableChildObject.bind( undefined,
+      nameFromPhrase( name ),
+      uriFromPhrase( name ),
+      properties, rules, extensions );
 
     //region Factory methods
 
@@ -1295,7 +1256,7 @@ class EditableChildObjectFactory {
      *
      * @throws {@link bo.rules.AuthorizationError Authorization error}:
      *      The user has no permission to execute the action.
-     * @throws {@link bo.common.DataPortalError Data portal error}:
+     * @throws {@link bo.webAccess.WebPortalError Data portal error}:
      *      Creating the business object has failed.
      */
     Model.create = function ( parent, eventHandlers ) {

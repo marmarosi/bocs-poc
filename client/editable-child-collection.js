@@ -278,18 +278,17 @@ class EditableChildCollection extends CollectionBase {
    *
    * @function EditableChildCollection#save
    * @protected
-   * @param {object} connection - The connection data.
    * @returns {Promise.<EditableChildCollection>} Returns a promise to the saved editable child collection.
    */
-  save( connection ) {
+  save() {
     const self = this;
     let items = _items.get(this);
 
     return Promise.all( items.filter( item => {
-      return item.isDirty();
-    }).map( item => {
-      return item.save( connection );
-    }))
+        return item.isDirty();
+      }).map( item => {
+        return item.save();
+      }))
       .then( values => {
         // Store updated items.
         items = items.filter( item => {
