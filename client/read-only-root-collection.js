@@ -170,15 +170,6 @@ function uriFromPhrase( name ) {
 
 //region Helper
 
-// function getDataContext( connection ) {
-//   let dataContext = _dataContext.get( this );
-//   if (!dataContext) {
-//     dataContext = new WebPortalContext( _dao.get( this ) );
-//     _dataContext.set( this, dataContext );
-//   }
-//   return dataContext.setState( connection, false );
-// }
-
 function raiseEvent( event, methodName, error ) {
   this.emit(
     WebPortalEvent.getName( event ),

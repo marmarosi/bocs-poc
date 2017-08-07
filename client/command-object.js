@@ -257,21 +257,6 @@ function uriFromPhrase( name ) {
 
 //region Helper
 
-// function getDataContext( connection ) {
-//   let dataContext = _dataContext.get( this );
-//   if (!dataContext) {
-//     const properties = _properties.get( this );
-//     dataContext = new DataPortalContext(
-//       _dao.get( this ),
-//       properties.toArray(),
-//       getPropertyValue.bind( this ),
-//       setPropertyValue.bind( this )
-//     );
-//     _dataContext.set( this, dataContext );
-//   }
-//   return dataContext.setState( connection, false );
-// }
-
 function raiseEvent( event, methodName, error ) {
   this.emit(
     WebPortalEvent.getName( event ),
@@ -287,7 +272,7 @@ function wrapError( error ) {
 
 //region Execute
 
-function data_execute( method, isTransaction ) {
+function data_execute( method ) {
   return new Promise( (fulfill, reject) => {
     const self = this;
     // Check permissions.
@@ -304,7 +289,7 @@ function data_execute( method, isTransaction ) {
        */
       raiseEvent.call( self, WebPortalEvent.preExecute, method );
       // Execute command.
-      WebPortal.call( self.$modelUri, 'execute', method, /* dto = */ toDto.call( self ) )
+      WebPortal.call( self.$modelUri, 'execute', method, toDto.call( self ) )
         .then( dto => {
           // Load property values.
           fromDto.call( self, dto );
@@ -334,72 +319,6 @@ function data_execute( method, isTransaction ) {
           // Pass the error.
           reject( dpe );
         });
-
-      // let connection = null;
-      // const extensions = _extensions.get( self );
-      // (isTransaction ?
-      //   config.connectionManager.beginTransaction( extensions.dataSource ) :
-      //   config.connectionManager.openConnection( extensions.dataSource ))
-      //   .then( dsc => {
-      //     connection = dsc;
-      //     // Launch start event.
-      //     /**
-      //      * The event arises before the command object will be executed in the repository.
-      //      * @event CommandObject#preExecute
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {CommandObject} oldObject - The instance of the model before the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.preExecute, method );
-      //     // Execute command.
-      //     const dao = _dao.get( self );
-      //     return extensions.dataExecute ?
-      //       // *** Custom execute.
-      //       extensions.$runMethod( 'execute', self, getDataContext.call( self, connection ), method ) :
-      //       // *** Standard execute.
-      //       dao.$runMethod( method, connection, /* dto = */ toDto.call( self ))
-      //         .then( dto => {
-      //           // Load property values.
-      //           fromDto.call( self, dto );
-      //           return dto;
-      //         });
-      //   })
-      //   .then( dto => {
-      //     // Fetch children as well.
-      //     return fetchChildren.call( self, dto );
-      //   })
-      //   .then( none => {
-      //     // Launch finish event.
-      //     /**
-      //      * The event arises after the command object has been executed in the repository.
-      //      * @event CommandObject#postExecute
-      //      * @param {bo.common.DataPortalEventArgs} eventArgs - Data portal event arguments.
-      //      * @param {CommandObject} newObject - The instance of the model after the data portal action.
-      //      */
-      //     raiseEvent.call( self, DataPortalEvent.postExecute, method );
-      //     // Close connection/Finish transaction.
-      //     (isTransaction ?
-      //       config.connectionManager.commitTransaction( extensions.dataSource, connection ) :
-      //       config.connectionManager.closeConnection( extensions.dataSource, connection ))
-      //       .then( none => {
-      //         // Returns the executed command object.
-      //         fulfill( self );
-      //       });
-      //   })
-      //   .catch( reason => {
-      //     // Wrap the intercepted error.
-      //     const dpe = wrapError.call( self, reason );
-      //     // Launch finish event.
-      //     if (connection)
-      //       raiseEvent.call( self, DataPortalEvent.postExecute, method, dpe );
-      //     // Close connection/Undo transaction.
-      //     (isTransaction ?
-      //       config.connectionManager.rollbackTransaction( extensions.dataSource, connection ) :
-      //       config.connectionManager.closeConnection( extensions.dataSource, connection ))
-      //       .then( none => {
-      //         // Pass the error.
-      //         reject( dpe );
-      //       });
-      //   });
     }
   });
 }
@@ -544,7 +463,6 @@ class CommandObject extends ModelBase {
    *
    * @function CommandObject#execute
    * @param {string} [method] - An alternative execute method of the data access object.
-   * @param {boolean} [isTransaction] - Indicates whether transaction is required.
    * @returns {Promise.<CommandObject>} Returns a promise to the command object with the result.
    *
    * @throws {@link bo.system.ArgumentError Argument error}:
@@ -556,18 +474,12 @@ class CommandObject extends ModelBase {
    * @throws {@link bo.rules.AuthorizationError Authorization error}:
    *      The user has no permission to execute the action.
    */
-  execute( method, isTransaction ) {
-    const check = Argument.inMethod( this.$modelName, 'execute' );
+  execute( method ) {
 
-    if (typeof method === 'boolean' || method instanceof Boolean) {
-      isTransaction = method;
-      method = M_EXECUTE;
-    }
+    method = Argument.inMethod( this.$modelName, 'execute' )
+      .check( method ).forOptional( 'method' ).asString();
 
-    method = check( method ).forOptional( 'method' ).asString();
-    isTransaction = check( isTransaction ).forOptional( 'isTransaction' ).asBoolean();
-
-    return data_execute.call( this, method || M_EXECUTE, isTransaction);
+    return data_execute.call( this, method || M_EXECUTE );
   }
 
   //endregion

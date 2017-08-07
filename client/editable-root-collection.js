@@ -496,10 +496,8 @@ function data_update() {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, WebPortalAction.update, reason );
           // Launch finish event.
-          if (connection) {
-            raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
-            raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.update, dpe );
-          }
+          raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
+          raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.update, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -547,10 +545,8 @@ function data_remove() {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, WebPortalAction.remove, reason );
           // Launch finish event.
-          if (connection) {
-            raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
-            raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.remove, dpe );
-          }
+          raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
+          raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.remove, dpe );
           // Pass the error.
           reject( dpe );
         } );

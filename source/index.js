@@ -8,5 +8,5 @@ const index = {
   locales: locales
 };
 
-//module.exports = index;
+//export default index;
 global.clt = index;

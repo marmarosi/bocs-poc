@@ -3,8 +3,6 @@
 //region Imports
 
 import ConfigurationError from './configuration-error.js';
-import ConnectionManagerBase from '../data-access/connection-manager-base.js';
-import daoBuilder from '../data-access/dao-builder.js';
 import NoAccessBehavior from '../rules/no-access-behavior.js';
 import BrokenRulesResponse from '../rules/broken-rules-response.js';
 import UserInfo from './user-info.js';
@@ -14,8 +12,6 @@ import UserInfo from './user-info.js';
 //region Private variables
 
 let _isInitialized = false;
-let _connectionManager = null;
-let _daoBuilder = daoBuilder;
 let _userReader = null;
 let _getLocale = null;
 let _pathOfLocales = null;
@@ -32,29 +28,6 @@ let _brokenRulesResponse = null;
 class Configuration {
 
   //region Properties
-
-  /**
-   * The connection manager instance.
-   * It must be set via {@link bo.initialize} or {@link bo.configuration.initialize}.
-   * @member {bo.dataAccess.ConnectionManagerBase} bo.system.configuration.connectionManager
-   * @readonly
-   * @static
-   */
-  static get connectionManager() {
-    return _connectionManager;
-  }
-
-  /**
-   * Factory method to create data access objects.
-   * The default method is {@link bo.dataAccess.daoBuilder}.
-   * @member {external.daoBuilder} bo.system.configuration.daoBuilder
-   * @readonly
-   * @static
-   * @default bo.dataAccess.daoBuilder
-   */
-  static get daoBuilder() {
-    return _daoBuilder;
-  }
 
   /**
    * Returns the current user. The default method returns null, i.e. anonymous user is assumed.
@@ -147,10 +120,6 @@ class Configuration {
    *
    * @throws {@link bo.system.ConfigurationError Configuration error}:
    *      The configuration is already initialized.
-   * @throws {@link bo.system.ConfigurationError Configuration error}:
-   *      The connection manager is required.
-   * @throws {@link bo.system.ConfigurationError Configuration error}:
-   *      The connection manager must inherit ConnectionManagerBase type.
    */
   static initialize( config ) {
 
@@ -159,23 +128,6 @@ class Configuration {
 
     // Test if configuration file was found.
     if (config) {
-
-      // // Evaluate the connection manager.
-      // if (config.connectionManager) {
-      //   if (typeof config.connectionManager !== 'function')
-      //     throw new ConfigurationError( 'function_2', 'connectionManager' );
-      //   _connectionManager = new config.connectionManager();
-      //   if (!(_connectionManager instanceof ConnectionManagerBase))
-      //     throw new ConfigurationError( 'wrongConMan' );
-      // } else
-      //   throw new ConfigurationError( 'noConMan' );
-
-      // // Evaluate the data access object builder.
-      // if (config.daoBuilder) {
-      //   if (typeof config.daoBuilder !== 'function')
-      //     throw new ConfigurationError( 'function_2', 'daoBuilder' );
-      //   _daoBuilder = config.daoBuilder;
-      // }
 
       // Evaluate the user information reader.
       if (config.userReader) {

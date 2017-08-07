@@ -597,8 +597,7 @@ function data_fetch( filter, method ) {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, WebPortalAction.fetch, reason );
           // Launch finish event.
-          if (connection)
-            raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
+          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -651,10 +650,8 @@ function data_insert() {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, WebPortalAction.insert, reason );
           // Launch finish event.
-          if (connection) {
-            raiseEvent.call( self, WebPortalEvent.postInsert, null, dpe );
-            raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.insert, dpe );
-          }
+          raiseEvent.call( self, WebPortalEvent.postInsert, null, dpe );
+          raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.insert, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -707,10 +704,8 @@ function data_update() {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, WebPortalAction.update, reason );
           // Launch finish event.
-          if (connection) {
-            raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
-            raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.update, dpe );
-          }
+          raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
+          raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.update, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -761,10 +756,8 @@ function data_remove() {
           // Wrap the intercepted error.
           let dpe = wrapError.call( self, WebPortalAction.remove, reason );
           // Launch finish event.
-          if (connection) {
-            raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
-            raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.remove, dpe );
-          }
+          raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
+          raiseSave.call( self, WebPortalEvent.postSave, WebPortalAction.remove, dpe );
           // Pass the error.
           reject( dpe );
         } );

@@ -10,8 +10,6 @@
     "enumMember": "Az üzleti objektumok konfigurációjában {0} tulajdonság értékének {1} elemének kell lennie.",
     "userReader": "Az üzleti objektumok konfigurációjában a userReader tulajdonság által megadott függvénynek egy UserInfo objektumot kell visszaadnia.",
     "localeReader": "Az üzleti objektumok konfigurációjában a localeReader tulajdonság által megadott függvénynek szöveget kell visszaadnia.",
-    "noConMan": "A kapcsolatkezelő kötelező.",
-    "wrongConMan": "A kapcsolatkezelőnek a ConnectionManagerBase típusból kell származnia.",
     "ready": "A konfiguráció már inicializálva van."
   },
   "I18nError": {
@@ -44,7 +42,7 @@
     "daoType": "Az adatelérési objektum nem a DaoBase típusból származik: {0}",
     "noMethod": "{0} objektumnak nincs {1} nevű eljárása."
   },
-  "DataPortalError": {
+  "WebPortalError": {
     "create": "{0} létrehozása nem sikerült.",
     "fetch": "{0} lehívása nem sikerült.",
     "insert": "{0} felvitele nem sikerült.",

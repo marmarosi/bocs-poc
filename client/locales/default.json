@@ -10,8 +10,6 @@
     "enumMember": "The value of {0} property of business objects' configuration must be a {1} item.",
     "userReader": "The function defined by the userReader property of business objects' configuration must return a UserInfo object.",
     "localeReader": "The function defined by the localeReader property of business objects' configuration must return a string value.",
-    "noConMan": "The connection manager is required.",
-    "wrongConMan": "The connection manager must inherit ConnectionManagerBase type.",
     "ready": "Configuration is already initialized."
   },
   "I18nError": {
@@ -44,7 +42,7 @@
     "daoType": "The data access object must inherit DaoBase type: {0}",
     "noMethod": "{0} object has no method named {1}."
   },
-  "DataPortalError": {
+  "WebPortalError": {
     "create": "Creating {0} has failed.",
     "fetch": "Fetching {0} has failed.",
     "insert": "Inserting {0} has failed.",

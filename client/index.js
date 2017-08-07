@@ -15,11 +15,11 @@ import ReadOnlyChildCollection from './read-only-child-collection.js';
 import CommandObject from './command-object.js';
 
 import commonRules from './common-rules/index.js';
-import dataAccess from './data-access/index.js';
 import dataTypes from './data-types/index.js';
 import rules from './rules/index.js';
 import common from './common/index.js';
 import system from './system/index.js';
+//import webAccess from './web-access/index.js';
 
 //import configuration from './system/configuration.js';
 import i18n from './i18n.js';
@@ -66,11 +66,11 @@ const index = {
   CommandObject: CommandObject,
 
   commonRules: commonRules,
-  dataAccess: dataAccess,
   dataTypes: dataTypes,
   rules: rules,
   common: common,
   system: system,
+  //webAccess: webAccess,
 
   // configuration: configuration,
   i18n: i18n,
@@ -91,5 +91,5 @@ const index = {
 // Immutable object.
 Object.freeze( index );
 
-//module.exports = index;
+//export default index;
 global.bo = index;

@@ -19,12 +19,6 @@ import PropertyContext from './property-context.js';
 import ClientTransferContext from './client-transfer-context.js';
 import DataTransferContext from './data-transfer-context.js';
 
-import DataPortalAction from './data-portal-action.js';
-import DataPortalContext from './data-portal-context.js';
-import DataPortalEvent from './data-portal-event.js';
-import DataPortalEventArgs from './data-portal-event-args.js';
-import DataPortalError from './data-portal-error.js';
-
 //endregion
 
 /**
@@ -62,19 +56,6 @@ import DataPortalError from './data-portal-error.js';
  *      constructor to create new context object for custom client transfer functions.
  * @property {function} DataTransferContext - {@link bo.common.DataTransferContext Data transfer context}
  *      constructor to create new context object for custom data transfer functions.
- *
- * @property {function} DataPortalAction - {@link bo.common.DataPortalAction Data portal action}
- *      enumeration specifies the model operations to execute on data access objects.
- * @property {function} DataPortalContext - {@link bo.common.DataPortalContext Data portal context}
- *      constructor to create new context object for custom data portal functions.
- * @property {function} DataPortalEvent - {@link bo.common.DataPortalEvent Data portal event}
- *      enumeration specifies the events of data portal operations.
- * @property {function} DataPortalEventArgs - {@link bo.common.DataPortalEventArgs Data portal event arguments}
- *      constructor to create new context object for data portal events.
- * @property {function} DataPortalError - {@link bo.common.DataPortalError Data portal error}
- *      constructor to create a new error related to data portal actions.
- *
- *
  */
 const index = {
   ModelType: ModelType,
@@ -92,13 +73,7 @@ const index = {
   PropertyManager: PropertyManager,
   PropertyContext: PropertyContext,
   ClientTransferContext: ClientTransferContext,
-  DataTransferContext: DataTransferContext,
-
-  DataPortalAction: DataPortalAction,
-  DataPortalContext: DataPortalContext,
-  DataPortalEvent: DataPortalEvent,
-  DataPortalEventArgs: DataPortalEventArgs,
-  DataPortalError: DataPortalError
+  DataTransferContext: DataTransferContext
 };
 
 // Immutable object.
