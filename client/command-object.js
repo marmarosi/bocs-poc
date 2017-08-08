@@ -47,7 +47,6 @@ const _store = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
 const _dataContext = new WeakMap();
-const _dao = new WeakMap();
 
 //endregion
 
@@ -67,9 +66,7 @@ function getTransferContext () {
 function baseToDto() {
   const dto = {};
   const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     dto[ property.name ] = getPropertyValue.call( this, property );
   } );
   return dto;
@@ -85,9 +82,7 @@ function toDto () {
 
 function baseFromDto(dto) {
   const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
       setPropertyValue.call( this, property, dto[ property.name ] );
     }
@@ -367,9 +362,6 @@ class CommandObject extends ModelBase {
     _isValidated.set( this, false );
     _brokenRules.set( this, new BrokenRuleList( name ) );
     _dataContext.set( this, null );
-
-    // Get data access object.
-    _dao.set( this, extensions.getDataAccessObject( name ) );
 
     // Set up business rules.
     rules.initialize(config.noAccessBehavior);

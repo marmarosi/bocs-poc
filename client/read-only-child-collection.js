@@ -126,25 +126,6 @@ class ReadOnlyChildCollection extends CollectionBase {
 
   //endregion
 
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object collection to a plain object array to send to the client.
-   * <br/>_This method is usually called by the parent object._
-   *
-   * @function ReadOnlyChildCollection#toCto
-   * @returns {Array.<object>} The client transfer object.
-   */
-  toCto() {
-    const cto = [];
-    this.forEach( item => {
-      cto.push( item.toCto() );
-    } );
-    return cto;
-  }
-
-  //endregion
-
   //region Actions
 
   /**

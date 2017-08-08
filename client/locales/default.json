@@ -31,17 +31,6 @@
     "default": "The method is not implemented.",
     "method": "The {0}.{1} method is not implemented."
   },
-  "DaoError": {
-    "default": "A data access object error occurred.",
-    "c_manString": "The {1} argument of {0} constructor must be a non-empty string.",
-    "m_manString": "The {2} argument of {0}.{1} method must be a non-empty string.",
-    "f_manString": "The {0} argument of daoBuilder function must be a non-empty string.",
-    "filePath": "The {0} argument of daoBuilder function is not a valid file path: {1}",
-    "noDaoFile": "The required data access file does not exist: {0}",
-    "daoCtor": "The data access file must return a constructor: {0}",
-    "daoType": "The data access object must inherit DaoBase type: {0}",
-    "noMethod": "{0} object has no method named {1}."
-  },
   "WebPortalError": {
     "create": "Creating {0} has failed.",
     "fetch": "Fetching {0} has failed.",

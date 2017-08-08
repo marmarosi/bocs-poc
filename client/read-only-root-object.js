@@ -47,7 +47,6 @@ const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
 const _propertyContext = new WeakMap();
 const _dataContext = new WeakMap();
-const _dao = new WeakMap();
 
 //endregion
 
@@ -66,9 +65,7 @@ function baseFromDto( dto ) {
   const self = this;
   const properties = _properties.get( this );
 
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
       setPropertyValue.call( self, property, dto[ property.name ] );
     }
@@ -81,19 +78,6 @@ function fromDto( dto ) {
     extensions.fromDto.call( this, getTransferContext.call( this, false ), dto );
   else
     baseFromDto.call( this, dto );
-}
-
-function baseToCto() {
-  const cto = {};
-  const self = this;
-  const properties = _properties.get( this );
-
-  properties.filter( property => {
-    return property.isOnCto;
-  } ).forEach( property => {
-    cto[ property.name ] = readPropertyValue.call( self, property );
-  } );
-  return cto;
 }
 
 //endregion
@@ -263,9 +247,6 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
   _propertyContext.set( this, null );
   _dataContext.set( this, null );
 
-  // Get data access object.
-  _dao.set( this, extensions.getDataAccessObject( name ) );
-
   // Immutable definition object.
   Object.freeze( this );
 }
@@ -421,33 +402,6 @@ class ReadOnlyRootObject extends ModelBase {
    */
   static get modelType() {
     return ModelType.ReadOnlyRootObject;
-  }
-
-  //endregion
-
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object to a plain object to send to the client.
-   *
-   * @function ReadOnlyRootObject#toCto
-   * @returns {object} The client transfer object.
-   */
-  toCto() {
-    let cto = {};
-    const extensions = _extensions.get( this );
-    if (extensions.toCto)
-      cto = extensions.toCto.call( this, getTransferContext.call( this, true ) );
-    else
-      cto = baseToCto.call( this );
-
-    const self = this;
-    const properties = _properties.get( this );
-    properties.children().forEach( property => {
-      const child = getPropertyValue.call( self, property );
-      cto[ property.name ] = child.toCto();
-    } );
-    return cto;
   }
 
   //endregion

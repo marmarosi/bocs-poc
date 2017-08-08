@@ -43,7 +43,6 @@ const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
 const _dataContext = new WeakMap();
-const _dao = new WeakMap();
 const _items = new WeakMap();
 
 //endregion
@@ -157,18 +156,6 @@ function getTransferContext() {
   return new ClientTransferContext( null, null, null );
 }
 
-function baseToCto() {
-  const cto = [];
-  this.forEach( function ( item ) {
-    cto.push( item.toCto() );
-  } );
-  return cto;
-}
-
-function baseFromCto( data ) {
-  // Nothing to do.
-}
-
 //endregion
 
 //region Permissions
@@ -276,9 +263,6 @@ function initialize( name, itemType, rules, extensions, eventHandlers ) {
   _brokenRules.set( this, new BrokenRuleList( name ) );
   _dataContext.set( this, null );
   _items.set( this, [] );
-
-  // Get data access object.
-  _dao.set( this, extensions.getDataAccessObject( name ) );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -734,96 +718,6 @@ class EditableRootCollection extends CollectionBase {
     else
       auth = canDo.call( this, AuthorizationAction.updateObject );
     return auth && this.isDirty && this.isValid();
-  }
-
-  //endregion
-
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object collection to a plain object array to send to the client.
-   *
-   * @function EditableRootCollection#toCto
-   * @returns {object} The client transfer object.
-   */
-  toCto() {
-    const extensions = _extensions.get( this );
-    if (extensions.toCto)
-      return extensions.toCto.call( this, getTransferContext() );
-    else
-      return baseToCto.call( this );
-  }
-
-  /**
-   * Rebuilds the business object collection from a plain object array sent by the client.
-   *
-   * @function EditableRootCollection#fromCto
-   * @param {object[]} cto - The client transfer object.
-   * @returns {Promise.<EditableRootCollection>} Returns a promise to the editable root collection rebuilt.
-   */
-  fromCto( cto ) {
-    const self = this;
-    return new Promise( ( fulfill, reject ) => {
-      const extensions = _extensions.get( self );
-      if (extensions.fromCto)
-        extensions.fromCto.call( self, getTransferContext(), cto );
-      else
-        baseFromCto.call( self, cto );
-
-      if (cto instanceof Array) {
-        const items = _items.get( self );
-        const ctoNew = cto.filter( d => { return true; } ); // Deep copy.
-        const itemsLive = [];
-        const itemsLate = [];
-        let index;
-
-        // Discover changed items.
-        for (index = 0; index < items.length; index++) {
-          let dataFound = false;
-          let i = 0;
-          for (; i < ctoNew.length; i++) {
-            if (items[ index ].keyEquals( cto[ i ] )) {
-              itemsLive.push( { item: index, cto: i } );
-              dataFound = true;
-              break;
-            }
-          }
-          dataFound ?
-            ctoNew.splice( i, 1 ) :
-            itemsLate.push( index );
-        }
-        // Update existing items.
-        Promise.all( itemsLive.map( live => {
-          return items[ live.item ].fromCto( cto[ live.cto ] );
-        } ) )
-          .then( values => {
-            // Remove non existing items.
-            for (index = 0; index < itemsLate.length; index++) {
-              items[ itemsLate[ index ] ].remove();
-            }
-            // Insert non existing items.
-            const itemType = _itemType.get( self );
-            const eventHandlers = _eventHandlers.get( self );
-
-            Promise.all( ctoNew.map( cto => {
-              return itemType.create( self, eventHandlers )
-            } ) )
-              .then( newItems => {
-                items.push.apply( items, newItems );
-                Promise.all( newItems.map( ( newItem, i ) => {
-                  return newItem.fromCto( ctoNew[ i ] );
-                } ) )
-                  .then( values => {
-                    _items.set( self, items );
-                    // Finished.
-                    fulfill( self );
-                  } )
-              } );
-          } );
-      } else
-      // Nothing to do.
-        fulfill( self );
-    } );
   }
 
   //endregion

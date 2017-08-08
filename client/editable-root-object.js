@@ -51,7 +51,6 @@ const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
 const _dataContext = new WeakMap();
-const _dao = new WeakMap();
 
 //endregion
 
@@ -180,9 +179,7 @@ function getTransferContext( authorize ) {
 function baseToDto() {
   const dto = {};
   const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     dto[ property.name ] = getPropertyValue.call( this, property );
   } );
   return dto;
@@ -198,9 +195,7 @@ function toDto() {
 
 function baseFromDto( dto ) {
   const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
       setPropertyValue.call( this, property, dto[ property.name ] );
     }
@@ -213,30 +208,6 @@ function fromDto( dto ) {
     extensions.fromDto.call( this, getTransferContext.call( this, false ), dto );
   else
     baseFromDto.call( this, dto );
-}
-
-function baseToCto() {
-  const cto = {};
-  const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnCto;
-  } ).forEach( property => {
-    cto[ property.name ] = readPropertyValue.call( this, property );
-  } );
-  return cto;
-}
-
-function baseFromCto( cto ) {
-  if (cto && typeof cto === 'object') {
-    const properties = _properties.get( this );
-    properties.filter( property => {
-      return property.isOnCto;
-    } ).forEach( property => {
-      if (cto.hasOwnProperty( property.name ) && typeof cto[ property.name ] !== 'function') {
-        writePropertyValue.call( this, property, cto[ property.name ] );
-      }
-    } );
-  }
 }
 
 //endregion
@@ -450,9 +421,6 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
   _dataContext.set( this, null );
-
-  // Get data access object.
-  _dao.set( this, extensions.getDataAccessObject( name ) );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -934,64 +902,6 @@ class EditableRootObject extends ModelBase {
     else
       auth = canDo.call( this, AuthorizationAction.updateObject );
     return auth && this.isDirty && this.isValid();
-  }
-
-  //endregion
-
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object to a plain object to send to the client.
-   *
-   * @function EditableRootObject#toCto
-   * @returns {object} The client transfer object.
-   */
-  toCto() {
-    let cto = {};
-    const extensions = _extensions.get( this );
-    if (extensions.toCto)
-      cto = extensions.toCto.call( this, getTransferContext.call( this, true ) );
-    else
-      cto = baseToCto.call( this );
-
-    const properties = _properties.get( this );
-    properties.children().forEach( property => {
-      const child = getPropertyValue.call( this, property );
-      cto[ property.name ] = child.toCto();
-    } );
-    return cto;
-  }
-
-  /**
-   * Rebuilds the business object from a plain object sent by the client.
-   *
-   * @function EditableRootObject#fromCto
-   * @param {object} cto - The client transfer object.
-   * @returns {Promise.<EditableRootObject>} Returns a promise to the editable root object rebuilt.
-   */
-  fromCto( cto ) {
-    const self = this;
-    return new Promise( ( fulfill, reject ) => {
-
-      // Set self properties.
-      const extensions = _extensions.get( self );
-      extensions.fromCto ?
-        extensions.fromCto.call( self, getTransferContext.call( self, true ), cto ) :
-        baseFromCto.call( self, cto );
-
-      // Build children.
-      const properties = _properties.get( self );
-      Promise.all( properties.children().map( property => {
-        const child = getPropertyValue.call( self, property );
-        return cto[ property.name ] ?
-          child.fromCto( cto[ property.name ] ) :
-          Promise.resolve( null );
-      } ) )
-        .then( values => {
-          // Finished.
-          fulfill( self );
-        } );
-    } );
   }
 
   //endregion

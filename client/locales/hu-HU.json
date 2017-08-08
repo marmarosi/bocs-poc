@@ -31,17 +31,6 @@
     "default": "Az eljárás nincs megvalósítva.",
     "method": "{0}.{1} eljárás nincs megvalósítva."
   },
-  "DaoError": {
-    "default": "Hiba van az adatelérési objektumban.",
-    "c_manString": "A {0} konstruktor {0} paramétere nem lehet üres szöveg.",
-    "m_manString": "A {0}.{1} eljárás {2} paramétere nem lehet üres szöveg.",
-    "f_manString": "A daoBuilder függvény {0} paramétere nem lehet üres szöveg.",
-    "filePath": "A daoBuilder függvény {0} paramétere érvénytelen elérési út: {1}",
-    "noDaoFile": "A szükséges adatelérési fájl nem létezik: {0}",
-    "daoCtor": "Az adatelérési fájl nem konstruktort ad vissza: {0}",
-    "daoType": "Az adatelérési objektum nem a DaoBase típusból származik: {0}",
-    "noMethod": "{0} objektumnak nincs {1} nevű eljárása."
-  },
   "WebPortalError": {
     "create": "{0} létrehozása nem sikerült.",
     "fetch": "{0} lehívása nem sikerült.",

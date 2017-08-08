@@ -63,9 +63,7 @@ function getTransferContext( authorize ) {
 
 function baseFromDto( dto ) {
   const properties = _properties.get( this );
-  properties.filter( property => {
-    return property.isOnDto;
-  } ).forEach( property => {
+  properties.forEach( property => {
     if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
       setPropertyValue.call( this, property, dto[ property.name ] );
     }
@@ -78,18 +76,6 @@ function fromDto( dto ) {
     extensions.fromDto.call( this, getTransferContext.call( this, false ), dto );
   else
     baseFromDto.call( this, dto );
-}
-
-function baseToCto() {
-  const cto = {};
-  const properties = _properties.get( this );
-
-  properties.filter( property => {
-    return property.isOnCto;
-  } ).forEach( property => {
-    cto[ property.name ] = readPropertyValue.call( this, property );
-  } );
-  return cto;
 }
 
 //endregion
@@ -408,33 +394,6 @@ class ReadOnlyChildObject extends ModelBase {
    */
   static get modelType() {
     return ModelType.ReadOnlyChildObject;
-  }
-
-  //endregion
-
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object to a plain object to send to the client.
-   * <br/>_This method is usually called by the parent object._
-   *
-   * @function ReadOnlyChildObject#toCto
-   * @returns {object} The client transfer object.
-   */
-  toCto() {
-    let cto = {};
-    const extensions = _extensions.get( this );
-    if (extensions.toCto)
-      cto = extensions.toCto.call( this, getTransferContext.call( this, true ) );
-    else
-      cto = baseToCto.call( this );
-
-    const properties = _properties.get( this );
-    properties.children().forEach( property => {
-      const child = getPropertyValue.call( this, property );
-      cto[ property.name ] = child.toCto();
-    } );
-    return cto;
   }
 
   //endregion

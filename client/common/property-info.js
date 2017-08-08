@@ -82,7 +82,7 @@ class PropertyInfo {
 
     flags = type instanceof DataType ?
       check( flags || PropertyFlag.none ).forMandatory( 'flags' ).asInteger() :
-      PropertyFlag.readOnly | PropertyFlag.onDtoOnly | PropertyFlag.onCtoOnly;
+      PropertyFlag.readOnly;
 
     /**
      * Indicates whether the value of the property can be modified.
@@ -102,20 +102,6 @@ class PropertyInfo {
      * @readonly
      */
     this.isParentKey = (flags & PropertyFlag.parentKey) === PropertyFlag.parentKey;
-    /**
-     * Indicates whether the value of the property would be passed to the data access object
-     * or would be received from the data access object, respectively.
-     * @type {string}
-     * @readonly
-     */
-    this.isOnDto = (flags & PropertyFlag.onCtoOnly) === PropertyFlag.none;
-    /**
-     * Indicates whether the value of the property would be passed to the client
-     * or would be received from the client, respectively.
-     * @type {string}
-     * @readonly
-     */
-    this.isOnCto = (flags & PropertyFlag.onDtoOnly) === PropertyFlag.none;
 
     /**
      * Checks if value has the appropriate type and it is not null,

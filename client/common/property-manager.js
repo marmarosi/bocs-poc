@@ -342,8 +342,7 @@ class PropertyManager {
         // No keys: dto will be used.
         key = {};
         items.forEach( item => {
-          if (item.isOnDto)
-            key[ item.name ] = getPropertyValue( item );
+          key[ item.name ] = getPropertyValue( item );
         } );
         break;
       case 1:
@@ -392,8 +391,7 @@ class PropertyManager {
       } );
     } else {
       items.forEach( item => {
-        if (item.isOnCto)
-          values.set( item.name, getPropertyValue( item ) );
+        values.set( item.name, getPropertyValue( item ) );
       } );
     }
 

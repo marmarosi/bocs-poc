@@ -41,18 +41,6 @@ class PropertyFlag extends Enumeration {
      * @default 4
      */
     this.parentKey = 4;
-    /**
-     * The value of the model property will be used on the client transfer object only.
-     * @constant {number} bo.common.PropertyFlag#onCtoOnly
-     * @default 8
-     */
-    this.onCtoOnly = 8;
-    /**
-     * The value of the model property will be used on the data transfer object only.
-     * @constant {number} bo.common.PropertyFlag#onDtoOnly
-     * @default 16
-     */
-    this.onDtoOnly = 16;
 
     // Immutable object.
     Object.freeze( this );

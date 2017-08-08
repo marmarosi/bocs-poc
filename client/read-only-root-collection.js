@@ -38,7 +38,6 @@ const _eventHandlers = new WeakMap();
 const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
 const _dataContext = new WeakMap();
-const _dao = new WeakMap();
 const _items = new WeakMap();
 const _totalItems = new WeakMap();
 
@@ -50,19 +49,6 @@ const _totalItems = new WeakMap();
 
 function getTransferContext() {
   return new ClientTransferContext( null, null, null );
-}
-
-function baseToCto() {
-  let cto = [];
-  const items = _items.get( this );
-  const totalItems = _totalItems.get( this );
-
-  items.forEach( function ( item ) {
-    cto.push( item.toCto() );
-  } );
-  if (totalItems)
-    cto.totalItems = totalItems;
-  return cto;
 }
 
 //endregion
@@ -140,9 +126,6 @@ function initialize( name, itemType, rules, extensions, eventHandlers ) {
   _dataContext.set( this, null );
   _items.set( this, [] );
   _totalItems.set( this, null );
-
-  // Get data access object.
-  _dao.set( this, extensions.getDataAccessObject( name ) );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -333,24 +316,6 @@ class ReadOnlyRootCollection extends CollectionBase {
    */
   static get modelType() {
     return ModelType.ReadOnlyRootCollection;
-  }
-
-  //endregion
-
-  //region Transfer object methods
-
-  /**
-   * Transforms the business object collection to a plain object array to send to the client.
-   *
-   * @function ReadOnlyRootCollection#toCto
-   * @returns {Array.<object>} The client transfer object.
-   */
-  toCto() {
-    const extensions = _extensions.get( this );
-    if (extensions.toCto)
-      return extensions.toCto.call( this, getTransferContext() );
-    else
-      return baseToCto.call( this );
   }
 
   //endregion
