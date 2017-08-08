@@ -3,13 +3,14 @@
 //region Imports
 
 import Argument from './argument-check.js';
+import Configuration from './configuration.js';
 import Enumeration from './enumeration.js';
+import EventEmitter from './event-emitter.js';
 import UserInfo from './user-info.js';
 
 import ArgumentError from './argument-error.js';
 import ComposerError from './composer-error.js';
 import ConfigurationError from  './configuration-error.js';
-import Configuration from './configuration.js';
 import ConstructorError from './constructor-error.js';
 import EnumerationError from './enumeration-error.js';
 import MethodError from './method-error.js';
@@ -25,8 +26,12 @@ import PropertyError from './property-error.js';
  *
  * @property {object} Argument - {@link bo.system.Argument Argument verification}
  *      namespace provides methods to check arguments.
+ * @property {function} Configuration - {@link bo.system.Configuration Configuration}
+ *      object provides methods and properties to access the business objects' configuration.
  * @property {function} Enumeration - {@link bo.system.Enumeration Enumeration}
  *      constructor to create new enumeration.
+ * @property {function} EventEmitter - {@link bo.system.EventEmitter EventEmitter}
+ *      constructor to create new event emitter instance.
  * @property {function} UserInfo - {@link bo.system.UserInfo User data}
  *      constructor to create new base object for user information.
  *
@@ -36,8 +41,6 @@ import PropertyError from './property-error.js';
  *      constructor to create a new error related to model composer.
  * @property {function} ConfigurationError - {@link bo.system.ConfigurationError Configuration error}
  *      constructor to create a new error related to configuration.
- * @property {function} Configuration - {@link bo.system.Configuration Configuration}
- *      object provides methods and properties to access the business objects' configuration.
  * @property {function} ConstructorError - {@link bo.system.ConstructorError Constructor error}
  *      constructor to create a new error related to a constructor argument.
  * @property {function} EnumerationError - {@link bo.system.EnumerationError Enumeration error}
@@ -51,13 +54,14 @@ import PropertyError from './property-error.js';
  */
 const index = {
   Argument: Argument,
+  Configuration: Configuration,
   Enumeration: Enumeration,
+  EventEmitter: EventEmitter,
   UserInfo: UserInfo,
 
   ArgumentError: ArgumentError,
   ComposerError: ComposerError,
   ConfigurationError: ConfigurationError,
-  Configuration: Configuration,
   ConstructorError: ConstructorError,
   EnumerationError: EnumerationError,
   MethodError: MethodError,

@@ -4,7 +4,6 @@
 
 import ConfigurationError from './configuration-error.js';
 import NoAccessBehavior from '../rules/no-access-behavior.js';
-import BrokenRulesResponse from '../rules/broken-rules-response.js';
 import UserInfo from './user-info.js';
 
 //endregion
@@ -14,9 +13,26 @@ import UserInfo from './user-info.js';
 let _isInitialized = false;
 let _userReader = null;
 let _getLocale = null;
-let _pathOfLocales = null;
 let _noAccessBehavior = NoAccessBehavior.throwError;
-let _brokenRulesResponse = null;
+
+//endregion
+
+//region Helper methods
+
+function isEnumMember( value, enumType, name, errorType ) {
+
+  if (!(enumType && enumType.hasMember && enumType.constructor &&
+      Object.getPrototypeOf( enumType.constructor ) &&
+      Object.getPrototypeOf( enumType.constructor ).name === 'Enumeration'))
+    throw new errorType( 'enumType', enumType );
+
+  if (typeof value === 'string' && enumType.isMemberName( value ))
+    value = enumType.getValue( value );
+  else if (!enumType.hasMember( value ))
+    throw new errorType( 'enumMember', name, enumType.$name );
+
+  return value;
+}
 
 //endregion
 
@@ -75,18 +91,6 @@ class Configuration {
   }
 
   /**
-   * The relative path of the directory containing project locales. If not supplied,
-   * the business objects cannot interpret the first message argument as the message key,
-   * i.e. the first message argument must be the message text.
-   * @member {string} bo.system.configuration.pathOfLocales
-   * @readonly
-   * @static
-   */
-  static get pathOfLocales() {
-    return _pathOfLocales;
-  }
-
-  /**
    * The default behavior for unauthorized operations.
    * The default value is {@link bo.rules.NoAccessBehavior#throwError}.
    * @member {bo.rules.NoAccessBehavior} bo.system.configuration.noAccessBehavior
@@ -98,19 +102,9 @@ class Configuration {
     return _noAccessBehavior;
   }
 
-  /**
-   * The constructor of the response object for a broken rules request.
-   * The default value is {@link bo.rules.BrokenRulesResponse}.
-   * @member {bo.rules.BrokenRulesResponse} bo.system.configuration.brokenRulesResponse
-   * @readonly
-   * @static
-   * @default bo.rules.BrokenRulesResponse
-   */
-  static get brokenRulesResponse() {
-    return _brokenRulesResponse || BrokenRulesResponse;
-  }
-
   //endregion
+
+  //region Initialize
 
   /**
    * Reads the configuration of business objects.
@@ -143,47 +137,17 @@ class Configuration {
         _getLocale = config.localeReader;
       }
 
-      // // Evaluate the path of locale.
-      // if (config.pathOfLocales) {
-      //   if ((typeof pathOfLocales !== 'string' && !(pathOfLocales instanceof String)) ||
-      //     pathOfLocales.trim().length === 0)
-      //     throw new ConfigurationError( 'string', 'pathOfLocales' );
-      //   // TODO
-      //   //if (cfg.pathOfLocales not exists...)
-      //   _pathOfLocales = config.pathOfLocales;
-      // }
-
       // Evaluate the unauthorized behavior.
       if (config.noAccessBehavior !== undefined && config.noAccessBehavior !== null) {
         _noAccessBehavior = isEnumMember(
           config.noAccessBehavior, NoAccessBehavior, 'noAccessBehavior', ConfigurationError
         );
       }
-
-      // Evaluate the broken rules response.
-      if (config.brokenRulesResponse) {
-        if (typeof config.brokenRulesResponse !== 'function')
-          throw new ConfigurationError( 'function_2', 'brokenRulesResponse' );
-        _brokenRulesResponse = config.brokenRulesResponse;
-      }
     }
     _isInitialized = true;
   }
-}
 
-function isEnumMember( value, enumType, name, errorType ) {
-
-  if (!(enumType && enumType.hasMember && enumType.constructor &&
-      Object.getPrototypeOf( enumType.constructor ) &&
-      Object.getPrototypeOf( enumType.constructor ).name === 'Enumeration'))
-    throw new errorType( 'enumType', enumType );
-
-  if (typeof value === 'string' && enumType.isMemberName( value ))
-    value = enumType.getValue( value );
-  else if (!enumType.hasMember( value ))
-    throw new errorType( 'enumMember', name, enumType.$name );
-
-  return value;
+  //endregion
 }
 
 Object.freeze( Configuration );
