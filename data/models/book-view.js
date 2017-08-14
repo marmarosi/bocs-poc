@@ -2,6 +2,7 @@
 
 const bo = require( 'business-objects' );
 const FactoryBase = require( '../factory-base.js' );
+const BookTagsView = require( './book-tags-view.js' );
 
 const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
@@ -17,6 +18,7 @@ const BookView = new Model( 'BookView' )
   .decimal( 'price' )
   .canRead( cr.isInAnyRole, [ 'salesmen', 'administrators' ], 'You are not authorized to view the totalPrice of the blanket order.' )
   .boolean( 'used' )
+  .property( 'tags', BookTagsView )
   // --- Permissions
   .canFetch( cr.isInRole, 'designers', 'You are not authorized to retrieve blanket order.' )
   // --- Build model class

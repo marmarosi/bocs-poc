@@ -14,4 +14,12 @@ clt.data.models.BookView.get( 123 )
     document.getElementById("publishDate").innerText = book.publishDate.toString();
     document.getElementById("price").innerText = book.price.toString();
     document.getElementById("used").innerText = book.used.toString();
+
+    let tags = '';
+    book.tags.forEach( tag => {
+      if (!tags)
+        tags += ', ';
+      tags += tag;
+    } );
+    document.getElementById("tags").innerText = tags;
   } );

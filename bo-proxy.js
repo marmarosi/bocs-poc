@@ -81,7 +81,10 @@ class BoProxy {
       if (filter)
         model[ methodName ]( filter )
           .then( result => {
-            resolve( result.toCto() );
+
+            const cto = result.toCto();
+            resolve( cto );
+            // resolve( result.toCto() );
           } )
           .catch( reason => {
             reject( reason );

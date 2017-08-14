@@ -17,7 +17,11 @@ class BookViewDao extends DaoBase {
       title: 'The shogun',
       publishDate: 1,
       price: 34.5,
-      used: false
+      used: false,
+      tags: [
+        { bookTagKey: 31, bookKey: key, tag: 'adventure' },
+        { bookTagKey: 32, bookKey: key, tag: 'history' }
+      ]
     };
     ctx.fulfill( order );
   }
@@ -30,7 +34,11 @@ class BookViewDao extends DaoBase {
       title: 'The shogun',
       publishDate: 1,
       price: 34.5,
-      used: false
+      used: false,
+      tags: [
+        { bookTagKey: 31, bookKey: key, tag: 'adventure' },
+        { bookTagKey: 32, bookKey: key, tag: 'history' }
+      ]
     };
     ctx.fulfill( order );
   }
