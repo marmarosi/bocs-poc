@@ -198,7 +198,7 @@ function data_fetch( filter, method ) {
             totalItems = null;
           _totalItems.set( self, totalItems );
           // Load children.
-          return fetchChildren.call( self, data )
+          return fetchChildren.call( self, data.collection )
             .then( children => {
               let items = _items.get( self );
               children.forEach( child => {

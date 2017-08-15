@@ -2,6 +2,7 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
+//const modelType = require( './common/model-type.js' );
 const FactoryBase = require( './data/factory-base.js' );
 
 class BoProxy {
@@ -78,25 +79,26 @@ class BoProxy {
         req.body
       );
 
-      if (filter)
-        model[ methodName ]( filter )
-          .then( result => {
-
-            const cto = result.toCto();
-            resolve( cto );
-            // resolve( result.toCto() );
-          } )
-          .catch( reason => {
-            reject( reason );
-          } );
-      else
+      const pResult = filter ?
+        model[ methodName ]( filter ) :
         model[ methodName ]()
-          .then( result => {
-            resolve( result.toCto() );
-          } )
-          .catch( reason => {
-            reject( reason );
-          } );
+      ;
+      pResult
+        .then( result => {
+
+          const cto = result.constructor.name === 'ReadOnlyRootCollection' ?
+            {
+              modelType: 'ReadOnlyRootCollection',
+              collection: result.toCto(),
+              totalItems: result.totalItems
+            }:
+            result.toCto();
+          resolve( cto );
+          // resolve( result.toCto() );
+        } )
+        .catch( reason => {
+          reject( reason );
+        } );
     } );
   }
 }

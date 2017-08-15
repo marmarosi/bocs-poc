@@ -1,5 +1,7 @@
 "use strict";
 
+import modelType from '../common/model-type.js';
+
 class WebPortal {
 
   static call( modelUri, dpMethod, altName, data ) {
@@ -31,9 +33,10 @@ class WebPortal {
       .then( response => {
         if (response.ok) {
           const contentType = response.headers.get( "content-type" );
-          if (contentType && contentType.includes( "application/json" )) {
+
+          if (contentType && contentType.includes( "application/json" ))
             return response.json();
-          }
+
           throw new TypeError("Oops, we haven't got JSON!");
         }
         throw new Error('Network response was not O.K.');
