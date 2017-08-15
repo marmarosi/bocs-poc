@@ -17,9 +17,9 @@ clt.data.models.BookView.get( 123 )
 
     let tags = '';
     book.tags.forEach( tag => {
-      if (!tags)
+      if (tags)
         tags += ', ';
-      tags += tag;
+      tags += tag.tag;
     } );
     document.getElementById("tags").innerText = tags;
   } );

@@ -191,7 +191,8 @@ function data_fetch( filter, method ) {
           let totalItems = _totalItems.get( self );
           if (data.totalItems &&
             (typeof data.totalItems === 'number' || data.totalItems instanceof Number) &&
-            data.totalItems % 1 === 0)
+            data.totalItems % 1 === 0
+          )
             totalItems = data.totalItems;
           else
             totalItems = null;

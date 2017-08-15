@@ -4,7 +4,8 @@
   "description": "Proof of conception for client-server solution of business objects.",
   "main": "server.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack",
+    "build": "./node_modules/.bin/webpack --color",
+    "minify": "./node_modules/.bin/babili public/scripts/bo-client.js > public/scripts/bo-client.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -20,6 +21,7 @@
     "serve-static": "^1.12.3"
   },
   "devDependencies": {
+    "babili": "^0.1.4",
     "webpack": "^3.4.1"
   }
 }

@@ -56,6 +56,7 @@ const _dataContext = new WeakMap();
 
 function getTransferContext () {
   const properties = _properties.get( this );
+
   return new DataTransferContext(
     properties.toArray(),
     getPropertyValue.bind( this ),
@@ -65,15 +66,22 @@ function getTransferContext () {
 
 function baseToDto() {
   const dto = {};
+  const self = this;
   const properties = _properties.get( this );
-  properties.forEach( property => {
-    dto[ property.name ] = getPropertyValue.call( this, property );
-  } );
+
+  properties
+    .filter( property => {
+      return property.isOnDto;
+    } )
+    .forEach( property => {
+      dto[ property.name ] = getPropertyValue.call( self, property );
+    } );
   return dto;
 }
 
 function toDto () {
   const extensions = _extensions.get( this );
+
   if (extensions.toDto)
     return extensions.toDto.call( this, getTransferContext.call( this ) );
   else
@@ -81,16 +89,23 @@ function toDto () {
 }
 
 function baseFromDto(dto) {
+  const self = this;
   const properties = _properties.get( this );
-  properties.forEach( property => {
-    if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
-      setPropertyValue.call( this, property, dto[ property.name ] );
-    }
-  } );
+
+  properties
+    .filter( property => {
+      return property.isOnDto;
+    } )
+    .forEach( property => {
+      if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
+        setPropertyValue.call( self, property, dto[ property.name ] );
+      }
+    } );
 }
 
 function fromDto (dto) {
   const extensions = _extensions.get( this );
+
   if (extensions.fromDto)
     extensions.fromDto.call( this, getTransferContext.call( this ), dto );
   else

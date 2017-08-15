@@ -56,22 +56,30 @@ const _dataContext = new WeakMap();
 
 function getTransferContext( authorize ) {
   const properties = _properties.get( this );
+
   return authorize ?
     new ClientTransferContext( properties.toArray(), readPropertyValue.bind( this ), null ) :
     new DataTransferContext( properties.toArray(), null, setPropertyValue.bind( this ) );
 }
 
 function baseFromDto( dto ) {
+  const self = this;
   const properties = _properties.get( this );
-  properties.forEach( property => {
-    if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
-      setPropertyValue.call( this, property, dto[ property.name ] );
-    }
-  } );
+
+  properties
+    .filter( property => {
+      return property.isOnDto;
+    } )
+    .forEach( property => {
+      if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
+        setPropertyValue.call( self, property, dto[ property.name ] );
+      }
+    } );
 }
 
 function fromDto( dto ) {
   const extensions = _extensions.get( this );
+
   if (extensions.fromDto)
     extensions.fromDto.call( this, getTransferContext.call( this, false ), dto );
   else

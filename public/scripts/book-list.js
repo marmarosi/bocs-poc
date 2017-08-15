@@ -11,7 +11,9 @@ clt.data.models.BookList.getAll()
     let out = "";
     books.forEach( book => {
       out += '<a href="/book-view/' + book.bookKey + '">' +
-        book.author + ': ' + book.title + '</a><br>';
+        book.author + ': ' + book.title + '</a><br />';
     } );
+    if (books.totalItems !== null)
+      out += '<br />Total count: ' + books.totalItems.toString() + '<br />';
     document.getElementById("books").innerHTML = out;
   } );
