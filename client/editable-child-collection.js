@@ -128,6 +128,25 @@ class EditableChildCollection extends CollectionBase {
 
   //endregion
 
+  //region Transfer object methods
+
+  /**
+   * Transforms the business object collection to a plain object array to send to the server.
+   * <br/>_This method is usually called by the parent object._
+   *
+   * @function EditableChildCollection#toDto
+   * @returns {Array.<object>} The data transfer object.
+   */
+  toDto() {
+    const dto = [];
+    this.forEach( item => {
+      dto.push(item.toDto());
+    });
+    return dto;
+  }
+
+  //endregion
+
   //region Actions
 
   /**

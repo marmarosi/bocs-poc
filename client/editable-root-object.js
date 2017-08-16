@@ -181,6 +181,14 @@ function baseToDto() {
   const self = this;
   const dto = {};
   const properties = _properties.get( this );
+  //
+  // properties
+  //   .filter( property => {
+  //     return property.isOnDto;
+  //   } )
+  //   .forEach( property => {
+  //     dto[ property.name ] = getPropertyValue.call( self, property );
+  //   } );
 
   properties
     .filter( property => {
@@ -189,6 +197,13 @@ function baseToDto() {
     .forEach( property => {
       dto[ property.name ] = getPropertyValue.call( self, property );
     } );
+
+  properties
+    .children()
+    .forEach( property => {
+      dto[ property.name ] = getPropertyValue.call( self, property ).toDto();
+    } );
+
   return dto;
 }
 
@@ -488,7 +503,7 @@ function wrapError( action, error ) {
 function data_create() {
   const self = this;
   return new Promise( ( fulfill, reject ) => {
-    if (false /* this.$hasCreate() */) {
+    if (true /* this.$hasCreate() */) {
       // Launch start event.
       /**
        * The event arises before the business object instance will be initialized in the repository.

@@ -7,7 +7,7 @@ const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
 const cr = bo.commonRules;
 
-const BookView = new Model( 'BookView:book-view' )
+const BookView = new Model( 'BookView : book-view' )
   .readOnlyRootObject( 'memdb', __filename )
   // --- Properties
   .integer( 'bookKey', F.key )

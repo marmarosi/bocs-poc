@@ -1,6 +1,7 @@
 'use strict';
 
 const bo = require( 'business-objects' );
+
 const DaoBase = bo.dataAccess.DaoBase;
 
 class BookViewDao extends DaoBase {
@@ -11,7 +12,7 @@ class BookViewDao extends DaoBase {
 
   fetch( ctx, filter ) {
     const key = filter;
-    const order = {
+    const book = {
       bookKey: key,
       author: 'James Clavell',
       title: 'The shogun',
@@ -23,12 +24,12 @@ class BookViewDao extends DaoBase {
         { bookTagKey: 32, bookKey: key, tag: 'history' }
       ]
     };
-    ctx.fulfill( order );
+    ctx.fulfill( book );
   }
 
   fetchByTitle( ctx, filter ) {
     const title = filter;
-    const order = {
+    const book = {
       bookKey: 7,
       author: 'James Clavell',
       title: 'The shogun',
@@ -40,7 +41,7 @@ class BookViewDao extends DaoBase {
         { bookTagKey: 32, bookKey: key, tag: 'history' }
       ]
     };
-    ctx.fulfill( order );
+    ctx.fulfill( book );
   }
 }
 

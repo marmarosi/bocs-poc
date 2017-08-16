@@ -20,7 +20,7 @@ const BookView = new Model( 'BookView' )
   .boolean( 'used' )
   .property( 'tags', BookTagsView )
   // --- Permissions
-  .canFetch( cr.isInRole, 'designers', 'You are not authorized to retrieve blanket order.' )
+  .canFetch( cr.isInRole, 'designers', 'You are not authorized to retrieve book.' )
   // --- Build model class
   .compose();
 

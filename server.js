@@ -35,6 +35,9 @@ app.get( '/admin-book-list', function ( req, res ) {
 app.get( '/book-view/:id', function ( req, res ) {
   res.render( 'book-view', {} );
 } );
+app.get( '/book-new', function ( req, res ) {
+  res.render( 'book-new', {} );
+} );
 
 // create application/json parser
 const jsonParser = bodyParser.json();

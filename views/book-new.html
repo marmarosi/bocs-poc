@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New book</title>
+</head>
+<body>
+
+<h1>New book</h1>
+
+<form>
+  <table>
+    <tr>
+      <td>Author:</td>
+      <td><input id="author" type="text" value="Móra Ferenc"></td>
+    </tr>
+    <tr>
+      <td>Title:</td>
+      <td><input id="title" type="text" value="Kincskereső kisködmön"></td>
+    </tr>
+    <tr>
+      <td>Publish date:</td>
+      <td><input id="publishDate" type="datetime"></td>
+    </tr>
+    <tr>
+      <td>Price:</td>
+      <td><input id="price" type="number" value="3990"> Ft</td>
+    </tr>
+    <tr>
+      <td>Used:</td>
+      <td><input id="used" type="checkbox"></td>
+    </tr>
+    <tr>
+      <td>Tags:</td>
+      <td>
+        <input id="tag1" type="text" value="magyar">
+        <input id="tag2" type="text" value="ifjúsági">
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Submit" onclick="save(); return false;"></td>
+    </tr>
+  </table>
+</form>
+
+<p><a href="/book-list">Return</a></p>
+
+<script src="/scripts/bo-client.js"></script>
+<script src="/scripts/bo-data.js"></script>
+<script src="/scripts/book-new.js"></script>
+
+</body>
+</html>

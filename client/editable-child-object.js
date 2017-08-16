@@ -946,6 +946,35 @@ class EditableChildObject extends ModelBase {
     return properties.keyEquals( data, getPropertyValue.bind( this ) );
   }
 
+  /**
+   * Transforms the business object collection to a plain object array to send to the server.
+   * <br/>_This method is usually called by the parent object._
+   *
+   * @function EditableChildCollection#toDto
+   * @returns {Array.<object>} The data transfer object.
+   */
+  toDto() {
+    const self = this;
+    const dto = {};
+    const properties = _properties.get( this );
+
+    properties
+      .filter( property => {
+        return property.isOnDto;
+      } )
+      .forEach( property => {
+        dto[ property.name ] = getPropertyValue.call( self, property );
+      } );
+
+    properties
+      .children()
+      .forEach( property => {
+        dto[ property.name ] = getPropertyValue.call( self, property ).toDto();
+      } );
+
+    return dto;
+  }
+
   //endregion
 
   //region Actions

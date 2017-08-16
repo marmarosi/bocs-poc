@@ -62,43 +62,79 @@ class BoProxy {
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
-      let methodName;
-      if (model[ method ])
-        methodName = method;
-      else {
-        const mapped = model.$methodMap[ method ];
-        if (mapped)
-          methodName = mapped;
+      switch (method){
+        case 'insert':
+          const key = 0;
+          model.create( key )
+            .then( instance => {
+              instance.fromCto( req.body )
+                .then( changed => {
+                  resolve( changed.save() );
+                } );
+            } )
+            .catch( reason => {
+              reject( reason );
+            } );
+          break;
+
+        case 'update':
+        case 'remove':
+          model.fetch()
+            .then( instance => {
+              instance.fromCto( req.body )
+                .then( changed => {
+                  resolve( changed.save() );
+                } );
+            } )
+            .catch( reason => {
+              reject( reason );
+            } );
+          break;
+
+        default:
+          //region Factory methods
+
+          let methodName;
+          if (model[ method ])
+            methodName = method;
+          else {
+            const mapped = model.$methodMap[ method ];
+            if (mapped)
+              methodName = mapped;
+          }
+          if (!methodName)
+            reject( new Error( 'Invalid method: ' + method ) );
+
+          const filter = req.body.$isEmpty ?
+            null : (
+              req.body.hasOwnProperty( '$filter' ) ?
+                req.body.$filter :
+                req.body
+            );
+
+          const pResult = filter ?
+            model[ methodName ]( filter ) :
+            model[ methodName ]()
+          ;
+          pResult
+            .then( result => {
+
+              const cto = result.constructor.name === 'ReadOnlyRootCollection' ?
+                {
+                  modelType: 'ReadOnlyRootCollection',
+                  collection: result.toCto(),
+                  totalItems: result.totalItems
+                } :
+                result.toCto();
+              resolve( cto );
+            } )
+            .catch( reason => {
+              reject( reason );
+            } );
+
+          //endregion
+          break;
       }
-      if (!methodName)
-        reject( new Error( 'Invalid method: ' + method ) );
-
-      const body = req.body;
-      const filter = req.body.$isEmpty ? null : (
-        req.body.hasOwnProperty( '$filter' ) ? req.body.$filter :
-        req.body
-      );
-
-      const pResult = filter ?
-        model[ methodName ]( filter ) :
-        model[ methodName ]()
-      ;
-      pResult
-        .then( result => {
-
-          const cto = result.constructor.name === 'ReadOnlyRootCollection' ?
-            {
-              modelType: 'ReadOnlyRootCollection',
-              collection: result.toCto(),
-              totalItems: result.totalItems
-            }:
-            result.toCto();
-          resolve( cto );
-          // resolve( result.toCto() );
-        } )
-        .catch( reason => {
-          reject( reason );
-        } );
     } );
   }
 }
