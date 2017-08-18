@@ -8,10 +8,10 @@ bo.initialize( config, locales );
 
 let book;
 
-clt.data.models.Book.create()
-  .then( created => {
-    book = created;
-    document.getElementById("publishDate").value = book.publishDate.toLocaleDateString();
+clt.data.models.Book.get( 22 )
+  .then( fetched => {
+    book = fetched;
+    show();
   } );
 
 function show() {
@@ -54,5 +54,5 @@ function save() {
             const brs = book.getBrokenRules();
           }
         } );
-  } );
+    } );
 }

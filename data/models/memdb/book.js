@@ -34,7 +34,7 @@ class BookDao extends DaoBase {
     return daoBookTag.$runMethod( 'fetchForBook', ctx.connection, book.bookKey )
       .then( tags => {
         book.tags = tags;
-        ctx.fulfill( order );
+        ctx.fulfill( book );
       } );
   }
 
@@ -69,6 +69,12 @@ class BookDao extends DaoBase {
   }
 
   update( ctx, data ) {
+
+    data.author += '?';
+    data.title += '?';
+    data.publishDate = new Date( data.publishDate ).setYear( 2022 );
+    data.price += 50;
+    data.used = !data.used;
 
     ctx.fulfill( data );
   }

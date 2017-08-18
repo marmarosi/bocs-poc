@@ -30,10 +30,10 @@ class BookFactory {
     return Book.create( eventHandlers );
   }
   get( key, eventHandlers ) {
-    return Book.fetch( key, null, eventHandlers );
+    return Book.fetch( key, "get", eventHandlers );
   }
   getByTitle( name, eventHandlers ) {
-    return Book.fetch( name, 'fetch-by-title', eventHandlers );
+    return Book.fetch( name, 'get-by-title', eventHandlers );
   }
 }
 

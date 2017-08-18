@@ -221,6 +221,14 @@ function baseFromDto( dto ) {
         setPropertyValue.call( self, property, dto[ property.name ] );
       }
     } );
+
+  properties
+    .children()
+    .forEach( property => {
+      if (dto.hasOwnProperty( property.name )) {
+        getPropertyValue.call( self, property ).fromDto( dto[ property.name ] );
+      }
+    } );
 }
 
 function fromDto( dto ) {
@@ -664,14 +672,19 @@ function data_update() {
        */
       raiseEvent.call( self, WebPortalEvent.preUpdate );
       // Execute update.
-      WebPortal.call( self.$modelUri, 'update', null, /* dto = */ toDto.call( self ) )
+      const properties = _properties.get( self );
+      const data = {
+        key: properties.getKey( getPropertyValue.bind( self ) ),
+        dto: toDto.call( self )
+      };
+      WebPortal.call( self.$modelUri, 'update', null, data )
         .then( dto => {
           fromDto.call( self, dto );
         } )
-        .then( none => {
-          // Update children as well.
-          return saveChildren.call( self );
-        } )
+        // .then( none => {
+        //   // Update children as well.
+        //   return saveChildren.call( self );
+        // } )
         .then( none => {
           markAsPristine.call( self );
           // Launch finish event.

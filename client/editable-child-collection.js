@@ -140,9 +140,16 @@ class EditableChildCollection extends CollectionBase {
   toDto() {
     const dto = [];
     this.forEach( item => {
-      dto.push(item.toDto());
-    });
+      dto.push( item.toDto() );
+    } );
     return dto;
+  }
+
+  fromDto( dto ) {
+    let i = 0;
+    this.forEach( item => {
+      item.fromDto( dto[ i++ ] );
+    } );
   }
 
   //endregion

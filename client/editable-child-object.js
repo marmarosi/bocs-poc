@@ -975,6 +975,29 @@ class EditableChildObject extends ModelBase {
     return dto;
   }
 
+  fromDto( dto ) {
+    const self = this;
+    const properties = _properties.get( this );
+
+    properties
+      .filter( property => {
+        return property.isOnDto;
+      } )
+      .forEach( property => {
+        if (dto.hasOwnProperty( property.name ) && typeof dto[ property.name ] !== 'function') {
+          setPropertyValue.call( self, property, dto[ property.name ] );
+        }
+      } );
+
+    properties
+      .children()
+      .forEach( property => {
+        if (dto.hasOwnProperty( property.name )) {
+          getPropertyValue.call( self, property ).fromDto( dto[ property.name ] );
+        }
+      } );
+  }
+
   //endregion
 
   //region Actions

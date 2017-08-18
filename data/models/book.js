@@ -30,7 +30,7 @@ class BookFactory extends FactoryBase {
   constructor() {
     super( 'book', {
       'get-by-title': 'getByTitle'
-    } );
+      }, 'get' );
   }
   create( eventHandlers ) {
     return Book.create( eventHandlers );

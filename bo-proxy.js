@@ -34,7 +34,7 @@ class BoProxy {
           if (!model.$modelUri)
             throw new Error( 'Missing model URI: ' + itemPath );
           if (this.models[ model.$modelUri ])
-            throw new Error( 'Duplicate model URI: ' + model.modelUri );
+            throw new Error( 'Duplicate model URI: ' + model.$modelUri );
 
           this.models[ model.$modelUri ] = model;
         }
@@ -62,7 +62,7 @@ class BoProxy {
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
-      const key = 0;
+      let key = 0;
       switch (method) {
         case 'insert':
           model.create()
@@ -81,9 +81,10 @@ class BoProxy {
           break;
 
         case 'update':
-          model.fetch( key )
+          //key = req.body;
+          model[ model.$fetch ]( req.body.key )
             .then( instance => {
-              instance.fromCto( req.body )
+              instance.fromCto( req.body.dto )
                 .then( changed => {
                   changed.save()
                     .then( result => {

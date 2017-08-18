@@ -38,6 +38,9 @@ app.get( '/book-view/:id', function ( req, res ) {
 app.get( '/book-new', function ( req, res ) {
   res.render( 'book-new', {} );
 } );
+app.get( '/book-edit/:id', function ( req, res ) {
+  res.render( 'book-edit', {} );
+} );
 
 // create application/json parser
 const jsonParser = bodyParser.json();

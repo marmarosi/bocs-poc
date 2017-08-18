@@ -33,6 +33,7 @@ class BookTagDao extends DaoBase {
 
   update( ctx, data ) {
 
+    data.tag += '?';
     ctx.fulfill( data );
   }
 
