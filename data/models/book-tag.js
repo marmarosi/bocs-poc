@@ -6,7 +6,7 @@ const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
 
 const BookTag = new Model( 'BookTag' )
-  .editableChildObject( 'dao', __filename )
+  .editableChildObject( 'memdb', __filename )
   // --- Properties
   .integer( 'bookTagKey', F.key | F.readOnly )
   .integer( 'bookKey', F.parentKey | F.readOnly )

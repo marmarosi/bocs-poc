@@ -11,7 +11,7 @@ class BoProxy {
     apiUrl = apiUrl || '/';
     this.apiUrl = apiUrl[ apiUrl.length - 1 ] === '/' ? apiUrl : apiUrl + '/';
 
-    this.models = { };
+    this.models = {};
     this.readModels( path.join( __dirname, modelsPath ), '' );
   }
 
@@ -27,7 +27,7 @@ class BoProxy {
       if (stat.isDirectory())
         this.readModels( rootPath, relPath + item + '/' );
 
-      else if (stat.isFile() && path.extname( item ) === '.js' ) {
+      else if (stat.isFile() && path.extname( item ) === '.js') {
         const model = require( itemPath );
         if (model instanceof FactoryBase) {
 
@@ -39,7 +39,7 @@ class BoProxy {
           this.models[ model.$modelUri ] = model;
         }
       }
-    });
+    } );
   }
 
   process( req, res ) {
@@ -62,14 +62,17 @@ class BoProxy {
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
-      switch (method){
+      const key = 0;
+      switch (method) {
         case 'insert':
-          const key = 0;
-          model.create( key )
+          model.create()
             .then( instance => {
               instance.fromCto( req.body )
                 .then( changed => {
-                  resolve( changed.save() );
+                  changed.save()
+                    .then( result => {
+                      resolve( result.toCto() );
+                    } );
                 } );
             } )
             .catch( reason => {
@@ -78,12 +81,30 @@ class BoProxy {
           break;
 
         case 'update':
-        case 'remove':
-          model.fetch()
+          model.fetch( key )
             .then( instance => {
               instance.fromCto( req.body )
                 .then( changed => {
-                  resolve( changed.save() );
+                  changed.save()
+                    .then( result => {
+                      resolve( result.toCto() );
+                    } );
+                } );
+            } )
+            .catch( reason => {
+              reject( reason );
+            } );
+          break;
+
+        case 'remove':
+          model.fetch( key )
+            .then( instance => {
+              instance.fromCto( req.body )
+                .then( changed => {
+                  changed.save()
+                    .then( () => {
+                      resolve( null );
+                    } );
                 } );
             } )
             .catch( reason => {

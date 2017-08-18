@@ -181,14 +181,6 @@ function baseToDto() {
   const self = this;
   const dto = {};
   const properties = _properties.get( this );
-  //
-  // properties
-  //   .filter( property => {
-  //     return property.isOnDto;
-  //   } )
-  //   .forEach( property => {
-  //     dto[ property.name ] = getPropertyValue.call( self, property );
-  //   } );
 
   properties
     .filter( property => {
@@ -625,10 +617,6 @@ function data_insert() {
       WebPortal.call( self.$modelUri, 'insert', null, toDto.call( self ) )
         .then( dto => {
           fromDto.call( self, dto );
-        } )
-        .then( none => {
-          // Insert children as well.
-          return saveChildren.call( self );
         } )
         .then( none => {
           markAsPristine.call( self );
