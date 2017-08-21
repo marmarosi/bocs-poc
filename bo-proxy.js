@@ -81,7 +81,6 @@ class BoProxy {
           break;
 
         case 'update':
-          //key = req.body;
           model[ model.$fetch ]( req.body.key )
             .then( instance => {
               instance.fromCto( req.body.dto )

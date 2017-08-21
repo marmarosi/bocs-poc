@@ -21,7 +21,7 @@ function show() {
   document.getElementById("title").value = book.title;
   document.getElementById("publishDate").value = book.publishDate.toLocaleDateString();
   document.getElementById("price").value = book.price.toString();
-  document.getElementById("used").checked = book.used.toString();
+  document.getElementById("used").checked = book.used;
 
   document.getElementById("tag1").value = book.tags.at( 0 ).tag;
   document.getElementById("tag2").value = book.tags.at( 1 ).tag;
@@ -36,23 +36,18 @@ function save() {
   book.price = document.getElementById("price").value;
   book.used = document.getElementById("used").checked;
 
-  book.tags.createItem()
-    .then( tag1 => {
-      tag1.tag = document.getElementById("tag1").value;
-      book.tags.createItem()
-        .then( tag2 => {
-          tag2.tag = document.getElementById("tag2").value;
-          const cnt = book.tags.count;
+  const tag1 = book.tags.at( 0 );
+  tag1.tag = document.getElementById("tag1").value;
+  const tag2 = book.tags.at( 1 );
+  tag2.tag = document.getElementById("tag2").value;
 
-          if (book.isValid())
-            book.save()
-              .then( saved => {
-                book = saved;
-                show();
-              } );
-          else {
-            const brs = book.getBrokenRules();
-          }
-        } );
-    } );
+  if (book.isValid())
+    book.save()
+      .then( saved => {
+        book = saved;
+        show();
+      } );
+  else {
+    const brs = book.getBrokenRules();
+  }
 }

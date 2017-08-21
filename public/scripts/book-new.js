@@ -21,7 +21,7 @@ function show() {
   document.getElementById("title").value = book.title;
   document.getElementById("publishDate").value = book.publishDate.toLocaleDateString();
   document.getElementById("price").value = book.price.toString();
-  document.getElementById("used").checked = book.used.toString();
+  document.getElementById("used").checked = book.used;
 
   document.getElementById("tag1").value = book.tags.at( 0 ).tag;
   document.getElementById("tag2").value = book.tags.at( 1 ).tag;

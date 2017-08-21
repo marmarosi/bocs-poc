@@ -15,6 +15,12 @@ class BookTagDao extends DaoBase {
     ctx.fulfill( {} );
   }
 
+  fetch( ctx, filter ) {
+
+    const tag = { bookTagKey: filter, bookKey: 33, tag: 'missing' };
+    ctx.fulfill( tag );
+  }
+
   /* Special fetch method for test circumstances. */
   fetchForBook( ctx, filter ) {
 
@@ -33,7 +39,7 @@ class BookTagDao extends DaoBase {
 
   update( ctx, data ) {
 
-    data.tag += '?';
+    data.tag = '-- ' + data.tag ;
     ctx.fulfill( data );
   }
 
