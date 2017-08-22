@@ -1,4 +1,6 @@
 const path = require('path');
+//const bo = require('./client');
+//import * as bo from './client';
 
 module.exports = {
   entry: {

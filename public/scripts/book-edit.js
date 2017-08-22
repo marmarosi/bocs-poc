@@ -28,8 +28,6 @@ function show() {
 }
 
 function save() {
-  let data = { };
-
   book.author = document.getElementById("author").value;
   book.title = document.getElementById("title").value;
   book.publishDate = document.getElementById("publishDate").value;
@@ -50,4 +48,12 @@ function save() {
   else {
     const brs = book.getBrokenRules();
   }
+}
+
+function remove() {
+  book.remove();
+  book.save()
+    .then( () => {
+      window.location = '/book-list';
+    } );
 }

@@ -16,12 +16,12 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "business-objects": "^2.0.1",
-    "express": "^4.15.3",
-    "serve-static": "^1.12.3"
+    "business-objects": "^2.0.2",
+    "express": "^4.15.4",
+    "serve-static": "^1.12.4"
   },
   "devDependencies": {
     "babili": "^0.1.4",
-    "webpack": "^3.5.4"
+    "webpack": "^3.5.5"
   }
 }

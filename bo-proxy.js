@@ -62,7 +62,6 @@ class BoProxy {
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
-      let key = 0;
       switch (method) {
         case 'insert':
           model.create()
@@ -97,14 +96,12 @@ class BoProxy {
           break;
 
         case 'remove':
-          model.fetch( key )
+          model[ model.$fetch ]( req.body.key )
             .then( instance => {
-              instance.fromCto( req.body )
-                .then( changed => {
-                  changed.save()
-                    .then( () => {
-                      resolve( null );
-                    } );
+              instance.remove();
+              instance.save()
+                .then( () => {
+                  resolve( null );
                 } );
             } )
             .catch( reason => {

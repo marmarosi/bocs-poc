@@ -681,10 +681,6 @@ function data_update() {
         .then( dto => {
           fromDto.call( self, dto );
         } )
-        // .then( none => {
-        //   // Update children as well.
-        //   return saveChildren.call( self );
-        // } )
         .then( none => {
           markAsPristine.call( self );
           // Launch finish event.
@@ -730,13 +726,9 @@ function data_remove() {
        * @param {EditableRootObject} oldObject - The instance of the model before the data portal action.
        */
       raiseEvent.call( self, WebPortalEvent.preRemove );
-      // Remove children first.
-      saveChildren.call( self )
-        .then( none => {
-          // Execute removal.
-          const properties = _properties.get( self );
-          return WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) );
-        })
+      // Execute removal.
+      const properties = _properties.get( self );
+      WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) )
         .then( none => {
           markAsRemoved.call( self );
           // Launch finish event.

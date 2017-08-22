@@ -12,6 +12,8 @@ class WebPortal {
     if (data !== undefined && data !== null) {
       if (typeof data === 'object')
         body = data;
+      else if (dpMethod === 'remove')
+        body = { key: data };
       else
         body = { $filter: data };
     }
@@ -33,6 +35,9 @@ class WebPortal {
       .then( response => {
         if (response.ok) {
           const contentType = response.headers.get( "content-type" );
+
+          if (contentType === null)
+            return null; // In case of remove.
 
           if (contentType && contentType.includes( "application/json" ))
             return response.json();
