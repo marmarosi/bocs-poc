@@ -7,6 +7,7 @@ import BookView from './book-view.js';
 import Book from './book.js';
 import BookTags from './book-tags.js';
 import BookTag from './book-tag.js';
+import Books from './books.js';
 
 const index = {
   admin: admin,
@@ -15,7 +16,8 @@ const index = {
   BookView: BookView,
   Book: Book,
   BookTags: BookTags,
-  BookTag: BookTag
+  BookTag: BookTag,
+  Books: Books
 };
 
 export default index;

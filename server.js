@@ -41,6 +41,9 @@ app.get( '/book-new', function ( req, res ) {
 app.get( '/book-edit/:id', function ( req, res ) {
   res.render( 'book-edit', {} );
 } );
+app.get( '/edit-books', function ( req, res ) {
+  res.render( 'edit-books', {} );
+} );
 
 // create application/json parser
 const jsonParser = bodyParser.json();

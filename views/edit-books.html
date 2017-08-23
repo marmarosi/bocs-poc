@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit books</title>
+</head>
+
+<body>
+
+<h1>Edit book</h1>
+
+<form>
+  <table>
+    <tr>
+      <td>Before editing:</td>
+      <td id="beforeEdit"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Modify" onclick="save(); return false;">
+      </td>
+    </tr>
+    <tr>
+      <td>After editing:</td>
+      <td id="afterEdit"></td>
+    </tr>
+  </table>
+</form>
+
+<p><a href="/">Return</a></p>
+
+<script src="/scripts/bo-client.js"></script>
+<script src="/scripts/bo-data.js"></script>
+<script src="/scripts/edit-books.js"></script>
+
+</body>
+</html>
