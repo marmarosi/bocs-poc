@@ -539,9 +539,11 @@ function data_create() {
           // Pass the error.
           reject( dpe );
         } );
-    } else
-    // Nothing to do.
+    } else {
+      markAsCreated.call( self );
+      // Nothing to do.
       fulfill( self );
+    }
   } );
 }
 

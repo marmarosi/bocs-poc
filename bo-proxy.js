@@ -80,7 +80,8 @@ class BoProxy {
           break;
 
         case 'update':
-          model[ model.$fetch ]( req.body.key )
+          //model[ model.$fetch ]( req.body.key )
+          model[ req.body.method ]( req.body.filter )
             .then( instance => {
               instance.fromCto( req.body.dto )
                 .then( changed => {

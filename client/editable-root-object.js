@@ -51,6 +51,8 @@ const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
 const _dataContext = new WeakMap();
+const _filters = new WeakMap();
+const _methods = new WeakMap();
 
 //endregion
 
@@ -580,6 +582,9 @@ function data_fetch( filter, method ) {
         } )
         .then( none => {
           markAsPristine.call( self );
+          // Save initialization data;
+          _filters.set( self, filter );
+          _methods.set( self, method );
           // Launch finish event.
           /**
            * The event arises after the business object instance has been retrieved from the repository.
@@ -672,9 +677,9 @@ function data_update() {
        */
       raiseEvent.call( self, WebPortalEvent.preUpdate );
       // Execute update.
-      const properties = _properties.get( self );
       const data = {
-        key: properties.getKey( getPropertyValue.bind( self ) ),
+        filter: _filters.get( self ),
+        method: _methods.get( self ),
         dto: toDto.call( self )
       };
       WebPortal.call( self.$modelUri, 'update', null, data )

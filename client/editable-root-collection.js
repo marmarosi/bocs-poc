@@ -11,8 +11,6 @@ import ModelError from './common/model-error.js';
 import ExtensionManager from './common/extension-manager.js';
 import EventHandlerList from './common/event-handler-list.js';
 
-import ClientTransferContext from './common/client-transfer-context.js';
-
 import RuleManager from './rules/rule-manager.js';
 import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
@@ -44,6 +42,8 @@ const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
 const _dataContext = new WeakMap();
 const _items = new WeakMap();
+const _filters = new WeakMap();
+const _methods = new WeakMap();
 
 //endregion
 
@@ -152,8 +152,17 @@ function propagateRemoval() {
 
 //region Transfer object methods
 
-function getTransferContext() {
-  return new ClientTransferContext( null, null, null );
+function toDto() {
+  let dto = [];
+  //const items = _items.get( this );
+  _items.get( this )
+    .filter( item => {
+      return item.getModelState() !== MODEL_STATE.getName( MODEL_STATE.markedForRemoval );
+    })
+    .forEach( item => {
+      dto.push( item.toDto() );
+    } );
+  return dto;
 }
 
 //endregion
@@ -368,6 +377,9 @@ function data_fetch( filter, method ) {
         } )
         .then( none => {
           markAsPristine.call( self );
+          // Save initialization data;
+          _filters.set( self, filter );
+          _methods.set( self, method );
           // Launch finish event.
           /**
            * The event arises after the collection instance has been retrieved from the repository.
@@ -459,9 +471,13 @@ function data_update() {
        * @param {EditableRootCollection} oldObject - The instance of the collection before the data portal action.
        */
       raiseEvent.call( self, WebPortalEvent.preUpdate );
-      // Execute update - nothing to do.
-      // Update children as well.
-      saveChildren.call( self )
+      // Execute update.
+      const data = {
+        filter: _filters.get( self ),
+        method: _methods.get( self ),
+        dto: toDto.call( self )
+      };
+      WebPortal.call( self.$modelUri, 'update', null, data )
         .then( none => {
           markAsPristine.call( self );
           // Launch finish event.
@@ -814,7 +830,7 @@ class EditableRootCollection extends CollectionBase {
     function expelRemovedItems() {
       let items = _items.get( self );
       items = items.filter( item => {
-        return item.getModelState() !== MODEL_STATE.getName( MODEL_STATE.removed );
+        return item.getModelState() !== MODEL_STATE.getName( MODEL_STATE.markedForRemoval );
       } );
       _items.set( self, items );
     }
