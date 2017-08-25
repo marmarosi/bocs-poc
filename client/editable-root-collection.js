@@ -422,9 +422,8 @@ function data_insert() {
        * @param {EditableRootCollection} oldObject - The instance of the collection before the data portal action.
        */
       raiseEvent.call( self, WebPortalEvent.preInsert );
-      // Execute insert - nothing to do.
-      // Insert children as well.
-      saveChildren.call( self )
+      // Execute insert.
+      WebPortal.call( self.$modelUri, 'insert', null, toDto.call( self ) )
         .then( none => {
           markAsPristine.call( self );
           // Launch finish event.
@@ -524,8 +523,12 @@ function data_remove() {
        * @param {EditableRootCollection} oldObject - The instance of the collection before the data portal action.
        */
       raiseEvent.call( self, WebPortalEvent.preRemove );
-      // Remove children first.
-      saveChildren.call( self )
+      // Execute removal.
+      const data = {
+        filter: _filters.get( self ),
+        method: _methods.get( self )
+      };
+      WebPortal.call( self.$modelUri, 'remove', null, data )
         .then( none => {
           // Execute removal - nothing to do.
           markAsRemoved.call( self );

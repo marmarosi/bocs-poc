@@ -97,7 +97,8 @@ class BoProxy {
           break;
 
         case 'remove':
-          model[ model.$fetch ]( req.body.key )
+          //model[ model.$fetch ]( req.body.key )
+          model[ req.body.method ]( req.body.filter )
             .then( instance => {
               instance.remove();
               instance.save()

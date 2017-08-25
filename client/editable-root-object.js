@@ -732,8 +732,11 @@ function data_remove() {
        */
       raiseEvent.call( self, WebPortalEvent.preRemove );
       // Execute removal.
-      const properties = _properties.get( self );
-      WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) )
+      const data = {
+        filter: _filters.get( self ),
+        method: _methods.get( self )
+      };
+      WebPortal.call( self.$modelUri, 'remove', null, data )
         .then( none => {
           markAsRemoved.call( self );
           // Launch finish event.

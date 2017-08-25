@@ -3,12 +3,13 @@ const config = {
   userReader: clt.data.getUser,
   localeReader: clt.data.getLocale
 };
+const Books = clt.data.models.Books;
 
 bo.initialize( config, locales );
 
 let books;
 
-clt.data.models.Books.getAll()
+Books.getAll()
   .then( fetched => {
     books = fetched;
     showBefore();
@@ -24,7 +25,38 @@ function showBefore() {
   document.getElementById("beforeEdit").innerText = out;
 }
 
-function save() {
+function insert() {
+  Books.create()
+    .then( collection => {
+      books = collection;
+
+      books.createItem()
+        .then( book1 => {
+
+          book1.author = 'China Miéville';
+          book1.title = 'Perdido Station';
+          book1.publishDate = '12/12/1995';
+          book1.price = 40.0;
+          book1.used = true;
+
+          book1.tags.createItem()
+            .then( tag1 => {
+              tag1.tag = 'sci-fi';
+            } );
+          if (books.isValid())
+            books.save()
+              .then( inserted => {
+                books = inserted;
+                showAfter();
+              } );
+          else {
+            document.getElementById("afterEdit").innerText = books.getBrokenRules();
+          }
+        });
+    } );
+}
+
+function update() {
   const book1 = books.at(0);
   book1.remove();
 
@@ -51,6 +83,18 @@ function save() {
         document.getElementById("afterEdit").innerText = books.getBrokenRules();
       }
     });
+}
+
+function remove() {
+  books.remove();
+  books.save()
+    .then( deleted => {
+      books = deleted;
+      if (books === null)
+        document.getElementById("afterEdit").innerText = 'DELETED';
+      else
+        showAfter();
+    } );
 }
 
 function showAfter() {
