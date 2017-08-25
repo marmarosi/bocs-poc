@@ -12,11 +12,14 @@ class BoProxy {
     this.apiUrl = apiUrl[ apiUrl.length - 1 ] === '/' ? apiUrl : apiUrl + '/';
 
     this.models = {};
-    this.readModels( path.join( __dirname, modelsPath ), '' );
+    this.initialize( path.join( __dirname, modelsPath ), '' );
   }
 
-  readModels( rootPath, relPath ) {
+  //region Initialization
 
+  initialize( rootPath, relPath ) {
+
+    // Read factory models
     const dirPath = path.join( rootPath, relPath );
     const items = fs.readdirSync( dirPath );
     items.forEach( item => {
@@ -42,9 +45,14 @@ class BoProxy {
     } );
   }
 
+  //endregion
+
+  //region Process requests
+
   process( req, res ) {
     return new Promise( ( resolve, reject ) => {
 
+      // Test if API request is...
       if (!req.url.startsWith( this.apiUrl ))
         return reject( 'Invalid API URL.' );
 
@@ -53,17 +61,22 @@ class BoProxy {
       if (pos < 1)
         return reject( new Error( 'Invalid API URL.' ) );
 
+      // Read model type and method from URL.
       let type = url.substr( 0, pos );
       let method = url.substr( pos + 1 );
       let model = null;
 
+      // Get the requested model.
       if (this.models[ type ])
         model = this.models[ type ];
       else
         return reject( new Error( 'Invalid type: ' + type ) );
 
+      // Call the requested method and return the result.
       switch (method) {
         case 'insert':
+          //region Insert method
+
           model.create()
             .then( instance => {
               instance.fromCto( req.body )
@@ -77,10 +90,13 @@ class BoProxy {
             .catch( reason => {
               reject( reason );
             } );
+
+          //endregion
           break;
 
         case 'update':
-          //model[ model.$fetch ]( req.body.key )
+          //region Update method
+
           model[ req.body.method ]( req.body.filter )
             .then( instance => {
               instance.fromCto( req.body.dto )
@@ -94,10 +110,13 @@ class BoProxy {
             .catch( reason => {
               reject( reason );
             } );
+
+          //endregion
           break;
 
         case 'remove':
-          //model[ model.$fetch ]( req.body.key )
+          //region Remove method
+
           model[ req.body.method ]( req.body.filter )
             .then( instance => {
               instance.remove();
@@ -109,6 +128,8 @@ class BoProxy {
             .catch( reason => {
               reject( reason );
             } );
+
+          //endregion
           break;
 
         default:
@@ -157,6 +178,8 @@ class BoProxy {
       }
     } );
   }
+
+  //endregion
 }
 
 module.exports = BoProxy;

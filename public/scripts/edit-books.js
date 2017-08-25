@@ -42,16 +42,17 @@ function insert() {
           book1.tags.createItem()
             .then( tag1 => {
               tag1.tag = 'sci-fi';
+
+              if (books.isValid())
+                books.save()
+                  .then( inserted => {
+                    books = inserted;
+                    showAfter();
+                  } );
+              else {
+                document.getElementById("afterEdit").innerText = books.getBrokenRules();
+              }
             } );
-          if (books.isValid())
-            books.save()
-              .then( inserted => {
-                books = inserted;
-                showAfter();
-              } );
-          else {
-            document.getElementById("afterEdit").innerText = books.getBrokenRules();
-          }
         });
     } );
 }
@@ -72,16 +73,17 @@ function update() {
       book3.tags.createItem()
         .then( tag1 => {
           tag1.tag = 'sci-fi';
+
+          if (books.isValid())
+            books.save()
+              .then( saved => {
+                books = saved;
+                showAfter();
+              } );
+          else {
+            document.getElementById("afterEdit").innerText = books.getBrokenRules();
+          }
         } );
-      if (books.isValid())
-        books.save()
-          .then( saved => {
-            books = saved;
-            showAfter();
-          } );
-      else {
-        document.getElementById("afterEdit").innerText = books.getBrokenRules();
-      }
     });
 }
 
