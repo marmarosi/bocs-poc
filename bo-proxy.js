@@ -5,6 +5,21 @@ const path = require( 'path' );
 //const modelType = require( './common/model-type.js' );
 const FactoryBase = require( './data/factory-base.js' );
 
+function decideMethodName( base, model, name ) {
+  let methodName;
+  if (base[ name ])
+    methodName = name;
+  else {
+    const mapped = model.$methodMap[ name ];
+    if (mapped)
+      methodName = mapped;
+  }
+  if (!methodName)
+    throw new Error( 'Invalid method: ' + name );
+
+  return methodName;
+}
+
 class BoProxy {
   constructor( apiUrl, modelsPath ) {
 
@@ -28,7 +43,7 @@ class BoProxy {
       const stat = fs.statSync( itemPath );
 
       if (stat.isDirectory())
-        this.readModels( rootPath, relPath + item + '/' );
+        this.initialize( rootPath, relPath + item + '/' );
 
       else if (stat.isFile() && path.extname( item ) === '.js') {
         const model = require( itemPath );
@@ -47,7 +62,7 @@ class BoProxy {
 
   //endregion
 
-  //region Process requests
+  //region Request processing
 
   process( req, res ) {
     return new Promise( ( resolve, reject ) => {
@@ -133,47 +148,57 @@ class BoProxy {
           break;
 
         default:
-          //region Factory methods
+          if (model.$isCommand) {
+            //region Execute (instance) methods
 
-          let methodName;
-          if (model[ method ])
-            methodName = method;
-          else {
-            const mapped = model.$methodMap[ method ];
-            if (mapped)
-              methodName = mapped;
+            const instance = model.create();
+            instance.fromCto( req.body )
+              .then( command => {
+
+                let methodName = decideMethodName( command, model, method );
+
+                command[ methodName ]()
+                  .then( result => {
+                    resolve( result.toCto() );
+                  } );
+              } )
+              .catch( reason => {
+                reject( reason );
+              } );
+
+            //endregion
           }
-          if (!methodName)
-            reject( new Error( 'Invalid method: ' + method ) );
+          else {
+            //region Fetch (factory) methods
 
-          const filter = req.body.$isEmpty ?
-            null : (
-              req.body.hasOwnProperty( '$filter' ) ?
-                req.body.$filter :
-                req.body
-            );
+            let methodName = decideMethodName( model, model, method );
 
-          const pResult = filter ?
-            model[ methodName ]( filter ) :
-            model[ methodName ]()
-          ;
-          pResult
-            .then( result => {
+            const filter = req.body.$isEmpty ?
+              null : (
+                req.body.hasOwnProperty( '$filter' ) ?
+                  req.body.$filter :
+                  req.body
+              );
 
-              const cto = result.constructor.name === 'ReadOnlyRootCollection' ?
-                {
-                  modelType: 'ReadOnlyRootCollection',
-                  collection: result.toCto(),
-                  totalItems: result.totalItems
-                } :
-                result.toCto();
-              resolve( cto );
-            } )
-            .catch( reason => {
-              reject( reason );
-            } );
+            model[ methodName ]( filter )
+              .then( result => {
 
-          //endregion
+                const cto = result.constructor.name === 'ReadOnlyRootCollection' ?
+                  {
+                    modelType: 'ReadOnlyRootCollection',
+                    collection: result.toCto(),
+                    totalItems: result.totalItems
+                  } :
+                  result.toCto();
+
+                resolve( cto );
+              } )
+              .catch( reason => {
+                reject( reason );
+              } );
+
+            //endregion
+          }
           break;
       }
     } );

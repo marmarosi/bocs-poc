@@ -99,14 +99,19 @@ class ExtensionManager {
    * (The method will call a custom execute method on a command object instance.)
    *
    * @param {string} methodName - The name of the method on the data access object to be called.
+   * @param {string} [wpAltName] - Optional alternative method name for the web portal.
    */
-  addOtherMethod( methodName ) {
+  addOtherMethod( methodName, wpAltName ) {
 
-    methodName = Argument.inMethod( ExtensionManager.name, 'addOtherMethod' )
-      .check( methodName ).forMandatory( 'methodName' ).asString();
+    const check = Argument.inMethod( ExtensionManager.name, 'addOtherMethod' );
+    methodName = check( methodName ).forMandatory( 'methodName' ).asString();
+    wpAltName = check( wpAltName ).forOptional( 'wpAltName' ).asString();
 
     const otherMethods = _otherMethods.get( this );
-    otherMethods.add( methodName );
+    otherMethods.add( {
+      name: methodName,
+      uri: wpAltName
+    } );
     _otherMethods.set( this, otherMethods );
   }
 
@@ -120,9 +125,9 @@ class ExtensionManager {
   buildOtherMethods( instance ) {
     const otherMethods = _otherMethods.get( this );
     if (otherMethods.size) {
-      otherMethods.forEach( function ( methodName ) {
-        instance[ methodName ] = function () {
-          return instance.execute( methodName );
+      otherMethods.forEach( method => {
+        instance[ method.name ] = function () {
+          return instance.execute( method.uri || method.name );
         };
       } );
     }

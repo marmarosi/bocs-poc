@@ -26,6 +26,9 @@ const boProxy = new BoProxy( '/api/', '/data/models' );
 app.get( '/', function ( req, res ) {
   res.render( 'home', { title: 'Home', message: 'Hello world!' } );
 } );
+app.get( '/find-bestseller', function ( req, res ) {
+  res.render( 'find-bestseller', {} );
+} );
 app.get( '/book-list', function ( req, res ) {
   res.render( 'book-list', {} );
 } );

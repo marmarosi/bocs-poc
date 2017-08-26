@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find bestseller</title>
+</head>
+<body>
+
+<h1>Find bestseller</h1>
+
+<form>
+  <table>
+    <tr>
+      <td>Publish year:</td>
+      <td><input id="publishYear" type="number" value="2017"></td>
+    </tr>
+    <tr>
+      <td>Tags:</td>
+      <td>
+        <input id="tag_1" type="text" value="history">
+        <input id="tag_2" type="text">
+        <input id="tag_3" type="text">
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><input type="submit" value="Find" onclick="find(); return false;"></td>
+    </tr>
+    <tr>
+      <td>Author:</td>
+      <td id="author"></td>
+    </tr>
+    <tr>
+      <td>Title:</td>
+      <td id="title"></td>
+    </tr>
+    <tr>
+      <td>Publish date:</td>
+      <td id="publishDate"></td>
+    </tr>
+    <tr>
+      <td>Price:</td>
+      <td id="price"></td>
+    </tr>
+    <tr>
+      <td>Used:</td>
+      <td id="used"></td>
+    </tr>
+    <tr>
+      <td>Tags:</td>
+      <td id="tags"></td>
+    </tr>
+  </table>
+</form>
+
+<p><a href="/">Return</a></p>
+
+<script src="/scripts/bo-client.js"></script>
+<script src="/scripts/bo-data.js"></script>
+<script src="/scripts/find-bestseller.js"></script>
+
+</body>
+</html>

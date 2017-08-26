@@ -1195,15 +1195,16 @@ class ModelComposer {
    *
    * @function ModelComposer#addMethod
    * @param {string} methodName - The name of the method on the data access object to be called.
+   * @param {string} [wpAltName] - Optional alternative method name for the web portal.
    * @returns {ModelComposer}
    *
    * @throws {@link bo.system.ComposerError Composer error}: The function is not applicable to the model type.
    */
-  addMethod( methodName ) {
+  addMethod( methodName, wpAltName ) {
     if (_modelFactory.get( this ) !== CommandObject)
       invalid.call( this, 'addMethod' );
     const extensions = _extensions.get( this );
-    extensions.addOtherMethod( methodName );
+    extensions.addOtherMethod( methodName, wpAltName );
     _extensions.set( this, extensions );
     return nonProperty.call( this );
   }
