@@ -6,6 +6,9 @@
 /public/scripts/bo-client.min.js
 /public/scripts/bo-data.js
 
+# Module support
+/.esm-cache
+
 # Logs
 logs
 *.log

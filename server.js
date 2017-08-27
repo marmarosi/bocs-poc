@@ -1,4 +1,10 @@
 'use strict';
+require("@std/esm");
+
+const Bear = require( './module-2.js' ).default;
+
+const bear = new Bear( 'brown ' );
+console.log( bear );
 
 const express = require( 'express' );
 const serveStatic = require( 'serve-static') ;
@@ -22,6 +28,8 @@ app.use( serveStatic( 'public', { index: false } ) );
 
 bo.initialize( '/config/business-objects.js' /*, appLocales*/ );
 const boProxy = new BoProxy( '/api/', '/data/models' );
+
+//region Routes
 
 app.get( '/', function ( req, res ) {
   res.render( 'home', { title: 'Home', message: 'Hello world!' } );
@@ -47,6 +55,8 @@ app.get( '/book-edit/:id', function ( req, res ) {
 app.get( '/edit-books', function ( req, res ) {
   res.render( 'edit-books', {} );
 } );
+
+//endregion
 
 // create application/json parser
 const jsonParser = bodyParser.json();
