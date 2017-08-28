@@ -1,6 +1,5 @@
 'use strict';
 
-//const bo = require( 'business-objects' );
 const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
 

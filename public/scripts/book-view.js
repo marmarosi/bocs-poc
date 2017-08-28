@@ -1,12 +1,8 @@
-const locales = clt.locales;
-const config = {
-  userReader: clt.data.getUser,
-  localeReader: clt.data.getLocale
-};
+'use strict';
 
-bo.initialize( config, locales );
+bo.initialize( lib.config, lib.locales );
 
-clt.data.models.BookView.get( 123 )
+lib.data.models.BookView.get( 123 )
   .then( book => {
     document.getElementById("author").innerText = book.author;
     document.getElementById("title").innerHTML =

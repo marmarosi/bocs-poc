@@ -1,6 +1,5 @@
 'use strict';
 
-//const bo = require( '../../source/index.js' );
 import BookTagsView from './book-tags-view.js';
 
 const Model = bo.ModelComposer;

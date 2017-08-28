@@ -26,6 +26,11 @@ import i18n from './i18n.js';
 
 //endregion
 
+function initialize( config, appLocales ) {
+  system.Configuration.initialize( config );
+  i18n.initialize( appLocales, this.system.Configuration.getLocale );
+}
+
 /**
  * List of models and helper namespaces.
  *
@@ -49,47 +54,25 @@ import i18n from './i18n.js';
  * @property {function} i18n - {@link bo.i18n Internationalization}
  *      constructor to create new a message localizer object.
  */
-const index = {
-  ModelComposer: ModelComposer,
+export {
+  ModelComposer,
 
-  // ModelBase: ModelBase,
-  // CollectionBase: CollectionBase,
+  EditableRootObject,
+  EditableChildObject,
+  EditableRootCollection,
+  EditableChildCollection,
+  ReadOnlyRootObject,
+  ReadOnlyChildObject,
+  ReadOnlyRootCollection,
+  ReadOnlyChildCollection,
+  CommandObject,
 
-  EditableRootObject: EditableRootObject,
-  EditableChildObject: EditableChildObject,
-  EditableRootCollection: EditableRootCollection,
-  EditableChildCollection: EditableChildCollection,
-  ReadOnlyRootObject: ReadOnlyRootObject,
-  ReadOnlyChildObject: ReadOnlyChildObject,
-  ReadOnlyRootCollection: ReadOnlyRootCollection,
-  ReadOnlyChildCollection: ReadOnlyChildCollection,
-  CommandObject: CommandObject,
+  commonRules,
+  dataTypes,
+  rules,
+  common,
+  system,
 
-  commonRules: commonRules,
-  dataTypes: dataTypes,
-  rules: rules,
-  common: common,
-  system: system,
-  //webAccess: webAccess,
-
-  // configuration: configuration,
-  i18n: i18n,
-
-  /**
-   * Initializes the business objects.
-   *
-   * @function bo.initialize
-   * @param {object} config - The initializer object of the configuration.
-   * @param {object} appLocales - The combined object of the application locales.
-   */
-  initialize: function ( config, appLocales ) {
-    this.system.Configuration.initialize( config );
-    this.i18n.initialize( appLocales, this.system.Configuration.getLocale );
-  }
+  i18n,
+  initialize
 };
-
-// Immutable object.
-Object.freeze( index );
-
-//export default index;
-global.bo = index;

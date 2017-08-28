@@ -1,6 +1,5 @@
 'use strict';
 
-//const bo = require( 'business-objects' );
 import BookTags from './book-tags.js';
 
 const Model = bo.ModelComposer;

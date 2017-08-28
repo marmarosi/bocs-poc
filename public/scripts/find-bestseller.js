@@ -1,12 +1,8 @@
-const locales = clt.locales;
-const config = {
-  userReader: clt.data.getUser,
-  localeReader: clt.data.getLocale
-};
+'use strict';
 
-bo.initialize( config, locales );
+bo.initialize( lib.config, lib.locales );
 
-const FindBestseller = clt.data.models.FindBestseller;
+const FindBestseller = lib.data.models.FindBestseller;
 
 function find() {
   const finder = FindBestseller.create();

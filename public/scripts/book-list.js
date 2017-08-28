@@ -1,12 +1,8 @@
-const locales = clt.locales;
-const config = {
-  userReader: clt.data.getUser,
-  localeReader: clt.data.getLocale
-};
+'use strict';
 
-bo.initialize( config, locales );
+bo.initialize( lib.config, lib.locales );
 
-clt.data.models.BookList.getAll()
+lib.data.models.BookList.getAll()
   .then( books => {
     let out = "";
     books.forEach( book => {

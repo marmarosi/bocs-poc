@@ -1,6 +1,5 @@
 'use strict';
 
-//const bo = require( 'business-objects' );
 import BookItem from './book-item.js';
 
 const Model = bo.ModelComposer;

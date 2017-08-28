@@ -3,10 +3,13 @@
 import data from './data/index.js';
 import locales from './app.locales.json';
 
-const index = {
-  data: data,
-  locales: locales
-};
+const config = {
+    userReader: data.getUser,
+    localeReader: data.getLocale
+  };
 
-//export default index;
-global.clt = index;
+export {
+  data,
+  locales,
+  config
+};

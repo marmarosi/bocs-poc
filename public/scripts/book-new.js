@@ -1,14 +1,10 @@
-const locales = clt.locales;
-const config = {
-  userReader: clt.data.getUser,
-  localeReader: clt.data.getLocale
-};
+'use strict';
 
-bo.initialize( config, locales );
+bo.initialize( lib.config, lib.locales );
 
 let book;
 
-clt.data.models.Book.create()
+lib.data.models.Book.create()
   .then( created => {
     book = created;
     document.getElementById("publishDate").value = book.publishDate.toLocaleDateString();
