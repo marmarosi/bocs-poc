@@ -4,6 +4,7 @@
 # webpack outputs
 /public/scripts/bo-client.js
 /public/scripts/bo-client.min.js
+/public/scripts/bo-client.js.map
 /public/scripts/bo-data.js
 
 # Module support

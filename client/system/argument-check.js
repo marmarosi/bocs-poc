@@ -459,9 +459,9 @@ function asModelType( model, message, ...messageParams ) {
  */
 function asEnumMember( type, defaultValue, message, ...messageParams ) {
 
-  if (!(type && type.hasMember && type.constructor &&
+  if (!(type && type.hasMember /*&& type.constructor &&
       Object.getPrototypeOf( type.constructor ) &&
-      Object.getPrototypeOf( type.constructor ).name === 'Enumeration'))
+      Object.getPrototypeOf( type.constructor ).name === 'Enumeration'*/))
     this.exception( 'enumType', type, message, ...messageParams );
 
   if ((this.value === null || this.value === undefined) && typeof defaultValue === 'number')

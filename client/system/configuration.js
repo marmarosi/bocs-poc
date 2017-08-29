@@ -21,9 +21,9 @@ let _noAccessBehavior = NoAccessBehavior.throwError;
 
 function isEnumMember( value, enumType, name, errorType ) {
 
-  if (!(enumType && enumType.hasMember && enumType.constructor &&
+  if (!(enumType && enumType.hasMember /*&& enumType.constructor &&
       Object.getPrototypeOf( enumType.constructor ) &&
-      Object.getPrototypeOf( enumType.constructor ).name === 'Enumeration'))
+      Object.getPrototypeOf( enumType.constructor ).name === 'Enumeration'*/))
     throw new errorType( 'enumType', enumType );
 
   if (typeof value === 'string' && enumType.isMemberName( value ))
