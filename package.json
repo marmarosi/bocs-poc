@@ -6,9 +6,7 @@
   "scripts": {
     "bo-es5": "./node_modules/.bin/webpack --color --config webpack.config.bo-es5.js",
     "bo-es6": "./node_modules/.bin/webpack --color --config webpack.config.bo-es6.js",
-    "lib-es6": "./node_modules/.bin/webpack --color --config webpack.config.lib-es6.js",
-    "minify": "./node_modules/.bin/babili public/scripts/bo-client.js > public/scripts/bo-client.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lib-es6": "./node_modules/.bin/webpack --color --config webpack.config.lib-es6.js"
   },
   "keywords": [
     "business",
@@ -32,8 +30,11 @@
     "babel-minify-webpack-plugin": "^0.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
-    "babili": "^0.1.4",
     "webpack": "^3.5.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marmarosi/bocs-poc.git"
   },
   "@std/esm": {
     "esm": "js"
