@@ -10,7 +10,7 @@ function engine( filePath, options, callback ) {
     if (err) return callback( err );
 
     for (const prop in options) {
-      if (options.hasOwnProperty( prop ))
+      if (options.hasOwnProperty( prop ) && typeof options[ prop ] !== 'object')
         rendered = rendered.replace( '#' + prop + '#', options[ prop ] );
     }
     return callback( null, rendered );
