@@ -5,11 +5,18 @@ bo.initialize( lib.config, lib.locales );
 const Books = lib.data.models.Books;
 let books;
 
-Books.getAll()
-  .then( fetched => {
-    books = fetched;
-    showBefore();
-  } );
+getBooks();
+
+function getBooks( action ) {
+  Books.getAll()
+    .then( fetched => {
+      books = fetched;
+      showBefore();
+      // Execute action...
+      if (action)
+        action();
+    } );
+}
 
 function showBefore() {
   let out = '';
@@ -46,7 +53,9 @@ function insert() {
                     showAfter();
                   } );
               else {
-                document.getElementById("afterEdit").innerText = books.getBrokenRules();
+                document.getElementById( "afterEdit" ).innerText = books.getBrokenRules();
+                // To continue test...
+                books = null;
               }
             } );
         });
@@ -54,6 +63,14 @@ function insert() {
 }
 
 function update() {
+  if (books === null)
+    getBooks( updateNow );
+  else
+    updateNow();
+
+}
+
+function updateNow() {
   const book1 = books.at(0);
   book1.remove();
 
@@ -77,13 +94,22 @@ function update() {
                 showAfter();
               } );
           else {
-            document.getElementById("afterEdit").innerText = books.getBrokenRules();
+            document.getElementById( "afterEdit" ).innerText = books.getBrokenRules();
+            // To continue test...
+            books = null;
           }
         } );
     });
 }
 
 function remove() {
+  if (books === null)
+    getBooks( removeNow );
+  else
+    removeNow();
+}
+
+function removeNow() {
   books.remove();
   books.save()
     .then( deleted => {
@@ -103,4 +129,6 @@ function showAfter() {
     out += book.author + ': ' + book.title;
   } );
   document.getElementById("afterEdit").innerText = out;
+  // To continue test...
+  books = null;
 }
