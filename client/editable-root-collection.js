@@ -28,7 +28,6 @@ import MODEL_STATE from './common/model-state.js';
 
 //region Private variables
 
-const CLASS_NAME = 'EditableRootCollection';
 const MODEL_DESC = 'Editable root collection';
 const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
 
@@ -40,7 +39,6 @@ const _state = new WeakMap();
 const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
-const _dataContext = new WeakMap();
 const _items = new WeakMap();
 const _filters = new WeakMap();
 const _methods = new WeakMap();
@@ -154,7 +152,7 @@ function propagateRemoval() {
 
 function toDto() {
   let dto = [];
-  //const items = _items.get( this );
+
   _items.get( this )
     .filter( item => {
       return item.getModelState() !== MODEL_STATE.getName( MODEL_STATE.markedForRemoval );
@@ -162,6 +160,7 @@ function toDto() {
     .forEach( item => {
       dto.push( item.toDto() );
     } );
+
   return dto;
 }
 
@@ -214,13 +213,6 @@ function fetchChildren( data ) {
     Promise.resolve( null );
 }
 
-function saveChildren() {
-  const items = _items.get( this );
-  return Promise.all( items.map( item => {
-    return item.save();
-  } ) );
-}
-
 function childrenAreValid() {
   const items = _items.get( this );
   return items.every( item => {
@@ -270,7 +262,6 @@ function initialize( name, itemType, rules, extensions, eventHandlers ) {
   _isDirty.set( this, false );
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
-  _dataContext.set( this, null );
   _items.set( this, [] );
 
   // Immutable definition object.
@@ -1099,8 +1090,6 @@ class EditableRootCollectionFactory {
       uriFromPhrase( name ),
       itemType, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -1109,6 +1098,8 @@ class EditableRootCollectionFactory {
      * @readonly
      */
     Model.modelType = ModelType.EditableRootCollection;
+
+    //region Factory methods
 
     /**
      * Creates a new editable business object collection.

@@ -50,7 +50,6 @@ const _state = new WeakMap();
 const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
-const _dataContext = new WeakMap();
 const _filters = new WeakMap();
 const _methods = new WeakMap();
 
@@ -302,15 +301,6 @@ function fetchChildren( dto ) {
   } ) );
 }
 
-function saveChildren() {
-  const self = this;
-  const properties = _properties.get( this );
-  return Promise.all( properties.children().map( property => {
-    const child = getPropertyValue.call( self, property );
-    return child.save();
-  } ) );
-}
-
 function childrenAreValid() {
   const properties = _properties.get( this );
   return properties.children().every( property => {
@@ -400,6 +390,10 @@ function getPropertyContext( primaryProperty ) {
   return propertyContext.with( primaryProperty );
 }
 
+//endregion
+
+//region Initialization
+
 function initialize( name, properties, rules, extensions, eventHandlers ) {
 
   eventHandlers = Argument.inConstructor( name )
@@ -452,7 +446,6 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
   _isDirty.set( this, false );
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
-  _dataContext.set( this, null );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -1180,8 +1173,6 @@ class EditableRootObjectFactory {
       uriFromPhrase( name ),
       properties, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -1190,6 +1181,8 @@ class EditableRootObjectFactory {
      * @readonly
      */
     Model.modelType = ModelType.EditableRootObject;
+
+    //region Factory methods
 
     /**
      * Creates a new editable root object instance.

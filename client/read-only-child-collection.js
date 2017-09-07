@@ -21,6 +21,8 @@ const _items = new WeakMap();
 
 //region Helper methods
 
+//region Initialization
+
 function initialize( name, itemType, parent, eventHandlers ) {
 
   // Verify the model type of the parent model.
@@ -52,6 +54,8 @@ function initialize( name, itemType, parent, eventHandlers ) {
   // Immutable definition object.
   Object.freeze( this );
 }
+
+//endregion
 
 //endregion
 

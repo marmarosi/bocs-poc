@@ -46,7 +46,6 @@ const _store = new WeakMap();
 const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
 const _propertyContext = new WeakMap();
-const _dataContext = new WeakMap();
 
 //endregion
 
@@ -205,6 +204,10 @@ function readPropertyValue( property ) {
     return null;
 }
 
+//endregion
+
+//region Initialization
+
 function initialize( name, properties, rules, extensions, eventHandlers ) {
 
   eventHandlers = Argument.inConstructor( name )
@@ -251,7 +254,6 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
   _brokenRules.set( this, new BrokenRuleList( name ) );
   _isValidated.set( this, false );
   _propertyContext.set( this, null );
-  _dataContext.set( this, null );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -573,8 +575,6 @@ class ReadOnlyRootObjectFactory {
       uriFromPhrase( name ),
       properties, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -583,6 +583,8 @@ class ReadOnlyRootObjectFactory {
      * @readonly
      */
     Model.modelType = ModelType.ReadOnlyRootObject;
+
+    //region Factory methods
 
     /**
      * Retrieves a read-only business object from the repository.

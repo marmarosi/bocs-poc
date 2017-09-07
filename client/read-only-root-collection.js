@@ -37,21 +37,12 @@ const _extensions = new WeakMap();
 const _eventHandlers = new WeakMap();
 const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
-const _dataContext = new WeakMap();
 const _items = new WeakMap();
 const _totalItems = new WeakMap();
 
 //endregion
 
 //region Helper methods
-
-//region Transfer object methods
-
-function getTransferContext() {
-  return new ClientTransferContext( null, null, null );
-}
-
-//endregion
 
 //region Permissions
 
@@ -123,7 +114,6 @@ function initialize( name, itemType, rules, extensions, eventHandlers ) {
   _eventHandlers.set( this, eventHandlers );
   _brokenRules.set( this, new BrokenRuleList( name ) );
   _isValidated.set( this, false );
-  _dataContext.set( this, null );
   _items.set( this, [] );
   _totalItems.set( this, null );
 
@@ -401,14 +391,6 @@ class ReadOnlyRootCollection extends CollectionBase {
   getBrokenRules( namespace ) {
     const brokenRules = _brokenRules.get( this );
     let bro = brokenRules.output( namespace );
-
-    // const items = _items.get( this );
-    // items.forEach( item => {
-    //   const childBrokenRules = item.getBrokenRules( namespace );
-    //   if (childBrokenRules)
-    //     bro.addChild( this.$modelName, childBrokenRules );
-    // } );
-
     bro = getChildBrokenRules.call( this, namespace, bro );
     return bro.$length ? bro : null;
   }
@@ -570,8 +552,6 @@ class ReadOnlyRootCollectionFactory {
       uriFromPhrase( name ),
       itemType, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -580,6 +560,8 @@ class ReadOnlyRootCollectionFactory {
      * @readonly
      */
     Model.modelType = ModelType.ReadOnlyRootCollection;
+
+    //region Factory methods
 
     /**
      * Retrieves a read-only business object collection from the repository.

@@ -46,7 +46,6 @@ const _store = new WeakMap();
 const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
 const _propertyContext = new WeakMap();
-const _dataContext = new WeakMap();
 
 //endregion
 
@@ -201,6 +200,10 @@ function readPropertyValue( property ) {
     return null;
 }
 
+//endregion
+
+//region Initialization
+
 function initialize( name, properties, rules, extensions, parent, eventHandlers ) {
   const check = Argument.inConstructor( name );
 
@@ -257,7 +260,6 @@ function initialize( name, properties, rules, extensions, parent, eventHandlers 
   _propertyContext.set( this, null );
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
-  _dataContext.set( this, null );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -547,8 +549,6 @@ class ReadOnlyChildObjectFactory {
     // Create model definition.
     const Model = ReadOnlyChildObject.bind( undefined, name, properties, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -557,6 +557,8 @@ class ReadOnlyChildObjectFactory {
      * @readonly
      */
     Model.modelType = ModelType.ReadOnlyChildObject;
+
+    //region Factory methods
 
     /**
      * Creates a new uninitialized read-only child object instance.

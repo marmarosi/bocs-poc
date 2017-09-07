@@ -51,7 +51,6 @@ const _state = new WeakMap();
 const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
-const _dataContext = new WeakMap();
 
 //endregion
 
@@ -135,16 +134,6 @@ function markForRemoval() {
     illegal.call( this, MODEL_STATE.markedForRemoval );
 }
 
-function markAsRemoved() {
-  const state = _state.get( this );
-  if (state === MODEL_STATE.created || state === MODEL_STATE.markedForRemoval) {
-    _state.set( this, MODEL_STATE.removed );
-    _isDirty.set( this, false );
-  }
-  else if (state !== MODEL_STATE.removed)
-    illegal.call( this, MODEL_STATE.removed );
-}
-
 function illegal( newState ) {
   const state = _state.get( this );
   throw new ModelError(
@@ -185,30 +174,6 @@ function getTransferContext( authorize ) {
       getPropertyValue.bind( this ),
       setPropertyValue.bind( this )
     );
-}
-
-function baseToDto() {
-  const dto = {};
-  const self = this;
-  const properties = _properties.get( this );
-
-  properties
-    .filter( property => {
-      return property.isOnDto;
-    } )
-    .forEach( property => {
-      dto[ property.name ] = getPropertyValue.call( self, property );
-    } );
-  return dto;
-}
-
-function toDto() {
-  const extensions = _extensions.get( this );
-
-  if (extensions.toDto)
-    return extensions.toDto.call( this, getTransferContext.call( this, false ) );
-  else
-    return baseToDto.call( this );
 }
 
 function baseFromDto( dto ) {
@@ -292,15 +257,6 @@ function fetchChildren( dto ) {
   return Promise.all( properties.children().map( property => {
     const child = getPropertyValue.call( self, property );
     return child.fetch( dto[ property.name ] );
-  } ) );
-}
-
-function saveChildren() {
-  const self = this;
-  const properties = _properties.get( this );
-  return Promise.all( properties.children().map( property => {
-    const child = getPropertyValue.call( self, property );
-    return child.save();
   } ) );
 }
 
@@ -393,6 +349,10 @@ function getPropertyContext( primaryProperty ) {
   return propertyContext.with( primaryProperty );
 }
 
+//endregion
+
+//region Initialization
+
 function initialize( name, properties, rules, extensions, parent, eventHandlers ) {
   const check = Argument.inConstructor( name );
 
@@ -454,7 +414,6 @@ function initialize( name, properties, rules, extensions, parent, eventHandlers 
   _isDirty.set( this, false );
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
-  _dataContext.set( this, null );
 
   // Immutable definition object.
   Object.freeze( this );
@@ -594,172 +553,6 @@ function data_fetch( data, method ) {
           const dpe = wrapError.call( self, WebPortalAction.fetch, reason );
           // Launch finish event.
           raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
-          // Pass the error.
-          reject( dpe );
-        } );
-    }
-  } );
-}
-
-//endregion
-
-//region Insert
-
-function data_insert() {
-  const self = this;
-  return new Promise( ( fulfill, reject ) => {
-    // Check permissions.
-    if (canDo.call( self, AuthorizationAction.createObject )) {
-      // Launch start event.
-      /**
-       * The event arises before the business object instance will be created in the repository.
-       * @event EditableChildObject#preInsert
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-       * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
-       */
-      raiseEvent.call( self, WebPortalEvent.preInsert );
-      // Copy the values of parent keys.
-      const properties = _properties.get( self );
-      const references = properties.filter( property => {
-        return property.isParentKey;
-      } );
-      const parent = _parent.get( self );
-      for (let i = 0; i < references.length; i++) {
-        const referenceProperty = references[ i ];
-        const parentValue = parent[ referenceProperty.name ];
-        if (parentValue !== undefined)
-          setPropertyValue.call( self, referenceProperty, parentValue );
-      }
-      // Execute insert.
-      WebPortal.call( self.$modelUri, 'insert', null, toDto.call( self ) )
-        .then( dto => {
-          fromDto.call( self, dto );
-        } )
-        .then( none => {
-          // Insert children as well.
-          return saveChildren.call( self );
-        } )
-        .then( none => {
-          markAsPristine.call( self );
-          // Launch finish event.
-          /**
-           * The event arises after the business object instance has been created in the repository.
-           * @event EditableChildObject#postInsert
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-           * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
-           */
-          raiseEvent.call( self, WebPortalEvent.postInsert );
-          // Return the created editable child object.
-          fulfill( self );
-        } )
-        .catch( reason => {
-          // Wrap the intercepted error.
-          const dpe = wrapError.call( self, WebPortalAction.insert, reason );
-          // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postInsert, null, dpe );
-          // Pass the error.
-          reject( dpe );
-        } );
-    }
-  } );
-}
-
-//endregion
-
-//region Update
-
-function data_update() {
-  const self = this;
-  return new Promise( ( fulfill, reject ) => {
-    // Check permissions.
-    if (canDo.call( self, AuthorizationAction.updateObject )) {
-      // Launch start event.
-      /**
-       * The event arises before the business object instance will be updated in the repository.
-       * @event EditableChildObject#preUpdate
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-       * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
-       */
-      raiseEvent.call( self, WebPortalEvent.preUpdate );
-      // Execute update.
-      const isDirty = _isDirty.get( self );
-      (isDirty ?
-        WebPortal.call( self.$modelUri, 'update', null, toDto.call( self ) )
-          .then( dto => {
-            fromDto.call( self, dto );
-          } ) :
-        Promise.resolve( null ))
-        .then( none => {
-          // Update children as well.
-          return saveChildren.call( self );
-        } )
-        .then( none => {
-          markAsPristine.call( self );
-          // Launch finish event.
-          /**
-           * The event arises after the business object instance has been updated in the repository.
-           * @event EditableChildObject#postUpdate
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-           * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
-           */
-          raiseEvent.call( self, WebPortalEvent.postUpdate );
-          // Return the updated editable child object.
-          fulfill( self );
-        } )
-        .catch( reason => {
-          // Wrap the intercepted error.
-          const dpe = wrapError.call( self, WebPortalAction.update, reason );
-          // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postUpdate, null, dpe );
-          // Pass the error.
-          reject( dpe );
-        } );
-    }
-  } );
-}
-
-//endregion
-
-//region Remove
-
-function data_remove() {
-  const self = this;
-  return new Promise( ( fulfill, reject ) => {
-    // Check permissions.
-    if (canDo.call( self, AuthorizationAction.removeObject )) {
-      // Launch start event.
-      /**
-       * The event arises before the business object instance will be removed from the repository.
-       * @event EditableChildObject#preRemove
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-       * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
-       */
-      raiseEvent.call( self, WebPortalEvent.preRemove );
-      // Remove children first.
-      saveChildren.call( self )
-        .then( none => {
-          // Execute removal.
-          const properties = _properties.get( self );
-          return WebPortal.call( self.$modelUri, 'remove', null, properties.getKey( getPropertyValue.bind( self ) ) );
-        })
-        .then( none => {
-          markAsRemoved.call( self );
-          // Launch finish event.
-          /**
-           * The event arises after the business object instance has been removed from the repository.
-           * @event EditableChildObject#postRemove
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
-           * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
-           */
-          raiseEvent.call( self, WebPortalEvent.postRemove );
-          // Nothing to return.
-          fulfill( null );
-        } )
-        .catch( reason => {
-          // Wrap the intercepted error.
-          const dpe = wrapError.call( self, WebPortalAction.remove, reason );
-          // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postRemove, null, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -1031,45 +824,6 @@ class EditableChildObject extends ModelBase {
   }
 
   /**
-   * Saves the changes of the business object to the repository.
-   * <br/>_This method is called by the parent object._
-   *
-   * @function EditableChildObject#save
-   * @protected
-   * @returns {Promise.<EditableChildObject>} Returns a promise to the saved editable child object.
-   */
-  save() {
-    const self = this;
-    return new Promise( ( fulfill, reject ) => {
-      if (self.isValid()) {
-        const state = _state.get( self );
-        switch (state) {
-          case MODEL_STATE.created:
-            data_insert.call( self )
-              .then( inserted => {
-                fulfill( inserted );
-              } );
-            break;
-          case MODEL_STATE.changed:
-            data_update.call( self )
-              .then( updated => {
-                fulfill( updated );
-              } );
-            break;
-          case MODEL_STATE.markedForRemoval:
-            data_remove.call( self )
-              .then( removed => {
-                fulfill( removed );
-              } );
-            break;
-          default:
-            fulfill( self );
-        }
-      }
-    } );
-  }
-
-  /**
    * Marks the business object to be deleted from the repository on next save.
    *
    * @function EditableChildObject#remove
@@ -1198,8 +952,6 @@ class EditableChildObjectFactory {
       uriFromPhrase( name ),
       properties, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -1208,6 +960,8 @@ class EditableChildObjectFactory {
      * @readonly
      */
     Model.modelType = ModelType.EditableChildObject;
+
+    //region Factory methods
 
     /**
      * Creates a new uninitialized editable child object instance.

@@ -8,8 +8,6 @@ import CollectionBase from './common/collection-base.js';
 import ModelType from './common/model-type.js';
 import ModelError from './common/model-error.js';
 
-import MODEL_STATE from './common/model-state.js';
-
 //endregion
 
 //region Private variables
@@ -22,6 +20,8 @@ const _items = new WeakMap();
 //endregion
 
 //region Helper methods
+
+//region Initialization
 
 function initialize( name, itemType, parent, eventHandlers ) {
 
@@ -53,6 +53,8 @@ function initialize( name, itemType, parent, eventHandlers ) {
   // Immutable definition object.
   Object.freeze( this );
 }
+
+//endregion
 
 //endregion
 
@@ -209,32 +211,6 @@ class EditableChildCollection extends CollectionBase {
           return null;
         }) :
       Promise.resolve( null );
-  }
-
-  /**
-   * Saves the changes of the business object collection to the repository.
-   * <br/>_This method is called by the parent object._
-   *
-   * @function EditableChildCollection#save
-   * @protected
-   * @returns {Promise.<EditableChildCollection>} Returns a promise to the saved editable child collection.
-   */
-  save() {
-    const self = this;
-    let items = _items.get(this);
-
-    return Promise.all( items.filter( item => {
-        return item.isDirty();
-      }).map( item => {
-        return item.save();
-      }))
-      .then( values => {
-        // Store updated items.
-        items = items.filter( item => {
-          return item.getModelState() !== MODEL_STATE.getName( MODEL_STATE.removed );
-        });
-        _items.set(self, items);
-      });
   }
 
   /**
@@ -433,8 +409,6 @@ class EditableChildCollectionFactory {
     // Create model definition.
     const Model = EditableChildCollection.bind( undefined, name, itemType );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -442,6 +416,8 @@ class EditableChildCollectionFactory {
      * @readonly
      */
     Model.modelType = ModelType.EditableChildCollection;
+
+    //region Factory methods
 
     /**
      * Creates a new uninitialized editable child collection instance.

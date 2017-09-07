@@ -46,7 +46,6 @@ const _propertyContext = new WeakMap();
 const _store = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
-const _dataContext = new WeakMap();
 
 //endregion
 
@@ -247,6 +246,67 @@ function getPropertyContext(primaryProperty) {
 
 //endregion
 
+//region Initialization
+
+function initialize( name, properties, rules, extensions, eventHandlers ) {
+
+  eventHandlers = Argument.inConstructor(name)
+    .check(eventHandlers).forOptional('eventHandlers').asType(EventHandlerList);
+
+  // Set up business rules.
+  rules.initialize(config.noAccessBehavior);
+
+  // Set up event handlers.
+  if (eventHandlers)
+    eventHandlers.setup(this);
+
+  // Create properties
+  const store = new DataStore();
+  properties.map( property => {
+
+    const isNormal = property.type instanceof DataType; // Not child element.
+    if (isNormal) {
+      // Initialize normal property.
+      store.initValue( property );
+      // Add data type check.
+      rules.add( new DataTypeRule( property ) );
+    }
+    else
+    // Create child item/collection.
+      store.initValue( property, property.type.empty( this, eventHandlers ) );
+
+    // Create normal property.
+    Object.defineProperty( this, property.name, {
+      get: () => {
+        return readPropertyValue.call( this, property );
+      },
+      set: value => {
+        if (!isNormal || property.isReadOnly)
+          throw new ModelError( 'readOnly', name, property.name );
+        writePropertyValue.call( this, property, value );
+      },
+      enumerable: true
+    } );
+  } );
+
+  // Add other execute methods to the instance.
+  extensions.buildOtherMethods( this, false );
+
+  _properties.set( this, properties );
+  _rules.set( this, rules );
+  _extensions.set( this, extensions );
+  _eventHandlers.set( this, eventHandlers );
+  _store.set( this, store );
+  _propertyContext.set( this, null );
+  _isValidated.set( this, false );
+  _brokenRules.set( this, new BrokenRuleList( name ) );
+
+  // Immutable definition object.
+  Object.freeze( this );
+}
+
+//endregion
+
 //region Factory
 
 function nameFromPhrase( name ) {
@@ -365,26 +425,6 @@ class CommandObject extends ModelBase {
   constructor(name, uri, properties, rules, extensions, eventHandlers) {
     super();
 
-    eventHandlers = Argument.inConstructor(name)
-      .check(eventHandlers).forOptional('eventHandlers').asType(EventHandlerList);
-
-    _properties.set( this, properties );
-    // _rules.set( this, rules );
-    _extensions.set( this, extensions );
-    _eventHandlers.set( this, eventHandlers );
-    // _store.set( this, store );
-    _propertyContext.set( this, null );
-    _isValidated.set( this, false );
-    _brokenRules.set( this, new BrokenRuleList( name ) );
-    _dataContext.set( this, null );
-
-    // Set up business rules.
-    rules.initialize(config.noAccessBehavior);
-
-    // Set up event handlers.
-    if (eventHandlers)
-      eventHandlers.setup(this);
-
     /**
      * The name of the model. However, it can be hidden by a model property with the same name.
      *
@@ -401,47 +441,8 @@ class CommandObject extends ModelBase {
      */
     this.$modelUri = uri;
 
-    const store = new DataStore();
-
-    //region Create properties
-
-    properties.map( property => {
-
-      const isNormal = property.type instanceof DataType; // Not child element.
-      if (isNormal) {
-        // Initialize normal property.
-        store.initValue( property );
-        // Add data type check.
-        rules.add( new DataTypeRule( property ) );
-      }
-      else
-      // Create child item/collection.
-        store.initValue( property, property.type.empty( this, eventHandlers ) );
-
-      // Create normal property.
-      Object.defineProperty( this, property.name, {
-        get: () => {
-          return readPropertyValue.call( this, property );
-        },
-        set: value => {
-          if (!isNormal || property.isReadOnly)
-            throw new ModelError( 'readOnly', name, property.name );
-          writePropertyValue.call( this, property, value );
-        },
-        enumerable: true
-      } );
-    } );
-
-    // Add other execute methods to the instance.
-    extensions.buildOtherMethods( this, false );
-
-    //endregion
-
-    _store.set( this, store );
-    _rules.set( this, rules );
-
-    // Immutable definition object.
-    Object.freeze( this );
+    // Initialize the instance.
+    initialize.call( this, name, properties, rules, extensions, eventHandlers );
   }
 
   //endregion
@@ -613,8 +614,6 @@ class CommandObjectFactory {
       uriFromPhrase( name ),
       properties, rules, extensions );
 
-    //region Factory methods
-
     /**
      * The name of the model type.
      *
@@ -623,6 +622,8 @@ class CommandObjectFactory {
      * @readonly
      */
     Model.modelType = ModelType.CommandObject;
+
+    //region Factory methods
 
     /**
      * Creates a new command object instance.
