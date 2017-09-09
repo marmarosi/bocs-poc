@@ -14,6 +14,7 @@ let _isInitialized = false;
 let _userReader = null;
 let _getLocale = null;
 let _noAccessBehavior = NoAccessBehavior.throwError;
+let _apiRootUrl = '/api/';
 
 //endregion
 
@@ -43,7 +44,7 @@ function isEnumMember( value, enumType, name, errorType ) {
  */
 class Configuration {
 
-  //region Properties
+  //region Static methods and properties
 
   /**
    * Returns the current user. The default method returns null, i.e. anonymous user is assumed.
@@ -102,6 +103,18 @@ class Configuration {
     return _noAccessBehavior;
   }
 
+  /**
+   * The root URL of the API portal.
+   *
+   * @member {string} bo.system.configuration.apiRootUrl
+   * @readonly
+   * @static
+   * @default '/api/'
+   */
+  static get apiRootUrl() {
+    return _apiRootUrl;
+  }
+
   //endregion
 
   //region Initialize
@@ -142,6 +155,16 @@ class Configuration {
         _noAccessBehavior = isEnumMember(
           config.noAccessBehavior, NoAccessBehavior, 'noAccessBehavior', ConfigurationError
         );
+      }
+
+      // Evaluate the root URL of the API portal.
+      if (config.apiRootUrl) {
+        if (typeof config.apiRootUrl !== 'string' ||
+          config.apiRootUrl.length < 1 ||
+          config.apiRootUrl[ 0 ] !== '/'
+        )
+          throw new ConfigurationError( '???' );
+        _apiRootUrl = config.apiRootUrl;
       }
     }
     _isInitialized = true;

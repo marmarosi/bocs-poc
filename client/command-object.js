@@ -9,7 +9,7 @@ import ModelBase from './common/model-base.js';
 import ModelType from './common/model-type.js';
 import ModelError from './common/model-error.js';
 import ExtensionManager from './common/extension-manager.js';
-import EventHandlerList from './common/event-handler-list.js';
+import EventHandlerList from './api-access/event-handler-list.js';
 import DataStore from './common/data-store.js';
 import DataType from './data-types/data-type.js';
 
@@ -25,18 +25,17 @@ import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 import BrokenRulesResponse from './rules/broken-rules-response.js';
 
-import WebPortal from './web-access/web-portal.js';
-import WebPortalAction from './web-access/web-portal-action.js';
-import WebPortalEvent from './web-access/web-portal-event.js';
-import WebPortalEventArgs from './web-access/web-portal-event-args.js';
-import WebPortalError from './web-access/web-portal-error.js';
+import ApiClientAction from './api-access/api-client-action.js';
+import ApiClientEvent from './api-access/api-client-event.js';
+import ApiClientEventArgs from './api-access/api-client-event-args.js';
+import ApiClientError from './api-access/api-client-error.js';
 
 //endregion
 
 //region Private variables
 
 const MODEL_DESC = 'Command object';
-const M_EXECUTE = WebPortalAction.getName(WebPortalAction.execute);
+const M_EXECUTE = ApiClientAction.getName(ApiClientAction.execute);
 
 const _properties = new WeakMap();
 const _rules = new WeakMap();
@@ -46,6 +45,7 @@ const _propertyContext = new WeakMap();
 const _store = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
+const _aco = new WeakMap();
 
 //endregion
 
@@ -301,6 +301,9 @@ function initialize( name, properties, rules, extensions, eventHandlers ) {
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
 
+  // Get API client object.
+  _aco.set( this, extensions.getApiClientObject() );
+
   // Immutable definition object.
   Object.freeze( this );
 }
@@ -329,13 +332,13 @@ function uriFromPhrase( name ) {
 
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    WebPortalEvent.getName( event ),
-    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
+    ApiClientEvent.getName( event ),
+    new ApiClientEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( error ) {
-  return new WebPortalError( MODEL_DESC, this.$modelName, WebPortalAction.execute, error );
+  return new ApiClientError( MODEL_DESC, this.$modelName, ApiClientAction.execute, error );
 }
 
 //endregion
@@ -354,12 +357,13 @@ function data_execute( method ) {
       /**
        * The event arises before the command object will be executed in the repository.
        * @event CommandObject#preExecute
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
        * @param {CommandObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, WebPortalEvent.preExecute, method );
+      raiseEvent.call( self, ApiClientEvent.preExecute, method );
       // Execute command.
-      WebPortal.call( self.$modelUri, 'execute', method, toDto.call( self ) )
+      const aco = _aco.get( self );
+      aco.call( self.$modelUri, 'execute', method, toDto.call( self ) )
         .then( dto => {
           // Load property values.
           fromDto.call( self, dto );
@@ -374,10 +378,10 @@ function data_execute( method ) {
           /**
            * The event arises after the command object has been executed in the repository.
            * @event CommandObject#postExecute
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
            * @param {CommandObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, WebPortalEvent.postExecute, method );
+          raiseEvent.call( self, ApiClientEvent.postExecute, method );
           // Returns the executed command object.
           fulfill( self );
         })
@@ -385,7 +389,7 @@ function data_execute( method ) {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, reason );
           // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postExecute, method, dpe );
+          raiseEvent.call( self, ApiClientEvent.postExecute, method, dpe );
           // Pass the error.
           reject( dpe );
         });

@@ -9,7 +9,7 @@ import ModelBase from './common/model-base.js';
 import ModelType from './common/model-type.js';
 import ModelError from './common/model-error.js';
 import ExtensionManager from './common/extension-manager.js';
-import EventHandlerList from './common/event-handler-list.js';
+import EventHandlerList from './api-access/event-handler-list.js';
 import DataStore from './common/data-store.js';
 import DataType from './data-types/data-type.js';
 
@@ -25,11 +25,10 @@ import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 
-import WebPortal from './web-access/web-portal.js';
-import WebPortalAction from './web-access/web-portal-action.js';
-import WebPortalEvent from './web-access/web-portal-event.js';
-import WebPortalEventArgs from './web-access/web-portal-event-args.js';
-import WebPortalError from './web-access/web-portal-error.js';
+import ApiClientAction from './api-access/api-client-action.js';
+import ApiClientEvent from './api-access/api-client-event.js';
+import ApiClientEventArgs from './api-access/api-client-event-args.js';
+import ApiClientError from './api-access/api-client-error.js';
 
 import MODEL_STATE from './common/model-state.js';
 
@@ -38,7 +37,7 @@ import MODEL_STATE from './common/model-state.js';
 //region Private variables
 
 const MODEL_DESC = 'Editable child object';
-const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
+const M_FETCH = ApiClientAction.getName( ApiClientAction.fetch );
 
 const _properties = new WeakMap();
 const _rules = new WeakMap();
@@ -51,6 +50,7 @@ const _state = new WeakMap();
 const _isDirty = new WeakMap();
 const _isValidated = new WeakMap();
 const _brokenRules = new WeakMap();
+const _aco = new WeakMap();
 
 //endregion
 
@@ -415,6 +415,9 @@ function initialize( name, properties, rules, extensions, parent, eventHandlers 
   _isValidated.set( this, false );
   _brokenRules.set( this, new BrokenRuleList( name ) );
 
+  // Get API client object.
+  _aco.set( this, extensions.getApiClientObject() );
+
   // Immutable definition object.
   Object.freeze( this );
 }
@@ -443,13 +446,13 @@ function uriFromPhrase( name ) {
 
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    WebPortalEvent.getName( event ),
-    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
+    ApiClientEvent.getName( event ),
+    new ApiClientEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( action, error ) {
-  return new WebPortalError( MODEL_DESC, this.$modelName, action, error );
+  return new ApiClientError( MODEL_DESC, this.$modelName, action, error );
 }
 
 //endregion
@@ -464,12 +467,13 @@ function data_create() {
       /**
        * The event arises before the business object instance will be initialized in the repository.
        * @event EditableChildObject#preCreate
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, WebPortalEvent.preCreate );
+      raiseEvent.call( self, ApiClientEvent.preCreate );
       // Execute creation.
-      WebPortal.call( self.$modelUri, 'create', null, null )
+      const aco = _aco.get( self );
+      aco.call( self.$modelUri, 'create', null, null )
         .then( dto => {
           fromDto.call( self, dto );
         } )
@@ -483,18 +487,18 @@ function data_create() {
           /**
            * The event arises after the business object instance has been initialized in the repository.
            * @event EditableChildObject#postCreate
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, WebPortalEvent.postCreate );
+          raiseEvent.call( self, ApiClientEvent.postCreate );
           // Return the new editable child object.
           fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, WebPortalAction.create, reason );
+          const dpe = wrapError.call( self, ApiClientAction.create, reason );
           // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postCreate, null, dpe );
+          raiseEvent.call( self, ApiClientEvent.postCreate, null, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -522,10 +526,10 @@ function data_fetch( data, method ) {
       /**
        * The event arises before the business object instance will be retrieved from the repository.
        * @event EditableChildObject#preFetch
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
        * @param {EditableChildObject} oldObject - The instance of the model before the data portal action.
        */
-      raiseEvent.call( self, WebPortalEvent.preFetch, method );
+      raiseEvent.call( self, ApiClientEvent.preFetch, method );
       // Execute fetch.
       new Promise( ( f, r ) => {
           fromDto.call( self, data );
@@ -541,18 +545,18 @@ function data_fetch( data, method ) {
           /**
            * The event arises after the business object instance has been retrieved from the repository.
            * @event EditableChildObject#postFetch
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
            * @param {EditableChildObject} newObject - The instance of the model after the data portal action.
            */
-          raiseEvent.call( self, WebPortalEvent.postFetch, method );
+          raiseEvent.call( self, ApiClientEvent.postFetch, method );
           // Return the fetched editable child object.
           fulfill( self );
         } )
         .catch( reason => {
           // Wrap the intercepted error.
-          const dpe = wrapError.call( self, WebPortalAction.fetch, reason );
+          const dpe = wrapError.call( self, ApiClientAction.fetch, reason );
           // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
+          raiseEvent.call( self, ApiClientEvent.postFetch, method, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -991,7 +995,7 @@ class EditableChildObjectFactory {
      *
      * @throws {@link bo.rules.AuthorizationError Authorization error}:
      *      The user has no permission to execute the action.
-     * @throws {@link bo.webAccess.WebPortalError Data portal error}:
+     * @throws {@link bo.apiAccess.ApiClientError Data portal error}:
      *      Creating the business object has failed.
      */
     Model.create = function ( parent, eventHandlers ) {

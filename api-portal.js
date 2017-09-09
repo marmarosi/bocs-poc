@@ -1,9 +1,14 @@
 'use strict';
 
+//region Imports
+
 const fs = require( 'fs' );
 const path = require( 'path' );
-//const modelType = require( './common/model-type.js' );
 const FactoryBase = require( './data/factory-base.js' );
+
+//endregion
+
+//region Helper methods
 
 function decideMethodName( base, model, name ) {
   let methodName;
@@ -20,11 +25,14 @@ function decideMethodName( base, model, name ) {
   return methodName;
 }
 
-class BoProxy {
+//endregion
+
+class ApiPortal {
+
   constructor( apiUrl, modelsPath ) {
 
     apiUrl = apiUrl || '/';
-    this.apiUrl = apiUrl[ apiUrl.length - 1 ] === '/' ? apiUrl : apiUrl + '/';
+    this.apiUrl = apiUrl.endsWith( '/' ) ? apiUrl : apiUrl + '/';
 
     this.models = {};
     this.initialize( path.join( __dirname, modelsPath ), '' );
@@ -79,9 +87,9 @@ class BoProxy {
       // Read model type and method from URL.
       let type = url.substr( 0, pos );
       let method = url.substr( pos + 1 );
-      let model = null;
 
       // Get the requested model.
+      let model = null;
       if (this.models[ type ])
         model = this.models[ type ];
       else
@@ -207,4 +215,4 @@ class BoProxy {
   //endregion
 }
 
-module.exports = BoProxy;
+module.exports = ApiPortal;

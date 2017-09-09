@@ -11,7 +11,7 @@ const serveStatic = require( 'serve-static') ;
 const bodyParser = require('body-parser');
 const bo = require( 'business-objects' );
 const te = require( './template-engine.js' );
-const BoProxy = require( './bo-proxy.js' );
+const ApiPortal = require( './api-portal.js' );
 //const appLocales = require( './config/app.locales.json' );
 
 const app = express();
@@ -27,7 +27,7 @@ app.set( 'view engine', 'html' );
 app.use( serveStatic( 'public', { index: false } ) );
 
 bo.initialize( '/config/business-objects.js' /*, appLocales*/ );
-const boProxy = new BoProxy( '/api/', '/data/models' );
+const apiPortal = new ApiPortal( '/api/', '/data/models' );
 
 //region Routes
 
@@ -62,7 +62,7 @@ app.get( '/edit-books', function ( req, res ) {
 const jsonParser = bodyParser.json();
 
 app.post( '/api/*', jsonParser, function ( req, res ) {
-  boProxy.process( req, res )
+  apiPortal.process( req, res )
     .then( result => {
       res.send( result );
     } )

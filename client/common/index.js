@@ -7,7 +7,6 @@ import ModelBase from './model-base.js';
 import CollectionBase from './collection-base.js';
 
 import ExtensionManager from './extension-manager.js';
-import EventHandlerList from './event-handler-list.js';
 import DataStore from './data-store.js';
 import ModelState from './model-state.js';
 import ModelError from './model-error.js';
@@ -35,8 +34,6 @@ import DataTransferContext from './data-transfer-context.js';
  *
  * @property {function} ExtensionManager - {@link bo.common.ExtensionManager Extension manager}
  *      constructor to create new a new extension manager object.
- * @property {function} EventHandlerList - {@link bo.common.EventHandlerList Event handler list}
- *      constructor to create a new event handler collection.
  * @property {function} DataStore - {@link bo.common.DataStore DataStore}
  *      constructor to create new data store.
  * @property {object} ModelState - {@link bo.rules.ModelState Model state}
@@ -63,7 +60,6 @@ const index = {
   CollectionBase: CollectionBase,
 
   ExtensionManager: ExtensionManager,
-  EventHandlerList: EventHandlerList,
   DataStore: DataStore,
   ModelState: ModelState,
   ModelError: ModelError,

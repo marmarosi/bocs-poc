@@ -7,10 +7,10 @@ let book;
 lib.data.models.Book.get( 22 )
   .then( fetched => {
     book = fetched;
-    show();
+    show( '?' );
   } );
 
-function show() {
+function show( mod ) {
 
   document.getElementById("key").innerText = book.bookKey;
   document.getElementById("author").value = book.author;
@@ -19,8 +19,8 @@ function show() {
   document.getElementById("price").value = book.price.toString();
   document.getElementById("used").checked = book.used;
 
-  document.getElementById("tag1").value = book.tags.at( 0 ).tag;
-  document.getElementById("tag2").value = book.tags.at( 1 ).tag;
+  document.getElementById("tag1").value = book.tags.at( 0 ).tag + mod;
+  document.getElementById("tag2").value = book.tags.at( 1 ).tag + mod;
 }
 
 function save() {
@@ -39,7 +39,7 @@ function save() {
     book.save()
       .then( saved => {
         book = saved;
-        show();
+        show( '' );
       } );
   else {
     const brs = book.getBrokenRules();

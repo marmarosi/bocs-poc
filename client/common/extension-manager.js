@@ -2,7 +2,9 @@
 
 //region Imports
 
+import config from '../system/configuration.js';
 import Argument from '../system/argument-check.js';
+import ApiClient from '../api-access/api-client.js';
 import ModelError from './model-error.js';
 
 //endregion
@@ -23,7 +25,7 @@ function getMethod( name ) {
 
 function setMethod( name, arity, value ) {
 
-  if (value && typeof value === 'function' && value.length == arity) {
+  if (value && typeof value === 'function' && value.length === arity) {
     const methods = _methods.get( this );
     methods.set( name, value );
     _methods.set( this, methods );
@@ -39,6 +41,11 @@ function setMethod( name, arity, value ) {
         throw new ModelError( 'propertyArgN', className, name, arity );
     }
   }
+}
+
+function getApiClient( config ) {
+
+  return new ApiClient( config );
 }
 
 //endregion
@@ -67,6 +74,17 @@ class ExtensionManager {
   //endregion
 
   //region Properties for the custom methods
+
+  /**
+   * Factory method to create the API access object for a model instance.
+   * @member {external.acoBuilder} bo.common.ExtensionManager#acoBuilder
+   */
+  get acoBuilder() {
+    return getMethod.call( this, 'acoBuilder' );
+  }
+  set acoBuilder( value ) {
+    setMethod.call( this, 'acoBuilder', 1, value );
+  }
 
   /**
    * Converts the model instance to data transfer object.
@@ -131,6 +149,24 @@ class ExtensionManager {
         };
       } );
     }
+  }
+
+  //endregion
+
+  //region Methods
+
+  /**
+   * Gets the data access object instance of the model.
+   *
+   * @function bo.common.ExtensionManager#getDataAccessObject
+   * @protected
+   * @param {string} modelName - The name of the model.
+   * @returns {bo.dataAccess.DaoBase} The data access object instance of the model.
+   */
+  getApiClientObject() {
+    return this.acoBuilder ?
+      this.acoBuilder( config ) :
+      getApiClient( config );
   }
 
   //endregion

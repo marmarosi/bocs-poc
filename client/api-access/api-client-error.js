@@ -3,77 +3,77 @@
 //region Imports
 
 import Argument from '../system/argument-check.js';
-import WebPortalAction from './web-portal-action.js';
+import ApiClientAction from './api-client-action.js';
 import i18n from '../system/i18n-bo.js';
 
-const t = i18n( 'WebPortalError' );
+const t = i18n( 'ApiClientError' );
 
 //endregion
 
 /**
- * Represents a data portal error error.
+ * Represents an API portal error error.
  *
- * @memberof bo.webAccess
+ * @memberof bo.apiAccess
  * @extends {Error}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error Error} for further information.
  */
-class WebPortalError extends Error {
+class ApiClientError extends Error {
 
   /**
-   * Creates a data portal error object.
+   * Creates an API portal error object.
    *
    * @param {string} modeltype - The type of the model the error occurred in.
    * @param {string} modelName - The name of the model the error occurred in.
-   * @param {bo.webAccess.WebPortalAction} action - The data portal action the error occurred in.
-   * @param {error} interceptedError - The error to be wrapped.
+   * @param {bo.apiAccess.ApiClientAction} action - The API client action the error occurred in.
+   * @param {error} interceptedError - The error to wrap.
    *
    * @throws {@link bo.system.ArgumentError Argument error}: The model type must be a non-empty string.
    * @throws {@link bo.system.ArgumentError Argument error}: The model name must be a non-empty string.
-   * @throws {@link bo.system.ArgumentError Argument error}: The action must be a WebPortalAction object.
+   * @throws {@link bo.system.ArgumentError Argument error}: The action must be a ApiClientAction object.
    */
   constructor( modeltype, modelName, action, interceptedError ) {
     super();
-    const check = Argument.inConstructor( WebPortalError.name );
+    const check = Argument.inConstructor( ApiClientError.name );
 
     /**
      * The name of the error type.
-     * @member {string} bo.webAccess.WebPortalError#name
-     * @default WebPortalError
+     * @member {string} bo.apiAccess.ApiClientError#name
+     * @default ApiClientError
      */
-    this.name = WebPortalError.name;
+    this.name = ApiClientError.name;
 
     /**
      * The type of the model the intercepted error occurred in.
-     * @member {string} bo.webAccess.WebPortalError#modelType
+     * @member {string} bo.apiAccess.ApiClientError#modelType
      */
     this.modelType = check( modeltype ).forMandatory( 'modeltype' ).asString();
 
     /**
      * The name of the model the intercepted error occurred in.
-     * @member {string} bo.webAccess.WebPortalError#modelName
+     * @member {string} bo.apiAccess.ApiClientError#modelName
      */
     this.modelName = check( modelName ).forMandatory( 'modelName' ).asString();
 
     /**
      * The name of the action executing that the intercepted error occurred in.
-     * @member {string} bo.webAccess.WebPortalError#action
+     * @member {string} bo.apiAccess.ApiClientError#action
      */
-    this.action = WebPortalAction.getName(
-      check( action ).for( 'action' ).asEnumMember( WebPortalAction, null )
+    this.action = ApiClientAction.getName(
+      check( action ).for( 'action' ).asEnumMember( ApiClientAction, null )
     );
 
     /**
-     * The intercepted error of the data portal action.
-     * @member {error} bo.webAccess.WebPortalError#innerError
+     * The intercepted error of the API client action.
+     * @member {error} bo.apiAccess.ApiClientError#innerError
      */
     this.innerError = interceptedError;
 
     /**
      * Human-readable description of the error.
-     * @member {string} bo.webAccess.WebPortalError#message
+     * @member {string} bo.apiAccess.ApiClientError#message
      */
     this.message = t.call( this, this.action, modelName );
   }
 }
 
-export default WebPortalError;
+export default ApiClientError;

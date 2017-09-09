@@ -9,7 +9,7 @@ import CollectionBase from './common/collection-base.js';
 import ModelType from './common/model-type.js';
 import ModelError from './common/model-error.js';
 import ExtensionManager from './common/extension-manager.js';
-import EventHandlerList from './common/event-handler-list.js';
+import EventHandlerList from './api-access/event-handler-list.js';
 
 import ClientTransferContext from './common/client-transfer-context.js';
 
@@ -18,18 +18,17 @@ import BrokenRuleList from './rules/broken-rule-list.js';
 import AuthorizationAction from './rules/authorization-action.js';
 import AuthorizationContext from './rules/authorization-context.js';
 
-import WebPortal from './web-access/web-portal.js';
-import WebPortalAction from './web-access/web-portal-action.js';
-import WebPortalEvent from './web-access/web-portal-event.js';
-import WebPortalEventArgs from './web-access/web-portal-event-args.js';
-import WebPortalError from './web-access/web-portal-error.js';
+import ApiClientAction from './api-access/api-client-action.js';
+import ApiClientEvent from './api-access/api-client-event.js';
+import ApiClientEventArgs from './api-access/api-client-event-args.js';
+import ApiClientError from './api-access/api-client-error.js';
 
 //endregion
 
 //region Private variables
 
 const MODEL_DESC = 'Read-only root collection';
-const M_FETCH = WebPortalAction.getName( WebPortalAction.fetch );
+const M_FETCH = ApiClientAction.getName( ApiClientAction.fetch );
 
 const _itemType = new WeakMap();
 const _rules = new WeakMap();
@@ -39,6 +38,7 @@ const _brokenRules = new WeakMap();
 const _isValidated = new WeakMap();
 const _items = new WeakMap();
 const _totalItems = new WeakMap();
+const _aco = new WeakMap();
 
 //endregion
 
@@ -117,6 +117,9 @@ function initialize( name, itemType, rules, extensions, eventHandlers ) {
   _items.set( this, [] );
   _totalItems.set( this, null );
 
+  // Get API client object.
+  _aco.set( this, extensions.getApiClientObject() );
+
   // Immutable definition object.
   Object.freeze( this );
 }
@@ -145,13 +148,13 @@ function uriFromPhrase( name ) {
 
 function raiseEvent( event, methodName, error ) {
   this.emit(
-    WebPortalEvent.getName( event ),
-    new WebPortalEventArgs( event, this.$modelName, null, methodName, error )
+    ApiClientEvent.getName( event ),
+    new ApiClientEventArgs( event, this.$modelName, null, methodName, error )
   );
 }
 
 function wrapError( error ) {
-  return new WebPortalError( MODEL_DESC, this.$modelName, WebPortalAction.fetch, error );
+  return new ApiClientError( MODEL_DESC, this.$modelName, ApiClientAction.fetch, error );
 }
 
 //endregion
@@ -170,12 +173,14 @@ function data_fetch( filter, method ) {
       /**
        * The event arises before the collection instance will be retrieved from the repository.
        * @event ReadOnlyRootCollection#preFetch
-       * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+       * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
        * @param {ReadOnlyRootCollection} oldObject - The collection instance before the data portal action.
        */
-      raiseEvent.call( self, WebPortalEvent.preFetch, method );
+      raiseEvent.call( self, ApiClientEvent.preFetch, method );
       // Execute fetch.
-      WebPortal.call( self.$modelUri, 'fetch', method, filter )
+      // Root element fetches all data of the object tree from API portal.
+      const aco = _aco.get( self );
+      aco.call( self.$modelUri, 'fetch', method, filter )
         .then( data => {
           // Get the count of all available items.
           let totalItems = _totalItems.get( self );
@@ -203,10 +208,10 @@ function data_fetch( filter, method ) {
           /**
            * The event arises after the collection instance has been retrieved from the repository.
            * @event ReadOnlyRootCollection#postFetch
-           * @param {bo.webAccess.WebPortalEventArgs} eventArgs - Data portal event arguments.
+           * @param {bo.apiAccess.ApiClientEventArgs} eventArgs - Data portal event arguments.
            * @param {ReadOnlyRootCollection} newObject - The collection instance after the data portal action.
            */
-          raiseEvent.call( self, WebPortalEvent.postFetch, method );
+          raiseEvent.call( self, ApiClientEvent.postFetch, method );
           // Return the fetched read-only root collection.
           fulfill( self );
         } )
@@ -214,7 +219,7 @@ function data_fetch( filter, method ) {
           // Wrap the intercepted error.
           const dpe = wrapError.call( self, reason );
           // Launch finish event.
-          raiseEvent.call( self, WebPortalEvent.postFetch, method, dpe );
+          raiseEvent.call( self, ApiClientEvent.postFetch, method, dpe );
           // Pass the error.
           reject( dpe );
         } );
@@ -329,7 +334,7 @@ class ReadOnlyRootCollection extends CollectionBase {
    *      The callback must be a function.
    * @throws {@link bo.rules.AuthorizationError Authorization error}:
    *      The user has no permission to execute the action.
-   * @throws {@link bo.webAccess.WebPortalError Data portal error}:
+   * @throws {@link bo.apiAccess.ApiClientError Data portal error}:
    *      Fetching the business object has failed.
    */
   fetch( filter, method ) {
@@ -580,7 +585,7 @@ class ReadOnlyRootCollectionFactory {
      *      The callback must be a function.
      * @throws {@link bo.rules.AuthorizationError Authorization error}:
      *      The user has no permission to execute the action.
-     * @throws {@link bo.webAccess.WebPortalError Data portal error}:
+     * @throws {@link bo.apiAccess.ApiClientError Data portal error}:
      *      Fetching the business object collection has failed.
      */
     Model.fetch = function ( filter, method, eventHandlers ) {

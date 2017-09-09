@@ -1,23 +1,30 @@
 "use strict";
 
-import modelType from '../common/model-type.js';
+import ApiClientBase from './api-client-base.js';
 
-class WebPortal {
+class ApiClient extends ApiClientBase {
 
-  static call( modelUri, dpMethod, altName, data ) {
+  constructor( config ) {
+    super();
 
-    const url = '/api/' + modelUri + '/' + (altName || dpMethod);
+    let apiRootUrl = config.apiRootUrl || '/api/';
+    if (!apiRootUrl.endsWith( '/' ))
+      apiRootUrl += '/';
 
-    let body = { $isEmpty: true };
-    if (data !== undefined && data !== null) {
-      if (typeof data === 'object')
-        body = data;
-      else if (dpMethod === 'remove')
-        body = { key: data };
-      else
-        body = { $filter: data };
-    }
-    body = JSON.stringify( body );
+    this.apiRootUrl = apiRootUrl;
+  }
+
+  call( modelUri, apiMethod, altName, data ) {
+
+    const url = this.apiRootUrl + modelUri + '/' + (altName || apiMethod);
+
+    const body = JSON.stringify(
+      data === undefined || data === null ?
+        { $isEmpty: true } : (
+          typeof data === 'object' ?
+            data :
+            { $filter: data }
+        ) );
 
     const headers = new Headers({
       "Content-Type": "application/json",
@@ -49,4 +56,4 @@ class WebPortal {
   }
 }
 
-export default WebPortal;
+export default ApiClient;
