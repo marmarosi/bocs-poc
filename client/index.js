@@ -19,7 +19,7 @@ import dataTypes from './data-types/index.js';
 import rules from './rules/index.js';
 import common from './common/index.js';
 import system from './system/index.js';
-//import webAccess from './web-access/index.js';
+import apiAccess from './api-access/index.js';
 
 //import configuration from './system/configuration.js';
 import i18n from './i18n.js';
@@ -38,8 +38,6 @@ function initialize( config, appLocales ) {
  *
  * @property {namespace} commonRules - {@link bo.commonRules Common rules namespace}
  *      contains frequently used rules.
- * @property {namespace} dataAccess - {@link bo.dataAccess Data access namespace}
- *      contains data access components.
  * @property {namespace} dataTypes - {@link bo.dataTypes Data types namespace}
  *      contains data type components and definitions.
  * @property {namespace} rules - {@link bo.rules Rules namespace}
@@ -48,6 +46,8 @@ function initialize( config, appLocales ) {
  *      contains components used by models, collections and other components.
  * @property {namespace} system - {@link bo.system System namespace}
  *      contains general components.
+ * @property {namespace} apiAccess - {@link bo.apiAccess API access namespace}
+ *      contains API portal access components.
  *
  * @property {object} configuration - Object containing
  *      {@link bo.common~configuration configuration} data of the business objects.
@@ -72,6 +72,7 @@ export {
   rules,
   common,
   system,
+  apiAccess,
 
   i18n,
   initialize

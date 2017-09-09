@@ -45,4 +45,4 @@ const index = {
 // Immutable object.
 Object.freeze( index );
 
-module.exports = index;
+export default index;

@@ -14,11 +14,11 @@ const BookView = new Model( 'BookView : book-view' )
   .text( 'title' )
   .dateTime( 'publishDate' )
   .decimal( 'price' )
-  .canRead( cr.isInAnyRole, [ 'salesmen', 'administrators' ], 'You are not authorized to view the totalPrice of the blanket order.' )
+    .canRead( cr.isInAnyRole, [ 'salesmen', 'administrators' ], 'You are not authorized to view the price of the book.' )
   .boolean( 'used' )
   .property( 'tags', BookTagsView )
   // --- Permissions
-  .canFetch( cr.isInRole, 'designers', 'You are not authorized to retrieve blanket order.' )
+  .canFetch( cr.isInRole, 'designers', 'You are not authorized to retrieve book.' )
   // --- Build model class
   .compose();
 
@@ -26,8 +26,8 @@ class BookViewFactory {
   get( key, eventHandlers ) {
     return BookView.fetch( key, 'get', eventHandlers );
   }
-  getByTitle( name, eventHandlers ) {
-    return BookView.fetch( name, 'get-by-title', eventHandlers );
+  getByTitle( title, eventHandlers ) {
+    return BookView.fetch( title, 'get-by-title', eventHandlers );
   }
 }
 

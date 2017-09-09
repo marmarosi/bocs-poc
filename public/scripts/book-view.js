@@ -2,7 +2,9 @@
 
 bo.initialize( lib.config, lib.locales );
 
-lib.data.models.BookView.get( 123 )
+const BookView = lib.data.models.BookView;
+
+BookView.get( 123 )
   .then( book => {
     document.getElementById("author").innerText = book.author;
     document.getElementById("title").innerHTML =

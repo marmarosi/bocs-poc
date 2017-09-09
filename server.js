@@ -55,6 +55,9 @@ app.get( '/book-edit/:id', function ( req, res ) {
 app.get( '/edit-books', function ( req, res ) {
   res.render( 'edit-books', {} );
 } );
+app.get( '/book-test/:id', function ( req, res ) {
+  res.render( 'book-test', {} );
+} );
 
 //endregion
 

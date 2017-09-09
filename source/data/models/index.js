@@ -9,6 +9,7 @@ import BookTags from './book-tags.js';
 import BookTag from './book-tag.js';
 import Books from './books.js';
 import FindBestseller from './find-bestseller.js';
+import BookTest from './book-test.js';
 
 const index = {
   admin: admin,
@@ -19,7 +20,8 @@ const index = {
   BookTags: BookTags,
   BookTag: BookTag,
   Books: Books,
-  FindBestseller: FindBestseller
+  FindBestseller: FindBestseller,
+  BookTest: BookTest
 };
 
 export default index;

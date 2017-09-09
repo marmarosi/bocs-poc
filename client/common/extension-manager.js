@@ -76,7 +76,7 @@ class ExtensionManager {
   //region Properties for the custom methods
 
   /**
-   * Factory method to create the API access object for a model instance.
+   * Factory method to create the API client object for a model instance.
    * @member {external.acoBuilder} bo.common.ExtensionManager#acoBuilder
    */
   get acoBuilder() {
@@ -161,7 +161,7 @@ class ExtensionManager {
    * @function bo.common.ExtensionManager#getDataAccessObject
    * @protected
    * @param {string} modelName - The name of the model.
-   * @returns {bo.dataAccess.DaoBase} The data access object instance of the model.
+   * @returns {bo.apiAccess.ApiClientBase} The API client object instance of the model.
    */
   getApiClientObject() {
     return this.acoBuilder ?

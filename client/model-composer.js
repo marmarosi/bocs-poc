@@ -1127,6 +1127,35 @@ class ModelComposer {
   //region Extensions
 
   /**
+   * Adds a custom function to the business object that creates
+   * the API client object of the model instance.
+   *
+   *    The function is valid for the following model types:
+   *
+   *      * {@link EditableRootObject}
+   *      * {@link EditableRootCollection}
+   *      * {@link EditableChildObject}
+   *      * {@link ReadOnlyRootObject}
+   *      * {@link ReadOnlyRootCollection}
+   *      * {@link CommandObject}
+   *
+   * @function ModelComposer#acoBuilder
+   * @param {function} acoBuilder - A factory function that returns an
+   *    {@link bo.apiAccess.apiClientBase API client object} for the model instance.
+   * @returns {ModelComposer}
+   *
+   * @throws {@link bo.system.ComposerError Composer error}: The function is not applicable to the model type.
+   */
+  acoBuilder( acoBuilder ) {
+    if (!_isRoot.get( this ) && _modelFactory.get( this ) !== EditableChildObject)
+      invalid.call( this, 'acoBuilder' );
+    const extensions = _extensions.get( this );
+    extensions.acoBuilder = acoBuilder;
+    _extensions.set( this, extensions );
+    return nonProperty.call( this );
+  }
+
+  /**
    * Adds a custom function to the business object that converts
    * the model instance to data transfer object.
    *
