@@ -31,7 +31,7 @@
     "default": "The method is not implemented.",
     "method": "The {0}.{1} method is not implemented."
   },
-  "WebPortalError": {
+  "ApiClientError": {
     "create": "Creating {0} has failed.",
     "fetch": "Fetching {0} has failed.",
     "insert": "Inserting {0} has failed.",
