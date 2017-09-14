@@ -2,12 +2,12 @@
 
 //region Imports
 
-const ApiClient = require( './api-client.js' );
-const ApiClientBase = require( './api-client-base.js' );
-const ApiClientAction = require( './api-client-action.js' );
-const ApiClientEvent = require( './api-client-event.js' );
-const ApiClientEventArgs = require( './api-client-event-args.js' );
-const ApiClientError = require( './api-client-error.js' );
+import ApiClient from './api-client.js';
+import ApiClientBase from './api-client-base.js';
+import ApiClientAction from './api-client-action.js';
+import ApiClientEvent from './api-client-event.js';
+import ApiClientEventArgs from './api-client-event-args.js';
+import ApiClientError from './api-client-error.js';
 import EventHandlerList from './event-handler-list.js';
 
 //endregion

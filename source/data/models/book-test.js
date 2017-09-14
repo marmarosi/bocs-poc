@@ -5,7 +5,7 @@ import BookTagsView from './book-tags-view.js';
 const Model = bo.ModelComposer;
 const F = bo.common.PropertyFlag;
 const cr = bo.commonRules;
-const ApiClientBase = bo.apiAccess.ApiClientBase.default;
+const ApiClientBase = bo.apiAccess.ApiClientBase;
 
 //region Test API client
 

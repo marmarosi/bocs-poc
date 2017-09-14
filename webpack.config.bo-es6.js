@@ -9,8 +9,8 @@ module.exports = {
     filename: 'bo-client.js',
     path: path.resolve(__dirname, 'public/scripts'),
     library: 'bo'
-  },
+  }/*,
   plugins: [
     new MinifyPlugin()
-  ]
+  ]*/
 };
