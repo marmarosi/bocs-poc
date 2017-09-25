@@ -1,7 +1,8 @@
 'use strict';
 require("@std/esm");
 
-const Bear = require( './module-2.js' ).default;
+const Bear = require( './module-2.mjs' ).default;
+//import { Bear } from './module-2.mjs';
 
 const bear = new Bear( 'brown ' );
 console.log( bear );

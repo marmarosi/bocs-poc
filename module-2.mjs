@@ -1,6 +1,6 @@
 "use strict";
 
-import Animal from './module-1.js';
+import Animal from './module-1.mjs';
 
 class Bear extends Animal {
   constructor( color ) {
